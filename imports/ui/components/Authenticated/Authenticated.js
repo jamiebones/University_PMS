@@ -1,0 +1,54 @@
+/* eslint-disable */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Route, Redirect } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor';
+
+
+class Authenticated extends React.Component{
+
+  componentWillMount(){
+    if (Meteor.isClient){
+      this.props.setAfterLoginPath(`${window.location.pathname}${window.location.search}`)
+    }
+   
+  }
+  
+  render(){
+    const { loggingIn, authenticated, component:Component, path, exact, ...rest } = this.props
+    return (
+      <Route
+        path={path}
+        exact={exact}
+        render={ props =>(
+          authenticated ? (<Component loggingIn={loggingIn} 
+                            authenticated={authenticated} 
+                            { ...rest } {...props }/> ) :
+          (<Redirect to="/login" />)
+        )}
+        />
+    )
+  
+  }
+
+}
+
+
+
+
+
+Authenticated.defaultProps = {
+  path: '',
+  exact: false,
+};
+
+Authenticated.propTypes = {
+  loggingIn: PropTypes.bool.isRequired,
+  authenticated: PropTypes.bool.isRequired,
+  component: PropTypes.func.isRequired,
+  /*setAfterLoginPath: PropTypes.func.isRequired,*/
+  path: PropTypes.string,
+  exact: PropTypes.bool,
+};
+
+export default Authenticated;
