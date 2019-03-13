@@ -176,6 +176,10 @@ const StaffMember = Class.create({
     dateOfLastPromotion: {
       type: String,
       optional: true
+    },
+    postingProposed: {
+      type: Boolean,
+      optional: true
     }
   }
 });

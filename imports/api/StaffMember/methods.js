@@ -185,6 +185,7 @@ Meteor.methods({
     check(excelData, Array);
     let numSaved = 0;
     for (let i = 0; i < excelData.length; i++) {
+      debugger;
       const rowArray = excelData[i];
       const unitName = rowArray.join(" ").trim();
       const newUnit = new UniversityUnit();
@@ -193,6 +194,7 @@ Meteor.methods({
       numSaved++;
     }
     console.log(numSaved);
+    return numSaved;
   }
 });
 

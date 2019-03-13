@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import Authorized from "../../components/Authorized/Authorized";
 import AddStaffDocuments from "../../pages/AddStaffDocuments/AddStaffDocuments";
+import StaffPosting from "../../pages/StaffPostingPage/StaffPostingPage";
 import NotFound from "../../pages/NotFound/NotFound";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
@@ -19,6 +20,16 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/add_staff_documents`}
               component={AddStaffDocuments}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["manage-site", "edit-content", "super-admin"]}
+              group="canEditRecords"
+              userId={userId}
+              exact
+              path={`${match.path}/propose_staff_posting`}
+              component={StaffPosting}
               {...rest}
             />
 
