@@ -16,6 +16,41 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const SortPostingDuration = pArray => {
+  if (pArray.length) {
+    let arr = pArray.sort((a, b) => {
+      return a.serial - b.serial;
+    });
+    let postingArray = [];
+    for (let i = 0; i < arr.length; i++) {
+      const posting = arr[i];
+      const startDate = posting.postingDate;
+      let endDate = moment().format("MMMM DD YYYY");
+      if (i + 1 !== arr.length) {
+        endDate = arr[i + 1].postingDate;
+      }
+      const duration = FindTimeDifference(startDate, endDate);
+      const obj = {
+        unit: posting.unitName,
+        duration
+      };
+      postingArray.push(obj);
+    }
+    return postingArray;
+  }
+  return [];
+};
+
+export const FindTimeDifference = (startTime, endTime) => {
+  let start = moment(endTime);
+  let end = moment(startTime);
+  //Difference in number of days
+  const days = moment.duration(start.diff(end)).humanize();
+  const months = moment.duration(start.diff(end)).asMonths();
+  const years = moment.duration(start.diff(end)).asYears();
+  return `${days}`;
+};
+
 export const Capitalize = word => {
   if (word) {
     return word.toUpperCase();

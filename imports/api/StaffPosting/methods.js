@@ -13,6 +13,7 @@ Meteor.methods({
     newUnit,
     _id
   ) {
+    debugger;
     check(status, String);
     check(staffId, String);
     check(newUnit, String);
@@ -28,14 +29,21 @@ Meteor.methods({
     const newPosting = postedStaff.postings.find(posting => {
       return posting.postingStatus === "proposed";
     });
+    //make a new object from that posting
+    const editedPosting = { ...newPosting };
     const serialToRemove = newPosting && newPosting.serial;
-    newPosting.postingStatus = statusMessage;
+    editedPosting.postingStatus = statusMessage;
+    //add edited posting to the array
+    postedStaff.postings.push(editedPosting);
     //remove the old obj in the array
-    postedStaff.postings.filter(posting => {
-      return posting.serial !== serialToRemove;
+    const newpostingArray = postedStaff.postings.filter(posting => {
+      return (
+        posting.serial !== serialToRemove &&
+        posting.postingStatus === "proposed"
+      );
     });
 
-    postedStaff.postings.push(newPosting);
+    postedStaff.postings = [...newpostingArray];
     postedStaff.postingProposed = false;
     statusMessage === "approved" ? (postedStaff.currentPosting = newUnit) : "";
 
@@ -46,7 +54,7 @@ Meteor.methods({
       proposedPosting.save();
       postedStaff.save();
     } catch (error) {
-      throw new Meteor.Error(error);
+      throw new Meteor.Error(error.reason);
     }
   },
   "staffposting.proposeNewPosting": function StaffPostingmethod(posting) {

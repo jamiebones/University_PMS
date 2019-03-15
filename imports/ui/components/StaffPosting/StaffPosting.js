@@ -7,6 +7,11 @@ import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
 import { Bert } from "meteor/themeteorchef:bert";
 import moment from "moment";
+import {
+  FindMax,
+  FindTimeDifference,
+  SortPostingDuration
+} from "../../../modules/utilities";
 
 const Departments = [
   "SATS Personnel",
@@ -139,7 +144,8 @@ class StaffPosting extends React.Component {
       designation,
       salaryStructure,
       staffId,
-      currentPosting
+      currentPosting,
+      postings
     } = this.props.staffMember;
     const { department } = this.state;
     return (
@@ -163,10 +169,34 @@ class StaffPosting extends React.Component {
 
         <p>
           Current Department:
-          <span>{}</span>
+          <span>{currentPosting}</span>
         </p>
 
-        <p>Former Departments</p>
+        <p>
+          Time spent in current Unit :{" "}
+          <span>
+            {postings &&
+              postings.length &&
+              FindTimeDifference(
+                postings[FindMax(postings, "serial")].postingDate,
+                moment().format("MMMM DD YYYY")
+              )}
+          </span>
+        </p>
+
+        <div>
+          Former Departments:
+          {postings && postings.length
+            ? SortPostingDuration(postings).map(({ unit, duration }, index) => {
+                return (
+                  <p key={index}>
+                    {unit} : {duration}
+                    <br />
+                  </p>
+                );
+              })
+            : null}
+        </div>
 
         {this.state.selectedDept ? (
           <p>
