@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { Button, Col, Row, FormGroup } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Downshift from "downshift";
+import DatePicker from "react-datepicker";
+if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
+import { Bert } from "meteor/themeteorchef:bert";
+import moment from "moment";
 
 const Departments = [
   "SATS Personnel",
@@ -45,6 +49,9 @@ const StaffPostingStyles = styled.div`
     font-style: italic;
     color: darkolivegreen;
   }
+  button {
+    margin-top: 20px;
+  }
 `;
 
 class StaffPosting extends React.Component {
@@ -54,7 +61,9 @@ class StaffPosting extends React.Component {
       newUnit: "",
       unitFrom: "",
       department: Departments,
-      selectedDept: ""
+      selectedDept: "",
+      currentDept: "",
+      startDate: moment()
     };
     autoBind(this);
   }
@@ -64,11 +73,74 @@ class StaffPosting extends React.Component {
   }
 
   proposePosting(staffId) {
-    alert(staffId);
+    const biodata = this.props.staffMember.biodata;
+    const newDept = this.state.selectedDept;
+    let currentDept = this.props.staffMember.currentPosting || "";
+    const staffName = `${biodata.firstName} ${biodata.middleName} ${
+      biodata.surname
+    }`;
+    //if currentDept === "" or null
+    if (newDept === "") {
+      Bert.alert(
+        `Select the department you are posting ${staffName} to`,
+        "danger"
+      );
+      return;
+    }
+    if (currentDept == "") {
+      //we have a first posting
+      currentDept = "first posting";
+    }
+
+    const startingDate = moment(this.state.startDate).format("MMMM D YYYY");
+    const posting = {
+      staffId,
+      staffName,
+      unitFrom: currentDept,
+      newUnit: newDept,
+      startingDate
+    };
+
+    if (currentDept === newDept) {
+      Bert.alert(`${staffName} cannot be posted to the same department he is 
+                  currently in`);
+      return;
+    }
+
+    const confirmPostingDetails = confirm(`Please confirm the posting details:
+                                            Name : ${staffName}
+                                            Proposed Department: ${newDept}
+                                            Resumption Date: ${startingDate}
+                                        `);
+
+    if (confirmPostingDetails) {
+      //we go to save
+      Meteor.call(
+        "staffposting.proposeNewPosting",
+        posting,
+        (error, response) => {
+          if (!error) {
+            Bert.alert("Proposed posting successful", "success");
+          } else {
+            Bert.alert(`There was an error ${error}`, "danger");
+          }
+        }
+      );
+    }
+  }
+
+  handleChange(date) {
+    this.setState({ startDate: date });
   }
 
   render() {
-    const { biodata, designation, salaryStructure } = this.props.staffMember;
+    const {
+      biodata,
+      designation,
+      salaryStructure,
+      staffId,
+      currentPosting
+    } = this.props.staffMember;
     const { department } = this.state;
     return (
       <StaffPostingStyles>
@@ -171,6 +243,14 @@ class StaffPosting extends React.Component {
             )}
           </Downshift>
         </FormGroup>
+
+        <DatePicker
+          selected={this.state.startDate}
+          onChange={this.handleChange}
+          minDate={new Date()}
+          className="form-control"
+          placeholderText="Select a date for resumption"
+        />
 
         <FormGroup>
           <Button

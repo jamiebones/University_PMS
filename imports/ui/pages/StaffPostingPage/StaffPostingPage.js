@@ -105,7 +105,12 @@ class StaffPostingPage extends React.Component {
               })}
             </Col>
           </Row>
-        ) : null}
+        ) : (
+          <div>
+            <br />
+            <Alert bsStyle="info">No staff data</Alert>
+          </div>
+        )}
       </StaffPostingStyle>
     );
   }
@@ -116,7 +121,8 @@ let designationReactive = new ReactiveVar("");
 
 let query = {
   staffId: "",
-  designation: ""
+  designation: "",
+  postingProposed: { $exists: true, $eq: false }
 };
 
 export default (StaffPostingPageContainer = withTracker(() => {

@@ -2,6 +2,20 @@ import { Meteor } from "meteor/meteor";
 import { _ } from "meteor/underscore";
 import moment from "moment";
 
+export const FindMax = (arr, key) => {
+  if (arr.length) {
+    let highest = 0;
+    for (let i = 0; i < arr.length; i++) {
+      let currentItem = arr[i][key];
+      if (currentItem > highest) {
+        highest = currentItem;
+      }
+    }
+    return highest;
+  }
+  return 0;
+};
+
 export const Capitalize = word => {
   if (word) {
     return word.toUpperCase();

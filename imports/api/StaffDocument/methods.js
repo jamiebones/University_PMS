@@ -4,20 +4,7 @@ import rateLimit from "../../modules/rate-limit";
 import { StaffDocument } from "../../api/StaffDocument/StaffDocumentClass";
 import { StaffMember } from "../../api/StaffMember/StaffMemberClass";
 import { _ } from "meteor/underscore";
-
-const findMax = (arr, key) => {
-  if (arr.length) {
-    let highest = 0;
-    for (let i = 0; i < arr.length; i++) {
-      let currentItem = arr[i][key];
-      if (currentItem > highest) {
-        highest = currentItem;
-      }
-    }
-    return highest;
-  }
-  return 0;
-};
+import { FindMax } from "../../modules/utilities";
 
 Meteor.methods({
   "staffDocument.saveDocuments": function staffDocument(doc) {
@@ -30,7 +17,7 @@ Meteor.methods({
     const staff = StaffMember.findOne(query);
     let maxSerial;
     if (!_.isEmpty(staff)) {
-      maxSerial = findMax(staff.documents, "serial");
+      maxSerial = FindMax(staff.documents, "serial");
     }
     //save the documents first
     for (let i = 0; i < documents.length; i++) {

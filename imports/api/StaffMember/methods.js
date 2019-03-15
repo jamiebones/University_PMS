@@ -99,6 +99,7 @@ Meteor.methods({
                   staff.staffClass = "Senior Staff";
                 } else {
                   staff.staffType = "Non Academic Staff";
+                  staff.postingProposed = false;
                   if (GL && parseInt(GL) < 6) {
                     //we have a junior non teaching
                     staff.staffClass = "Junior Staff";

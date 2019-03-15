@@ -1,30 +1,34 @@
 import { Mongo } from "meteor/mongo";
 import { Class } from "meteor/jagi:astronomy";
 
-const Designations = new Mongo.Collection("designation");
+const StaffPostings = new Mongo.Collection("staffposting");
 
-Designations.allow({
+StaffPostings.allow({
   insert: () => false,
   update: () => false,
   remove: () => false
 });
 
-Designations.deny({
+StaffPostings.deny({
   insert: () => true,
   update: () => true,
   remove: () => true
 });
 
-const Designation = Class.create({
-  name: "Designations",
-  collection: Designations,
+const StaffPosting = Class.create({
+  name: "StaffPostings",
+  collection: StaffPostings,
   fields: {
-    rank: String,
-    type: {
+    staffId: String,
+    staffName: String,
+    unitFrom: {
       type: String,
       optional: true
-    }
+    },
+    newUnit: String,
+    status: String,
+    startingDate: String
   }
 });
 
-export { Designation, Designations };
+export { StaffPosting, StaffPostings };

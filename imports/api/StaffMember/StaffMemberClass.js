@@ -96,6 +96,16 @@ const Promotions = Class.create({
   }
 });
 
+const Postings = Class.create({
+  name: "Postings",
+  fields: {
+    unitName: String,
+    serial: Number,
+    postingDate: String,
+    postingStatus: String
+  }
+});
+
 const StaffMember = Class.create({
   name: "StaffMembers",
   collection: StaffMembers,
@@ -143,6 +153,13 @@ const StaffMember = Class.create({
         return [];
       }
     },
+    postings: {
+      type: [Postings],
+      optional: true,
+      default() {
+        return [];
+      }
+    },
     staffId: String,
     promotions: {
       type: [Promotions],
@@ -179,6 +196,10 @@ const StaffMember = Class.create({
     },
     postingProposed: {
       type: Boolean,
+      optional: true
+    },
+    currentPosting: {
+      type: String,
       optional: true
     }
   }

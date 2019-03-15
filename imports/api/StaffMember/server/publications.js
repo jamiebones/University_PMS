@@ -22,7 +22,8 @@ Meteor.publish(
 
     let query = {
       staffId: "",
-      designation: ""
+      designation: "",
+      postingProposed: { $exists: true, $eq: false }
     };
 
     if (staffId !== "") {
