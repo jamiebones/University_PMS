@@ -27,7 +27,8 @@ const StaffPosting = Class.create({
     },
     newUnit: String,
     status: String,
-    startingDate: String
+    startingDate: String,
+    dateofPosting: String
   }
 });
 

@@ -30,7 +30,6 @@ Meteor.methods({
       newDocument.dateAdded = new Date().toISOString();
       newDocument.documentSerial = maxSerial;
       const documentId = newDocument.save();
-      console.log(documentId);
       const docObj = {
         documentId,
         serial: maxSerial
