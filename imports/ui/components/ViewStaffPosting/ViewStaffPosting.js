@@ -26,7 +26,6 @@ class ViewStaffPosting extends React.Component {
 
   handlePostingStatus({ status, staffId, staffName, newUnit, _id }) {
     //confirm the approval
-    debugger;
     const confirmedPosting = confirm(
       `Are you sure, you want to ${status} the  posting of ${staffName} to ${newUnit}`
     );
@@ -70,7 +69,7 @@ class ViewStaffPosting extends React.Component {
                   {postings &&
                     postings.map(
                       (
-                        { staffId, staffName, unitFrom, newUnit, status, _id },
+                        { staffId, staffName, unitFrom, newUnit, _id },
                         index
                       ) => {
                         return (
@@ -92,7 +91,7 @@ class ViewStaffPosting extends React.Component {
                                     bsStyle="success"
                                     onClick={() =>
                                       this.handlePostingStatus({
-                                        status: "approve",
+                                        status: "2",
                                         staffId,
                                         staffName,
                                         newUnit,
@@ -106,7 +105,7 @@ class ViewStaffPosting extends React.Component {
                                     bsStyle="info"
                                     onClick={() =>
                                       this.handlePostingStatus({
-                                        status: "cancel",
+                                        status: "3",
                                         staffId,
                                         staffName,
                                         newUnit,

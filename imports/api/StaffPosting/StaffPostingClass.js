@@ -28,7 +28,8 @@ const StaffPosting = Class.create({
     newUnit: String,
     status: String,
     startingDate: String,
-    dateofPosting: String
+    dateofPosting: String,
+    previousPostings: []
   }
 });
 

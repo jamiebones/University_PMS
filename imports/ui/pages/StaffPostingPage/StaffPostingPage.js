@@ -103,6 +103,7 @@ class StaffPostingPage extends React.Component {
                   </Col>
                 );
               })}
+              <div className="clearfix" />
             </Col>
           </Row>
         ) : (

@@ -59,7 +59,14 @@ Meteor.methods({
   },
   "staffposting.proposeNewPosting": function StaffPostingmethod(posting) {
     check(posting, Object);
-    const { staffId, staffName, unitFrom, newUnit, startingDate } = posting;
+    const {
+      staffId,
+      staffName,
+      unitFrom,
+      newUnit,
+      startingDate,
+      previousPostings
+    } = posting;
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
     const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
     if (!_.isEmpty(postedStaff)) {
@@ -69,9 +76,10 @@ Meteor.methods({
       newPosting.staffName = staffName;
       newPosting.unitFrom = unitFrom;
       newPosting.newUnit = newUnit;
-      newPosting.status = "proposed";
+      newPosting.status = "1";
       newPosting.startingDate = startingDate;
       newPosting.dateofPosting = new Date().toISOString();
+      newPosting.previousPostings = previousPostings;
       try {
         newPosting.save();
         let postingSerial = FindMax(postedStaff.postings, "serial");
@@ -79,7 +87,7 @@ Meteor.methods({
           unitName: newUnit,
           serial: postingSerial++,
           postingDate: startingDate,
-          postingStatus: "proposed"
+          postingStatus: "1"
         };
         postedStaff.postings.push(postingObj);
         postedStaff.postingProposed = true;

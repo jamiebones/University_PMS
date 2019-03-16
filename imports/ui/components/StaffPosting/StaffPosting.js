@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, FormGroup } from "react-bootstrap";
+import { Button, Col, Row, FormGroup, Label } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Downshift from "downshift";
 import DatePicker from "react-datepicker";
@@ -51,8 +51,12 @@ const StaffPostingStyles = styled.div`
   }
   span {
     padding: 5px;
+    margin: 5px;
     font-style: italic;
     color: darkolivegreen;
+  }
+  .formerDept {
+    padding: 15px;
   }
   button {
     margin-top: 20px;
@@ -78,12 +82,13 @@ class StaffPosting extends React.Component {
   }
 
   proposePosting(staffId) {
-    const biodata = this.props.staffMember.biodata;
+    const { biodata, postings, currentPosting } = this.props.staffMember;
     const newDept = this.state.selectedDept;
-    let currentDept = this.props.staffMember.currentPosting || "";
+    let currentDept = currentPosting || "";
     const staffName = `${biodata.firstName} ${biodata.middleName} ${
       biodata.surname
     }`;
+    const previousPostings = postings || [];
     //if currentDept === "" or null
     if (newDept === "") {
       Bert.alert(
@@ -103,7 +108,8 @@ class StaffPosting extends React.Component {
       staffName,
       unitFrom: currentDept,
       newUnit: newDept,
-      startingDate
+      startingDate,
+      previousPostings
     };
 
     if (currentDept === newDept) {
@@ -168,8 +174,13 @@ class StaffPosting extends React.Component {
         </p>
 
         <p>
-          Current Department:
-          <span>{currentPosting}</span>
+          Current Department:{" "}
+          {currentPosting ? (
+            <Label bsStyle="success" bsSize="small">
+              {" "}
+              <span>{currentPosting}</span>
+            </Label>
+          ) : null}
         </p>
 
         <p>
@@ -186,16 +197,20 @@ class StaffPosting extends React.Component {
 
         <div>
           Former Departments:
-          {postings && postings.length
-            ? SortPostingDuration(postings).map(({ unit, duration }, index) => {
-                return (
-                  <p key={index}>
-                    {unit} : {duration}
-                    <br />
-                  </p>
-                );
-              })
-            : null}
+          <div className="formerDept">
+            {postings && postings.length
+              ? SortPostingDuration(postings).map(
+                  ({ unit, duration }, index) => {
+                    return (
+                      <p key={index}>
+                        {unit} : {duration}
+                        <br />
+                      </p>
+                    );
+                  }
+                )
+              : null}
+          </div>
         </div>
 
         {this.state.selectedDept ? (
