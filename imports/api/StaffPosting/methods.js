@@ -7,50 +7,78 @@ import { _ } from "meteor/underscore";
 import { FindMax } from "../../modules/utilities";
 
 Meteor.methods({
-  "staffposting.approveorcancelposting": function StaffPostingmethod(
+  "staffposting.approveorcancelpostingDirector": function StaffPostingmethod(
     status,
     staffId,
-    newUnit,
     _id
   ) {
-    debugger;
     check(status, String);
     check(staffId, String);
-    check(newUnit, String);
     check(_id, String);
-    let statusMessage = "";
-    status === "approve"
-      ? (statusMessage = "approved")
-      : (statusMessage = "cancelled");
-    //get the staff object
+    const proposedPosting = StaffPosting.findOne(_id);
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
     const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
-    //find the current posting with status proposed
+    proposedPosting.status = status;
+    //getting the posting with a status of proposed
     const newPosting = postedStaff.postings.find(posting => {
-      return posting.postingStatus === "proposed";
+      return posting.postingStatus === "1";
     });
-    //make a new object from that posting
+    //saving the posting in a new object
+    //so as we don't mutate the object
     const editedPosting = { ...newPosting };
     const serialToRemove = newPosting && newPosting.serial;
-    editedPosting.postingStatus = statusMessage;
+    editedPosting.postingStatus = status;
     //add edited posting to the array
     postedStaff.postings.push(editedPosting);
     //remove the old obj in the array
     const newpostingArray = postedStaff.postings.filter(posting => {
-      return (
-        posting.serial !== serialToRemove &&
-        posting.postingStatus === "proposed"
-      );
+      return posting.serial !== serialToRemove && posting.postingStatus === "1";
     });
-
     postedStaff.postings = [...newpostingArray];
-    postedStaff.postingProposed = false;
-    statusMessage === "approved" ? (postedStaff.currentPosting = newUnit) : "";
-
-    //let's fix the posting object
-    const proposedPosting = StaffPosting.findOne(_id);
-    proposedPosting.status = statusMessage;
     try {
+      if (status === "3") {
+        //posting proposal was rejected by the director
+        postedStaff.postingProposed = false;
+      }
+      proposedPosting.save();
+      postedStaff.save();
+    } catch (error) {
+      throw new Meteor.Error(error.reason);
+    }
+  },
+  "staffposting.approveorcancelpostingRegistrar": function StaffPostingmethod(
+    status,
+    staffId,
+    _id
+  ) {
+    check(status, String);
+    check(staffId, String);
+    check(_id, String);
+    const proposedPosting = StaffPosting.findOne(_id);
+    const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
+    const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
+    proposedPosting.status = status;
+    //getting the posting with a status of proposed
+    const newPosting = postedStaff.postings.find(posting => {
+      return posting.postingStatus === "1";
+    });
+    //saving the posting in a new object
+    //so as we don't mutate the object
+    const editedPosting = { ...newPosting };
+    const serialToRemove = newPosting && newPosting.serial;
+    editedPosting.postingStatus = status;
+    //add edited posting to the array
+    postedStaff.postings.push(editedPosting);
+    //remove the old obj in the array
+    const newpostingArray = postedStaff.postings.filter(posting => {
+      return posting.serial !== serialToRemove && posting.postingStatus === "1";
+    });
+    postedStaff.postings = [...newpostingArray];
+    try {
+      if (status === "3") {
+        //posting proposal was rejected by the director
+        postedStaff.postingProposed = false;
+      }
       proposedPosting.save();
       postedStaff.save();
     } catch (error) {
@@ -65,7 +93,8 @@ Meteor.methods({
       unitFrom,
       newUnit,
       startingDate,
-      previousPostings
+      previousPostings,
+      designation
     } = posting;
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
     const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
@@ -80,6 +109,7 @@ Meteor.methods({
       newPosting.startingDate = startingDate;
       newPosting.dateofPosting = new Date().toISOString();
       newPosting.previousPostings = previousPostings;
+      newPosting.designation = designation;
       try {
         newPosting.save();
         let postingSerial = FindMax(postedStaff.postings, "serial");

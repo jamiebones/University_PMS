@@ -82,7 +82,12 @@ class StaffPosting extends React.Component {
   }
 
   proposePosting(staffId) {
-    const { biodata, postings, currentPosting } = this.props.staffMember;
+    const {
+      biodata,
+      postings,
+      currentPosting,
+      designation
+    } = this.props.staffMember;
     const newDept = this.state.selectedDept;
     let currentDept = currentPosting || "";
     const staffName = `${biodata.firstName} ${biodata.middleName} ${
@@ -106,6 +111,7 @@ class StaffPosting extends React.Component {
     const posting = {
       staffId,
       staffName,
+      designation,
       unitFrom: currentDept,
       newUnit: newDept,
       startingDate,

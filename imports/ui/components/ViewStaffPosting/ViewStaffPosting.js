@@ -14,8 +14,20 @@ import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
 import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
+import { SortPostingDuration } from "../../../modules/utilities";
+import moment from "moment";
 
-const ViewStaffPostingStyles = styled.div``;
+const ViewStaffPostingStyles = styled.div`
+  .formerDept {
+    padding: 5px;
+  }
+  span {
+    padding: 5px;
+    margin: 5px;
+    font-style: italic;
+    color: darkolivegreen;
+  }
+`;
 
 class ViewStaffPosting extends React.Component {
   constructor(props) {
@@ -32,7 +44,7 @@ class ViewStaffPosting extends React.Component {
 
     if (!confirmedPosting) return;
     Meteor.call(
-      "staffposting.approveorcancelposting",
+      "staffposting.approveorcancelpostingDirector",
       status,
       staffId,
       newUnit,
@@ -60,28 +72,66 @@ class ViewStaffPosting extends React.Component {
                   <tr>
                     <th>S/N</th>
                     <th>Name</th>
+                    <th>Designation</th>
+                    <th>Previous Postings</th>
                     <th>Current Department</th>
                     <th>Proposed Department</th>
                     <th>Resumption Date</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {postings &&
                     postings.map(
                       (
-                        { staffId, staffName, unitFrom, newUnit, _id },
+                        {
+                          staffId,
+                          staffName,
+                          unitFrom,
+                          newUnit,
+                          _id,
+                          previousPostings,
+                          startingDate,
+                          designation
+                        },
                         index
                       ) => {
                         return (
                           <tr key={index}>
+                            <td>{index + 1}</td>
                             <td>
                               <p>{staffName}</p>
+                            </td>
+                            <td>
+                              <p>{designation}</p>
+                            </td>
+                            <td>
+                              <div>
+                                <div className="formerDept">
+                                  {previousPostings && previousPostings.length
+                                    ? SortPostingDuration(previousPostings).map(
+                                        ({ unit, duration }, index) => {
+                                          return (
+                                            <span key={index}>
+                                              {unit} : {duration}
+                                              <br />
+                                            </span>
+                                          );
+                                        }
+                                      )
+                                    : null}
+                                </div>
+                              </div>
                             </td>
                             <td>
                               <p>{unitFrom}</p>
                             </td>
                             <td>
                               <p>{newUnit}</p>
+                            </td>
+
+                            <td>
+                              {moment(startingDate).format("MMMM DD YYYY")}
                             </td>
 
                             <td>
@@ -142,6 +192,6 @@ export default (ViewStaffPostingContainer = withTracker(() => {
 
   return {
     loading: subscription && !subscription.ready(),
-    postings: StaffPostings.find({ status: "proposed" }).fetch()
+    postings: StaffPostings.find({ status: "1" }).fetch()
   };
 })(ViewStaffPosting));

@@ -5,6 +5,6 @@ import { StaffPostings } from "../StaffPostingClass";
 Meteor.publish(
   "staffposting.getProposedPosting",
   function StaffMembersPublication() {
-    return StaffPostings.find({ status: "proposed" });
+    return StaffPostings.find({ status: "1" });
   }
 );

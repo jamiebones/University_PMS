@@ -15,11 +15,22 @@ StaffPostings.deny({
   remove: () => true
 });
 
+const Postings = Class.create({
+  name: "Postings",
+  fields: {
+    unitName: String,
+    serial: Number,
+    postingDate: String,
+    postingStatus: String
+  }
+});
+
 const StaffPosting = Class.create({
   name: "StaffPostings",
   collection: StaffPostings,
   fields: {
     staffId: String,
+    designation: String,
     staffName: String,
     unitFrom: {
       type: String,
@@ -29,7 +40,13 @@ const StaffPosting = Class.create({
     status: String,
     startingDate: String,
     dateofPosting: String,
-    previousPostings: []
+    previousPostings: {
+      type: [Postings],
+      optional: true,
+      default() {
+        return [];
+      }
+    }
   }
 });
 

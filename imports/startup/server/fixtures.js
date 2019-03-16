@@ -1,117 +1,60 @@
-  import { Meteor } from 'meteor/meteor';
-  import { Roles } from 'meteor/alanning:roles';
-  import { Accounts } from 'meteor/accounts-base';
- 
+import { Meteor } from "meteor/meteor";
+import { Roles } from "meteor/alanning:roles";
+import { Accounts } from "meteor/accounts-base";
 
-  //production app creates a user which is me of course.
-  if (Meteor.isProduction ){
-        const adminUser = {
-      email : Meteor.settings.private.AdminEmail,
-      password : Meteor.settings.private.AdminPassword,
-      profile : {
-        name : {first : 'James' , last : 'Oshomah'},
-        title : 'Mr',
-      },
-      //roles : ['admin'],
+//production app creates a user which is me of course.
+if (Meteor.isProduction) {
+  const adminUser = {
+    email: Meteor.settings.private.AdminEmail,
+    password: Meteor.settings.private.AdminPassword,
+    profile: {
+      name: { first: "James", last: "Oshomah" },
+      title: "Mr"
     }
-    const userExists = Meteor.users.findOne({ 'emails.address': adminUser.email });
-    if (!userExists) {
-        const {email , password , profile } = adminUser;
-        const userId = Accounts.createUser({ email, password, profile });
-        Roles.addUsersToRoles(userId, 'super-admin', Roles.GLOBAL_GROUP)
-        //Roles.addUsersToRoles(userId, roles);
-    }
+    //roles : ['admin'],
+  };
+  const userExists = Meteor.users.findOne({
+    "emails.address": adminUser.email
+  });
+  if (!userExists) {
+    const { email, password, profile } = adminUser;
+    const userId = Accounts.createUser({ email, password, profile });
+    Roles.addUsersToRoles(userId, "super-admin", Roles.GLOBAL_GROUP);
+    //Roles.addUsersToRoles(userId, roles);
   }
+}
 
-  if (!Meteor.isProduction) {
-    const users = [{
-      email: 'admin@admin.com',
-      password: 'password',
-      profile: {
-        name: { first: 'Carl', last: 'Winslow' },
-        title : 'Dr',
-      },
-      roles: ['super-admin'],
-      group : Roles.GLOBAL_GROUP
-    },
-    
+if (!Meteor.isProduction) {
+  const users = [
     {
-      email: 'reviewer@admin.com',
-      password: 'password',
+      email: "records@admin.com",
+      password: "password",
       profile: {
-        name: { first: 'Jamie', last: 'Foster' },
-        title : 'Dr',
+        name: { first: "Carl", last: "Winslow" },
+        title: "Dr"
       },
-      roles: ['reviewer'],
-      group : 'editors'
-    },
-
-
-    {
-      email: 'editor@admin.com',
-      password: 'password',
-      profile: {
-        name: { first: 'Jamie', last: 'Foster' },
-        title : 'Prof',
-      },
-      roles: ['editor-in-chief'],
-      group : 'editors'
+      roles: ["canAddRecords", "canUpdateRecords", "canViewRecords"],
+      group: "Records"
     },
 
     {
-      email: 'user@admin.com',
-      password: 'password',
+      email: "sats@admin.com",
+      password: "password",
       profile: {
-        name: { first: 'Jamiebones', last: 'MegaEditor' },
-        title : 'Mr',
+        name: { first: "Jamie", last: "Foster" },
+        title: "Dr"
       },
-      roles: ['user'],
-      group : 'author'
-    },
+      roles: ["canPost", "canViewRecords"],
+      group: "SATS"
+    }
+  ];
 
-    {
-      email: 'user2@admin.com',
-      password: 'password',
-      profile: {
-        name: { first: 'Jami', last: 'Mega' },
-        title : 'Mr',
-      },
-      roles: ['user'],
-      group : 'author',
-    },
-
-    {
-      email: 'editor1@admin.com',
-      password: 'password',
-      profile: {
-        name: { first: 'Foster', last: 'Hankesen' },
-        title : 'Dr',
-      },
-      roles: ['editor'],
-      group : 'editors',
-    },
-
-    ];
-
-    users.forEach(({ email, password, profile, roles , group }) => {
-    const userExists = Meteor.users.findOne({ 'emails.address': email });
+  users.forEach(({ email, password, profile, roles, group }) => {
+    const userExists = Meteor.users.findOne({ "emails.address": email });
 
     if (!userExists) {
-        const userId = Accounts.createUser({ email, password, profile });
-        Roles.addUsersToRoles(userId, roles , group);
+      const userId = Accounts.createUser({ email, password, profile });
+      Roles.addUsersToRoles(userId, roles, group);
     }
   });
-
-
-
-
-
-
-   
-    
-  }
-
-
-
-
-
+}
