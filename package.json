@@ -1,5 +1,5 @@
 {
-  "name": "ranking_software",
+  "name": "University_Personnel_Mgt_System",
   "private": true,
   "scripts": {
     "start": "meteor --settings settings-development.json",
@@ -14,11 +14,12 @@
     "accounting-js": "^1.1.1",
     "animate.css": "^3.5.2",
     "aws-sdk": "^2.186.0",
+    "bcrypt": "^3.0.4",
     "classnames": "^2.2.6",
     "crypto-js": "^3.1.9-1",
     "downshift": "^2.1.5",
     "file-saver": "^2.0.0",
-    "handlebars": "^4.0.11",
+    "handlebars": "^4.1.1",
     "html-pdf": "^2.2.0",
     "html-to-draftjs": "^1.4.0",
     "hummus": "^1.0.90",
@@ -30,7 +31,7 @@
     "juice": "^4.2.2",
     "meteor-node-stubs": "^0.4.1",
     "mup-disk": "^0.2.0",
-    "node-pre-gyp": "^0.6.39",
+    "node-pre-gyp": "^0.12.0",
     "pica": "^5.0.0",
     "prop-types": "^15.7.2",
     "query-string": "^5.0.1",
@@ -60,7 +61,7 @@
     "read-excel-file": "^2.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "request": "^2.85.0",
+    "request": "^2.88.0",
     "sharp": "^0.21.3",
     "simpl-schema": "^1.4.1",
     "store": "^2.0.12",
@@ -73,7 +74,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "enzyme": "^3.3.0",
-    "eslint": "^5.2.0",
+    "eslint": "^5.15.2",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
@@ -109,13 +110,7 @@
       "no-underscore-dangle": [
         "error",
         {
-          "allow": [
-            "_id",
-            "_ensureIndex",
-            "_verifyEmailToken",
-            "_resetPasswordToken",
-            "_name"
-          ]
+          "allow": []
         }
       ],
       "class-methods-use-this": 0,

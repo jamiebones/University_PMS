@@ -24,17 +24,20 @@ export const SortPostingDuration = pArray => {
     let postingArray = [];
     for (let i = 0; i < arr.length; i++) {
       const posting = arr[i];
-      const startDate = posting.postingDate;
-      let endDate = moment().format("MMMM DD YYYY");
-      if (i + 1 !== arr.length) {
-        endDate = arr[i + 1].postingDate;
+      if (posting.postingStatus == "4") {
+        const startDate = posting.postingDate;
+        let endDate = moment().format("MMMM DD YYYY");
+        if (i + 1 !== arr.length) {
+          endDate = arr[i + 1].postingDate;
+        }
+        const duration = FindTimeDifference(startDate, endDate);
+        const obj = {
+          unit: posting.unitName,
+          duration
+        };
+        postingArray.push(obj);
       }
-      const duration = FindTimeDifference(startDate, endDate);
-      const obj = {
-        unit: posting.unitName,
-        duration
-      };
-      postingArray.push(obj);
+      continue;
     }
     return postingArray;
   }
@@ -45,10 +48,14 @@ export const FindTimeDifference = (startTime, endTime) => {
   let start = moment(endTime);
   let end = moment(startTime);
   //Difference in number of days
-  const days = moment.duration(start.diff(end)).humanize();
-  const months = moment.duration(start.diff(end)).asMonths();
-  const years = moment.duration(start.diff(end)).asYears();
-  return `${days}`;
+  const diffDuration = moment.duration(start.diff(end));
+  let years = diffDuration.years();
+  let months = diffDuration.months();
+  let days = diffDuration.days();
+  years = years && `${years} year(s)`;
+  months = months && `${months} month(s)`;
+  days = days && `${days} day(s)`;
+  return `${years} ${months} ${days}`;
 };
 
 export const Capitalize = word => {

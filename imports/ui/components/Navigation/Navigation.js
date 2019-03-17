@@ -128,7 +128,7 @@ const Navigation = props => (
         <Navbar.Header>
           <Navbar.Brand>
             <Link to="/" className="navbar-brand">
-              Erudite Bookshop/Course ware
+              Personnel Management System
             </Link>
           </Navbar.Brand>
           <Navbar.Toggle />

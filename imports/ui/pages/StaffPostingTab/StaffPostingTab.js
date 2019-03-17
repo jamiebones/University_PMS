@@ -6,7 +6,8 @@ import { Tabs, Tab, Row, Col } from "react-bootstrap";
 //import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import StaffPostingPage from "../../pages/StaffPostingPage/StaffPostingPage";
-import ViewPostingPage from "../../components/ViewStaffPosting/ViewStaffPosting";
+import DirectorViewPosting from "../../pages/DirectorViewStaffPosting/DirectorViewStaffPosting";
+import ApprovedPosting from "../../components/ApprovedPostings/ApprovedPostings";
 import { Meteor } from "meteor/meteor";
 
 const StaffPostingHeader = styled.h4`
@@ -53,7 +54,15 @@ class StaffPostingTab extends React.Component {
               <Tab eventKey="approvePosting" title="Approve/Cancel Posting">
                 <Row>
                   <Col md={12}>
-                    <ViewPostingPage />
+                    <DirectorViewPosting />
+                  </Col>
+                </Row>
+              </Tab>
+
+              <Tab eventKey="postingApproved" title="Approved list">
+                <Row>
+                  <Col md={12}>
+                    <ApprovedPosting />
                   </Col>
                 </Row>
               </Tab>

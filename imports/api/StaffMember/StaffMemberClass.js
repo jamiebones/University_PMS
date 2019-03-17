@@ -205,4 +205,4 @@ const StaffMember = Class.create({
   }
 });
 
-export { StaffMember, StaffMembers };
+export { StaffMember, StaffMembers, Postings };

@@ -6,6 +6,7 @@ import Authorized from "../../components/Authorized/Authorized";
 import AddStaffDocuments from "../../pages/AddStaffDocuments/AddStaffDocuments";
 import StaffPosting from "../../pages/StaffPostingPage/StaffPostingPage";
 import StaffPostingTab from "../../pages/StaffPostingTab/StaffPostingTab";
+import RegistrarViewPosting from "../../pages/RegistrarViewPosting/RegistrarViewPosting";
 import NotFound from "../../pages/NotFound/NotFound";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
@@ -29,8 +30,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               group="canEditRecords"
               userId={userId}
               exact
-              path={`${match.path}/propose_staff_posting`}
-              component={StaffPosting}
+              path={`${match.path}/staff_posting`}
+              component={StaffPostingTab}
               {...rest}
             />
 
@@ -39,8 +40,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               group="canEditRecords"
               userId={userId}
               exact
-              path={`${match.path}/staff_posting`}
-              component={StaffPostingTab}
+              path={`${match.path}/registrar/staff_posting`}
+              component={RegistrarViewPosting}
               {...rest}
             />
 

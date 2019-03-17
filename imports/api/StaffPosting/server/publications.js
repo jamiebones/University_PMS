@@ -8,3 +8,17 @@ Meteor.publish(
     return StaffPostings.find({ status: "1" });
   }
 );
+
+Meteor.publish(
+  "staffposting.getDirectorApprovedPosting",
+  function StaffMembersPublication() {
+    return StaffPostings.find({ status: "2" });
+  }
+);
+
+Meteor.publish(
+  "staffposting.getApprovedPosting",
+  function StaffMembersPublication() {
+    return StaffPostings.find({ status: "4" });
+  }
+);

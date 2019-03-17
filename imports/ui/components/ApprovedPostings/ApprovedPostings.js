@@ -17,7 +17,7 @@ import { withTracker } from "meteor/react-meteor-data";
 import { SortPostingDuration } from "../../../modules/utilities";
 import moment from "moment";
 
-const ViewStaffPostingStyles = styled.div`
+const StaffPostingApprovalStyles = styled.div`
   .formerDept {
     padding: 5px;
   }
@@ -29,7 +29,7 @@ const ViewStaffPostingStyles = styled.div`
   }
 `;
 
-class ViewStaffPosting extends React.Component {
+class StaffPostingApproval extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -44,7 +44,7 @@ class ViewStaffPosting extends React.Component {
 
     if (!confirmedPosting) return;
     Meteor.call(
-      "staffposting.approveorcancelpostingDirector",
+      "staffposting.approveorcancelposting",
       status,
       staffId,
       newUnit,
@@ -53,7 +53,7 @@ class ViewStaffPosting extends React.Component {
         if (!error) {
           Bert.alert(`Successful!`, "success");
         } else {
-          Bert.alert(`${error}, 'danger`);
+          Bert.alert(`${error}`, "danger");
         }
       }
     );
@@ -63,7 +63,7 @@ class ViewStaffPosting extends React.Component {
     const { postings, loading } = this.props;
 
     return (
-      <ViewStaffPostingStyles>
+      <StaffPostingApprovalStyles>
         <Row>
           <Col md={12}>
             {!loading ? (
@@ -73,11 +73,9 @@ class ViewStaffPosting extends React.Component {
                     <th>S/N</th>
                     <th>Name</th>
                     <th>Designation</th>
-                    <th>Previous Postings</th>
                     <th>Current Department</th>
-                    <th>Proposed Department</th>
+                    <th> Posted To</th>
                     <th>Resumption Date</th>
-                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,24 +103,7 @@ class ViewStaffPosting extends React.Component {
                             <td>
                               <p>{designation}</p>
                             </td>
-                            <td>
-                              <div>
-                                <div className="formerDept">
-                                  {previousPostings && previousPostings.length
-                                    ? SortPostingDuration(previousPostings).map(
-                                        ({ unit, duration }, index) => {
-                                          return (
-                                            <span key={index}>
-                                              {unit} : {duration}
-                                              <br />
-                                            </span>
-                                          );
-                                        }
-                                      )
-                                    : null}
-                                </div>
-                              </div>
-                            </td>
+
                             <td>
                               <p>{unitFrom}</p>
                             </td>
@@ -132,41 +113,6 @@ class ViewStaffPosting extends React.Component {
 
                             <td>
                               {moment(startingDate).format("MMMM DD YYYY")}
-                            </td>
-
-                            <td>
-                              <ButtonToolbar>
-                                <ButtonGroup bsSize="xsmall">
-                                  <Button
-                                    bsStyle="success"
-                                    onClick={() =>
-                                      this.handlePostingStatus({
-                                        status: "2",
-                                        staffId,
-                                        staffName,
-                                        newUnit,
-                                        _id
-                                      })
-                                    }
-                                  >
-                                    Approved
-                                  </Button>
-                                  <Button
-                                    bsStyle="info"
-                                    onClick={() =>
-                                      this.handlePostingStatus({
-                                        status: "3",
-                                        staffId,
-                                        staffName,
-                                        newUnit,
-                                        _id
-                                      })
-                                    }
-                                  >
-                                    Cancelled
-                                  </Button>
-                                </ButtonGroup>
-                              </ButtonToolbar>
                             </td>
                           </tr>
                         );
@@ -179,7 +125,7 @@ class ViewStaffPosting extends React.Component {
             )}
           </Col>
         </Row>
-      </ViewStaffPostingStyles>
+      </StaffPostingApprovalStyles>
     );
   }
 }
@@ -187,11 +133,14 @@ class ViewStaffPosting extends React.Component {
 export default (ViewStaffPostingContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
-    subscription = Meteor.subscribe("staffposting.getProposedPosting");
+    subscription = Meteor.subscribe("staffposting.getApprovedPosting");
   }
 
   return {
     loading: subscription && !subscription.ready(),
-    postings: StaffPostings.find({ status: "1" }).fetch()
+    postings: StaffPostings.find(
+      { status: "4" },
+      { sort: { designation: 1 } }
+    ).fetch()
   };
-})(ViewStaffPosting));
+})(StaffPostingApproval));

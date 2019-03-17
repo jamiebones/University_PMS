@@ -7,13 +7,15 @@ import { _ } from "meteor/underscore";
 import { FindMax } from "../../modules/utilities";
 
 Meteor.methods({
-  "staffposting.approveorcancelpostingDirector": function StaffPostingmethod(
+  "staffposting.approveorcancelposting": function StaffPostingmethod(
     status,
     staffId,
+    newUnit,
     _id
   ) {
     check(status, String);
     check(staffId, String);
+    check(newUnit, String);
     check(_id, String);
     const proposedPosting = StaffPosting.findOne(_id);
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
@@ -36,9 +38,12 @@ Meteor.methods({
     });
     postedStaff.postings = [...newpostingArray];
     try {
-      if (status === "3") {
+      if (status === "3" || status === "5") {
         //posting proposal was rejected by the director
+        postedStaff.postingProposed = true;
+      } else if (status === "4") {
         postedStaff.postingProposed = false;
+        postedStaff.currentPosting = newUnit;
       }
       proposedPosting.save();
       postedStaff.save();
@@ -46,45 +51,7 @@ Meteor.methods({
       throw new Meteor.Error(error.reason);
     }
   },
-  "staffposting.approveorcancelpostingRegistrar": function StaffPostingmethod(
-    status,
-    staffId,
-    _id
-  ) {
-    check(status, String);
-    check(staffId, String);
-    check(_id, String);
-    const proposedPosting = StaffPosting.findOne(_id);
-    const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
-    const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
-    proposedPosting.status = status;
-    //getting the posting with a status of proposed
-    const newPosting = postedStaff.postings.find(posting => {
-      return posting.postingStatus === "1";
-    });
-    //saving the posting in a new object
-    //so as we don't mutate the object
-    const editedPosting = { ...newPosting };
-    const serialToRemove = newPosting && newPosting.serial;
-    editedPosting.postingStatus = status;
-    //add edited posting to the array
-    postedStaff.postings.push(editedPosting);
-    //remove the old obj in the array
-    const newpostingArray = postedStaff.postings.filter(posting => {
-      return posting.serial !== serialToRemove && posting.postingStatus === "1";
-    });
-    postedStaff.postings = [...newpostingArray];
-    try {
-      if (status === "3") {
-        //posting proposal was rejected by the director
-        postedStaff.postingProposed = false;
-      }
-      proposedPosting.save();
-      postedStaff.save();
-    } catch (error) {
-      throw new Meteor.Error(error.reason);
-    }
-  },
+
   "staffposting.proposeNewPosting": function StaffPostingmethod(posting) {
     check(posting, Object);
     const {
