@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, FormGroup, Label } from "react-bootstrap";
+import { Button, Col, Row, FormGroup, Label, Image } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Downshift from "downshift";
 import DatePicker from "react-datepicker";
@@ -30,9 +30,12 @@ const Departments = [
 ];
 
 const StaffPostingStyles = styled.div`
+  .postingdiv: {
+    margin: 2px solid red;
+  }
   .downshift-dropdown {
     margin-left: 0.5px;
-    width: 60%;
+    width: 50%;
     border: 1px solid whitesmoke;
     border-bottom: none;
   }
@@ -56,10 +59,13 @@ const StaffPostingStyles = styled.div`
     color: darkolivegreen;
   }
   .formerDept {
-    padding: 15px;
+    padding: 5px;
   }
   button {
     margin-top: 20px;
+  }
+  #deptInput {
+    width: 60%;
   }
 `;
 
@@ -107,7 +113,7 @@ class StaffPosting extends React.Component {
       currentDept = "first posting";
     }
 
-    const startingDate = moment(this.state.startDate).format("MMMM D YYYY");
+    const startingDate = moment(this.state.startDate).toISOString();
     const posting = {
       staffId,
       staffName,
@@ -162,158 +168,182 @@ class StaffPosting extends React.Component {
     const { department } = this.state;
     return (
       <StaffPostingStyles>
-        <p>
-          Name:
-          <span>
-            {biodata && biodata.firstName} {biodata && biodata.middleName}{" "}
-            {biodata && biodata.surname}
-          </span>
-        </p>
+        <Row>
+          <Col md={8}>
+            <div className="postingdiv">
+              <p>
+                Name:
+                <span>
+                  {biodata && biodata.firstName} {biodata && biodata.middleName}{" "}
+                  {biodata && biodata.surname}
+                </span>
+              </p>
 
-        <p>
-          Designation:<span>{designation}</span>
-        </p>
+              <p>
+                Designation:<span>{designation}</span>
+              </p>
 
-        <p>
-          Salary Level:
-          <span>{salaryStructure}</span>
-        </p>
+              <p>
+                Salary Level:
+                <span>{salaryStructure}</span>
+              </p>
 
-        <p>
-          Current Department:{" "}
-          {currentPosting ? (
-            <Label bsStyle="success" bsSize="small">
-              {" "}
-              <span>{currentPosting}</span>
-            </Label>
-          ) : null}
-        </p>
-
-        <p>
-          Time spent in current Unit :{" "}
-          <span>
-            {postings &&
-              postings.length &&
-              FindTimeDifference(
-                postings[FindMax(postings, "serial")].postingDate,
-                moment().format("MMMM DD YYYY")
-              )}
-          </span>
-        </p>
-
-        <div>
-          Former Departments:
-          <div className="formerDept">
-            {postings && postings.length
-              ? SortPostingDuration(postings).map(
-                  ({ unit, duration }, index) => {
-                    return (
-                      <p key={index}>
-                        {unit} : {duration}
-                        <br />
-                      </p>
-                    );
-                  }
-                )
-              : null}
-          </div>
-        </div>
-
-        {this.state.selectedDept ? (
-          <p>
-            Proposed department : <span>{this.state.selectedDept}</span>
-          </p>
-        ) : null}
-
-        <FormGroup>
-          <Downshift
-            onChange={this.onChange}
-            itemToString={department => (department ? `${department}` : "")}
-          >
-            {({
-              getInputProps,
-              getItemProps,
-              isOpen,
-              inputValue,
-              highlightedIndex,
-              selectedItem,
-              getLabelProps
-            }) => (
-              <div>
-                <label
-                  style={{ marginTop: "1rem", display: "block" }}
-                  {...getLabelProps()}
-                >
-                  Select a Department/Unit
-                </label>
-
-                <input
-                  {...getInputProps({
-                    placeholder: "Search department..."
-                  })}
-                  className="form-control"
-                  id="deptInput"
-                />
-
-                {isOpen ? (
-                  <div className="downshift-dropdown">
-                    {// filter the books and return items that match the inputValue
-                    department &&
-                      department
-                        .filter(
-                          item =>
-                            !inputValue ||
-                            item
-                              .toLowerCase()
-                              .includes(inputValue.toLowerCase())
-                        )
-                        // map the return value and return a div
-                        .map((item, index) => (
-                          <div
-                            className="dropdown-item"
-                            {...getItemProps({
-                              key: item,
-                              index,
-                              item
-                            })}
-                            style={{
-                              backgroundColor:
-                                highlightedIndex === index
-                                  ? "lightgray"
-                                  : "white",
-                              fontWeight:
-                                selectedItem === item ? "bold" : "normal"
-                            }}
-                          >
-                            {item}
-                          </div>
-                        ))}
-                  </div>
+              <p>
+                Current Department:{" "}
+                {currentPosting ? (
+                  <Label bsStyle="success" bsSize="small">
+                    {" "}
+                    <span>{currentPosting}</span>
+                  </Label>
                 ) : null}
+              </p>
+
+              <p>
+                Time spent in current Unit :{" "}
+                <span>
+                  {postings &&
+                    postings.length &&
+                    FindTimeDifference(
+                      postings[FindMax(postings, "serial") - 1].postingDate,
+                      moment().format("MMMM DD YYYY")
+                    )}
+                </span>
+              </p>
+
+              <div>
+                Former Departments:
+                <div className="formerDept">
+                  {postings && postings.length ? (
+                    SortPostingDuration(postings).map(
+                      ({ unit, duration }, index) => {
+                        return (
+                          <p key={index}>
+                            {unit} : {duration}
+                            <br />
+                          </p>
+                        );
+                      }
+                    )
+                  ) : (
+                    <p>No former department</p>
+                  )}
+                </div>
               </div>
-            )}
-          </Downshift>
-        </FormGroup>
 
-        <DatePicker
-          selected={this.state.startDate}
-          onChange={this.handleChange}
-          minDate={new Date()}
-          className="form-control"
-          placeholderText="Select a date for resumption"
-        />
+              {this.state.selectedDept ? (
+                <p>
+                  Proposed department : <span>{this.state.selectedDept}</span>
+                </p>
+              ) : null}
 
-        <FormGroup>
-          <Button
-            bsStyle="danger"
-            bsSize="small"
-            onClick={() => this.proposePosting(staffId)}
-          >
-            {this.state.submitted
-              ? "proposing please wait ...."
-              : `Proposed Posting`}
-          </Button>
-        </FormGroup>
+              <FormGroup>
+                <p>Resumption Date:</p>
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={this.handleChange}
+                  minDate={new Date()}
+                  className="form-control"
+                  placeholderText="Select a date for resumption"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Downshift
+                  onChange={this.onChange}
+                  itemToString={department =>
+                    department ? `${department}` : ""
+                  }
+                >
+                  {({
+                    getInputProps,
+                    getItemProps,
+                    isOpen,
+                    inputValue,
+                    highlightedIndex,
+                    selectedItem,
+                    getLabelProps
+                  }) => (
+                    <div>
+                      <label
+                        style={{ marginTop: "1rem", display: "block" }}
+                        {...getLabelProps()}
+                      >
+                        Select a Department/Unit
+                      </label>
+
+                      <input
+                        {...getInputProps({
+                          placeholder: "Search department..."
+                        })}
+                        className="form-control"
+                        id="deptInput"
+                      />
+
+                      {isOpen ? (
+                        <div className="downshift-dropdown">
+                          {// filter the books and return items that match the inputValue
+                          department &&
+                            department
+                              .filter(
+                                item =>
+                                  !inputValue ||
+                                  item
+                                    .toLowerCase()
+                                    .includes(inputValue.toLowerCase())
+                              )
+                              // map the return value and return a div
+                              .map((item, index) => (
+                                <div
+                                  className="dropdown-item"
+                                  {...getItemProps({
+                                    key: item,
+                                    index,
+                                    item
+                                  })}
+                                  style={{
+                                    backgroundColor:
+                                      highlightedIndex === index
+                                        ? "lightgray"
+                                        : "white",
+                                    fontWeight:
+                                      selectedItem === item ? "bold" : "normal"
+                                  }}
+                                >
+                                  {item}
+                                </div>
+                              ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                </Downshift>
+              </FormGroup>
+
+              <FormGroup>
+                <Button
+                  bsStyle="danger"
+                  bsSize="small"
+                  onClick={() => this.proposePosting(staffId)}
+                >
+                  {this.state.submitted
+                    ? "proposing please wait ...."
+                    : `Proposed Posting`}
+                </Button>
+              </FormGroup>
+            </div>
+          </Col>
+
+          <Col md={4}>
+            <Image
+              responsive
+              src={
+                biodata && biodata.profilePicture
+                  ? biodata.profilePicture
+                  : "/image/noImage.png"
+              }
+            />
+          </Col>
+        </Row>
       </StaffPostingStyles>
     );
   }

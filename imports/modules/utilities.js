@@ -44,7 +44,10 @@ export const SortPostingDuration = pArray => {
   return [];
 };
 
-export const FindTimeDifference = (startTime, endTime) => {
+export const FindTimeDifference = (
+  startTime = moment().format("MMMM DD YYYY"),
+  endTime = moment().format("MMMM DD YYYY")
+) => {
   let start = moment(endTime);
   let end = moment(startTime);
   //Difference in number of days
@@ -52,9 +55,9 @@ export const FindTimeDifference = (startTime, endTime) => {
   let years = diffDuration.years();
   let months = diffDuration.months();
   let days = diffDuration.days();
-  years = years && `${years} year(s)`;
-  months = months && `${months} month(s)`;
-  days = days && `${days} day(s)`;
+  years = years ? `${years} year(s)` : "";
+  months = months ? `${months} month(s)` : "";
+  days = days ? `${days} day(s)` : "";
   return `${years} ${months} ${days}`;
 };
 

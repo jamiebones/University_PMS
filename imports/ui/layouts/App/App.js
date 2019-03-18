@@ -23,7 +23,6 @@ import Login from "../../pages/Login/Login";
 import RecoverPassword from "../../pages/RecoverPassword/RecoverPassword";
 import ResetPassword from "../../pages/ResetPassword/ResetPassword";
 import AuthorizedLayout from "../../layouts/AuthorizedLayout/AuthorizedLayout";
-
 import { onLogin, onLogout } from "../../../modules/redux/actions";
 import withTrackerSSR from "../../../modules/with-tracker-ssr";
 

@@ -2,7 +2,10 @@ import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import rateLimit from "../../modules/rate-limit";
 import { StaffMember } from "../../api/StaffMember/StaffMemberClass";
-import { StaffPosting } from "../../api/StaffPosting/StaffPostingClass";
+import {
+  StaffPosting,
+  Postings
+} from "../../api/StaffPosting/StaffPostingClass";
 import { _ } from "meteor/underscore";
 import { FindMax } from "../../modules/utilities";
 
@@ -21,22 +24,26 @@ Meteor.methods({
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
     const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
     proposedPosting.status = status;
-    //getting the posting with a status of proposed
-    const newPosting = postedStaff.postings.find(posting => {
-      return posting.postingStatus === "1";
+    debugger;
+    //get the last posting
+    const postingSerial = FindMax(postedStaff.postings, "serial");
+    //get this posting with the serial
+    const findPosting = postedStaff.postings.find(posting => {
+      return posting.serial == postingSerial;
     });
+
     //saving the posting in a new object
     //so as we don't mutate the object
-    const editedPosting = { ...newPosting };
-    const serialToRemove = newPosting && newPosting.serial;
+
+    const editedPosting = { ...findPosting };
+    debugger;
     editedPosting.postingStatus = status;
-    //add edited posting to the array
-    postedStaff.postings.push(editedPosting);
+    const newPostToSave = new Postings(editedPosting);
     //remove the old obj in the array
     const newpostingArray = postedStaff.postings.filter(posting => {
-      return posting.serial !== serialToRemove && posting.postingStatus === "1";
+      return posting.serial !== postingSerial;
     });
-    postedStaff.postings = [...newpostingArray];
+    postedStaff.postings = [...newpostingArray, newPostToSave];
     try {
       if (status === "3" || status === "5") {
         //posting proposal was rejected by the director
@@ -78,16 +85,20 @@ Meteor.methods({
       newPosting.previousPostings = previousPostings;
       newPosting.designation = designation;
       try {
-        newPosting.save();
+        debugger;
         let postingSerial = FindMax(postedStaff.postings, "serial");
+        postingSerial += 1;
         const postingObj = {
           unitName: newUnit,
-          serial: postingSerial++,
+          serial: postingSerial,
           postingDate: startingDate,
           postingStatus: "1"
         };
-        postedStaff.postings.push(postingObj);
+        let posting = new Postings(postingObj);
+
+        postedStaff.postings = [...postedStaff.postings, posting];
         postedStaff.postingProposed = true;
+        newPosting.save();
         postedStaff.save();
       } catch (error) {
         throw new Meteor.Error(`There was an error: ${error}`);

@@ -7,6 +7,7 @@ import AddStaffDocuments from "../../pages/AddStaffDocuments/AddStaffDocuments";
 import StaffPosting from "../../pages/StaffPostingPage/StaffPostingPage";
 import StaffPostingTab from "../../pages/StaffPostingTab/StaffPostingTab";
 import RegistrarViewPosting from "../../pages/RegistrarViewPosting/RegistrarViewPosting";
+import ApprovedPostingList from "../../components/ApprovedPostingList/ApprovedPostingList";
 import NotFound from "../../pages/NotFound/NotFound";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
@@ -42,6 +43,16 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/registrar/staff_posting`}
               component={RegistrarViewPosting}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["manage-site", "edit-content", "super-admin"]}
+              group="canEditRecords"
+              userId={userId}
+              exact
+              path={`${match.path}/posting_list`}
+              component={ApprovedPostingList}
               {...rest}
             />
 

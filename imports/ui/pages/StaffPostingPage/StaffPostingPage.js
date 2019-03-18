@@ -46,7 +46,6 @@ class StaffPostingPage extends React.Component {
 
   onSubmit(e) {
     if (this.state.staffId !== "" && e.keyCode == 13) {
-      alert("hooray");
       this.props.staffIdReactive.set(e.target.value);
       this.props.designationReactive.set("");
     }
@@ -63,7 +62,7 @@ class StaffPostingPage extends React.Component {
     return (
       <StaffPostingStyle>
         <Row>
-          <Col md={6} mdOffset={3}>
+          <Col md={6}>
             <TextField
               name="staffId"
               placeholder="search by staffId"
@@ -94,23 +93,27 @@ class StaffPostingPage extends React.Component {
           <Row className="staffPostingDiv">
             <Col md={12}>
               {staff.map((staffMember, index) => {
-                return (
+                return [
                   <Col md={4} key={index}>
                     <StaffPosting
                       staffMember={staffMember}
                       department={designations}
                     />
                   </Col>
-                );
+                ];
               })}
-              <div className="clearfix" />
             </Col>
           </Row>
         ) : (
-          <div>
-            <br />
-            <Alert bsStyle="info">No staff data</Alert>
-          </div>
+          <Row>
+            {this.props.staffIdReactive.get() !== "" ||
+            this.props.designationReactive.get() ? (
+              <Col md={6}>
+                <br />
+                <Alert bsStyle="info">No staff data</Alert>
+              </Col>
+            ) : null}
+          </Row>
         )}
       </StaffPostingStyle>
     );

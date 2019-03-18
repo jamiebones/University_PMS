@@ -1,5 +1,6 @@
 import { Mongo } from "meteor/mongo";
 import { Class } from "meteor/jagi:astronomy";
+import { Postings } from "../StaffPosting/StaffPostingClass";
 
 const StaffMembers = new Mongo.Collection("staffmembers");
 
@@ -93,16 +94,6 @@ const Promotions = Class.create({
     newRank: String,
     oldContiss: String,
     newContiss: String
-  }
-});
-
-const Postings = Class.create({
-  name: "Postings",
-  fields: {
-    unitName: String,
-    serial: Number,
-    postingDate: String,
-    postingStatus: String
   }
 });
 

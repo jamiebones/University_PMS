@@ -20,6 +20,7 @@ const StaffPostingHeader = styled.h4`
 
 const StaffPostingTabs = styled(Tabs)`
   .nav.nav-tabs {
+    margin-top: 50px;
   }
 `;
 
@@ -43,6 +44,8 @@ class StaffPostingTab extends React.Component {
               onSelect={activeTab => this.setState({ activeTab })}
               id="manual-upload-tabs"
             >
+              <br />
+              <br />
               <Tab eventKey="startPosting" title="Proposed Posting">
                 <Row>
                   <Col md={12}>
