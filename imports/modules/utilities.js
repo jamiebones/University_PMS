@@ -16,6 +16,55 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const OverStayedStaff = arr => {
+  let staffArray = [];
+  if (arr.length) {
+    for (let i = 0; i < arr.length; i++) {
+      const staffPosting = arr[i].postings;
+      const biodata = arr[i].biodata;
+      const staffId = arr[i].staffId;
+      //find the max
+      if (staffPosting.length < 1) continue;
+      const maxSerial = FindMax(staffPosting, "serial");
+      const currentPosting = staffPosting[maxSerial - 1];
+
+      const designation = arr[i].designation;
+      if (currentPosting && currentPosting.postingStatus == "4") {
+        //we have a successful posting let's find how
+        //long they have stayed
+        const todayDate = moment(new Date());
+        const postingDate = currentPosting.postingDate;
+        const diffDuration = moment.duration(todayDate.diff(postingDate));
+        let years = diffDuration.years();
+        let months = diffDuration.months();
+        let days = diffDuration.days();
+        if (years && parseInt(years) >= 3) {
+          //over stayed time to move
+          const staff = {
+            biodata,
+            designation,
+            years,
+            months,
+            days,
+            unit: currentPosting.unitName,
+            staffId
+          };
+          staffArray.push(staff);
+        }
+      } else {
+        continue;
+      }
+    }
+  }
+  if (staffArray.length) {
+    const sortByDuration = staffArray.sort((a, b) => {
+      return b.years - a.years;
+    });
+    return sortByDuration;
+  }
+  return staffArray;
+};
+
 export const SortPostingDuration = pArray => {
   if (pArray.length) {
     let arr = pArray.sort((a, b) => {
@@ -26,7 +75,7 @@ export const SortPostingDuration = pArray => {
       const posting = arr[i];
       if (posting.postingStatus == "4") {
         const startDate = posting.postingDate;
-        let endDate = moment().format("MMMM DD YYYY");
+        let endDate = moment(new Date()).toISOString();
         if (i + 1 !== arr.length) {
           endDate = arr[i + 1].postingDate;
         }

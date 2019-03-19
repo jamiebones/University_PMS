@@ -95,10 +95,10 @@ Meteor.methods({
                   salaryStructure.toLowerCase().trim() == "conuass"
                 ) {
                   //we have an academic staff
-                  staff.staffType = "Academic Staff";
+                  staff.staffType = "1";
                   staff.staffClass = "Senior Staff";
                 } else {
-                  staff.staffType = "Non Academic Staff";
+                  staff.staffType = "2";
                   staff.postingProposed = false;
                   if (GL && parseInt(GL) < 6) {
                     //we have a junior non teaching

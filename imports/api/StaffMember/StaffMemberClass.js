@@ -1,6 +1,8 @@
 import { Mongo } from "meteor/mongo";
 import { Class } from "meteor/jagi:astronomy";
 import { Postings } from "../StaffPosting/StaffPostingClass";
+import { FindMax } from "../../modules/utilities";
+import moment from "moment";
 
 const StaffMembers = new Mongo.Collection("staffmembers");
 
@@ -192,6 +194,39 @@ const StaffMember = Class.create({
     currentPosting: {
       type: String,
       optional: true
+    }
+  },
+  helpers: {
+    postingDuration() {
+      if (this.staffType === "2") {
+        const staffPosting = this.postings;
+
+        const maxSerial = FindMax(staffPosting, "serial");
+
+        const currentPosting = staffPosting[maxSerial - 1];
+
+        if (currentPosting && currentPosting.postingStatus == "4") {
+          const todayDate = moment(new Date());
+          const postingDate = currentPosting.postingDate;
+          const diffDuration = moment.duration(todayDate.diff(postingDate));
+          let years = diffDuration.years();
+          let months = diffDuration.months();
+          let days = diffDuration.days();
+          if (years && parseInt(years) >= 3) {
+            //over stayed time to move
+            const staff = {
+              biodata: this.biodata,
+              designation: this.designation,
+              years,
+              months,
+              days,
+              unit: currentPosting.unitName,
+              staffId: this.staffId
+            };
+            return { ...staff };
+          }
+        }
+      }
     }
   }
 });

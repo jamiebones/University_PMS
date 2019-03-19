@@ -141,13 +141,13 @@ export default (StaffPostingPageContainer = withTracker(() => {
 
   if (staffIdReactive.get() !== "") {
     query.staffId = new RegExp("^" + staffIdReactive.get() + "$", "i");
-    query.staffType = "Non Academic Staff";
+    query.staffType = "2";
     delete query.designation;
   }
 
   if (designationReactive.get() !== "") {
     query.designation = new RegExp("^" + designationReactive.get() + "$", "i");
-    query.staffType = "Non Academic Staff";
+    query.staffType = "2";
     delete query.staffId;
   }
 

@@ -15,6 +15,13 @@ Meteor.publish(
 );
 
 Meteor.publish(
+  "staffposting.getoverstayedStaff",
+  function StaffMembersPublication() {
+    return StaffMembers.find({ staffType: "2" });
+  }
+);
+
+Meteor.publish(
   "staffmembers.getStaffbyDesignationAndStaffId",
   function StaffMembersPublication(designation, staffId) {
     check(designation, Match.OneOf(String, null, undefined));
@@ -28,13 +35,13 @@ Meteor.publish(
 
     if (staffId !== "") {
       query.staffId = new RegExp("^" + staffId + "$", "i");
-      query.staffType = "Non Academic Staff";
+      query.staffType = "2";
       delete query.designation;
     }
 
     if (designation !== "") {
       query.designation = new RegExp("^" + designation + "$", "i");
-      query.staffType = "Non Academic Staff";
+      query.staffType = "2";
       delete query.staffId;
     }
 

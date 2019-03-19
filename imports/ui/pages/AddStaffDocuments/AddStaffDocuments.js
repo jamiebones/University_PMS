@@ -215,7 +215,6 @@ export default (AddStaffDocumentContainer = withTracker(({}) => {
   return {
     loading: subscription && !subscription.ready(),
     staff: StaffMembers.findOne(query),
-    staffIdReactive,
-    c: console.log(StaffMembers.findOne(query))
+    staffIdReactive
   };
 })(AddStaffDocuments));
