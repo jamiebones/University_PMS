@@ -16,6 +16,11 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const StaffType = type => {
+  const staffType = ["Teaching Staff", "Non-Teaching Staff"];
+  return staffType[parseInt(type)];
+};
+
 export const OverStayedStaff = arr => {
   let staffArray = [];
   if (arr.length) {

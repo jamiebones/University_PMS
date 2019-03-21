@@ -26,6 +26,7 @@
     "i": "^0.3.6",
     "image-base64": "^1.0.2",
     "input-format": "^0.2.0",
+    "jimp": "^0.6.0",
     "jquery": "^2.2.4",
     "jquery-validation": "^1.17.0",
     "juice": "^4.2.2",

@@ -9,6 +9,7 @@ import "../../api/StaffDocument/server/methods";
 import "../../api/StaffDocument/server/publications";
 import "../../api/StaffDocument/methods";
 
+import "../../api/StaffPosting/server/methods";
 import "../../api/StaffPosting/server/publications";
 import "../../api/StaffPosting/methods";
 

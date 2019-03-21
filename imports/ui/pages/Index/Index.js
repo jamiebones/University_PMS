@@ -15,6 +15,16 @@ class Index extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    Meteor.call("staffposting.getPostingSummary", (error, response) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    });
+  }
+
   SheettoArray(sheet) {
     var result = [];
     var row;

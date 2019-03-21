@@ -60,3 +60,17 @@ Meteor.publish(
     return StaffPostings.find(query);
   }
 );
+
+Meteor.publish(
+  "staffposting.getApprovedPostingStatistics",
+  function StaffMembersPublication() {
+    let date = moment(new Date()).toISOString();
+    let query = {
+      status: "4",
+      startingDate: {
+        $gt: date
+      }
+    };
+    return StaffPostings.find(query);
+  }
+);
