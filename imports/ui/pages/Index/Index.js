@@ -88,6 +88,16 @@ class Index extends React.Component {
     this.readExcel(src, this.callMeBack2);
   }
 
+  getRecords() {
+    Meteor.call("getRecords", (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(response);
+      }
+    });
+  }
+
   render() {
     return (
       <div>
@@ -96,6 +106,8 @@ class Index extends React.Component {
         <h1>Hello Course ware/ Bookshop</h1>
         <br />
         <input type="file" id="input2" onChange={this.change2} />
+
+        <button onClick={this.getRecords}>get staff records</button>
       </div>
     );
   }

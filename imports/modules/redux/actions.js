@@ -23,6 +23,7 @@ export function onLogin() {
       authenticated: !loggingIn && !!userId,
       name: name || emailAddress,
       roles: !loading && Roles.getRolesForUser(userId),
+      groups: !loading && Roles.getGroupsForUser(userId),
       userId,
       emailAddress
     });
@@ -38,6 +39,7 @@ export function onLogout() {
       authenticated: false,
       name: "",
       roles: [],
+      groups: [],
       userId: null,
       emailAddress: ""
     });

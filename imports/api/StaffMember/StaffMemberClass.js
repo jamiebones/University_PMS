@@ -92,9 +92,7 @@ const Promotions = Class.create({
   fields: {
     serial: Number,
     promotionYear: String,
-    oldRank: String,
     newRank: String,
-    oldContiss: String,
     newContiss: String
   }
 });

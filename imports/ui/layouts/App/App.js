@@ -163,6 +163,7 @@ const mapStateToProps = state => {
     authenticated: auth.authenticated,
     name: auth.name,
     roles: auth.roles,
+    groups: auth.groups,
     userId: auth.userId,
     emailAddress: auth.emailAddress
   };
@@ -199,6 +200,7 @@ export default compose(
       loggingIn,
       authenticated: !loggingIn && !!userId,
       name: name || emailAddress,
+      groups: Roles.getGroupsForUser(userId),
       roles: Roles.getRolesForUser(userId),
       userId,
       emailAddress

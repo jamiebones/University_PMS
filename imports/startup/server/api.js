@@ -16,8 +16,8 @@ import "../../api/StaffPosting/methods";
 import "../../api/Designation/server/publications";
 import "../../api/Designation/methods";
 
-//import "../../api/Courseware/server/methods";
-//import "../../api/Courseware/server/publications";
-//import "../../api/Courseware/methods";
+import "../../api/UniversityCadre/server/methods";
+import "../../api/UniversityCadre/server/publications";
+import "../../api/UniversityCadre/methods";
 
 import "../../api/Utility/server/methods";

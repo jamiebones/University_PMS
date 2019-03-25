@@ -11,7 +11,6 @@ import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import { StaffType } from "../../../modules/utilities";
 import autoBind from "react-autobind";
-const Jimp = require("jimp");
 
 const StyledAddDocuments = styled.div`
   .alertDiv {
@@ -107,8 +106,8 @@ class AddStaffDocuments extends React.Component {
           callback(e.target.result);
         };
         reader.readAsDataURL(file);
-      }else{
-        alert('please select only PNG files');
+      } else {
+        alert("please select only PNG files");
         break;
       }
     }

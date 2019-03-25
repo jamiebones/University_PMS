@@ -63,7 +63,7 @@ class Authorized extends React.Component {
         render={props => <Component {...rest} {...props} />}
       />
     ) : (
-      <div />
+      <div>I screw up</div>
     );
   }
 }

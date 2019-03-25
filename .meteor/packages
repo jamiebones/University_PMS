@@ -39,7 +39,6 @@ http@1.4.1
 session@1.2.0
 percolate:migrations
 mizzao:user-status
-meteorhacks:aggregate
 fourseven:scss
 percolate:synced-cron
 tmeasday:publish-counts
@@ -49,3 +48,4 @@ server-render@0.3.1
 montiapm:agent
 gadicohen:sitemaps
 jagi:astronomy
+sakulstra:aggregate

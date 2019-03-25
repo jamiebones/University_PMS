@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { _ } from "meteor/underscore";
 import moment from "moment";
+import * as XLSX from "xlsx";
 
 export const FindMax = (arr, key) => {
   if (arr.length) {
@@ -330,11 +331,37 @@ export const StatesInNigeria = () => {
   return state;
 };
 
-export const Universities = () => {
-  const status = [
-    { key: "University of Uyo", value: "University of Uyo" },
-    { key: "University of Benin", value: "University of Benin" },
-    { key: "University of Jada", value: "University of Jada" }
-  ];
-  return status;
+export const RemoveSlash = word => {
+  if (word) {
+    const regex = new RegExp("/", "g");
+    word = word.replace(regex, "-");
+    return word;
+  }
+};
+
+export const ReplaceSlash = word => {
+  if (word) {
+    const regex = new RegExp("-", "g");
+    word = word.replace(regex, "/");
+    return word;
+  }
+};
+
+export const SheetToArray = sheet => {
+  var result = [];
+  var row;
+  var rowNum;
+  var colNum;
+  var range = XLSX.utils.decode_range(sheet["!ref"]);
+  for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+    row = [];
+    for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
+      var nextCell = sheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+      if (typeof nextCell === "undefined") {
+        row.push(void 0);
+      } else row.push(nextCell.w);
+    }
+    result.push(row);
+  }
+  return result;
 };
