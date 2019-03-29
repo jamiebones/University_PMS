@@ -1,26 +1,42 @@
 import { Mongo } from "meteor/mongo";
 import { Class } from "meteor/jagi:astronomy";
 
-const UniversityUnits = new Mongo.Collection("universityunit");
+const UniversityCadres = new Mongo.Collection("universitycadre");
 
-UniversityUnits.allow({
+UniversityCadres.allow({
   insert: () => false,
   update: () => false,
   remove: () => false
 });
 
-UniversityUnits.deny({
+UniversityCadres.deny({
   insert: () => true,
   update: () => true,
   remove: () => true
 });
 
-const UniversityUnit = Class.create({
-  name: "UniversityUnits",
-  collection: UniversityUnits,
+const Ranks = Class.create({
+  name: "Ranks",
   fields: {
-    name: String
+    rankName: String,
+    serial: Number
   }
 });
 
-export { UniversityUnit, UniversityUnits };
+const UniversityCadre = Class.create({
+  name: "UniversityCadres",
+  collection: UniversityCadres,
+  fields: {
+    cadre: String,
+    ranks: {
+      type: [Ranks],
+      optional: true,
+      default() {
+        return [];
+      }
+    },
+    serial: Number
+  }
+});
+
+export { UniversityCadre, UniversityCadres, Ranks };

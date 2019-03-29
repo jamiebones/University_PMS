@@ -8,21 +8,12 @@ import { withTracker } from "meteor/react-meteor-data";
 import styled from "styled-components";
 import autoBind from "react-autobind";
 import * as XLSX from "xlsx";
+import { _ } from "meteor/underscore";
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
     autoBind(this);
-  }
-
-  componentDidMount() {
-    Meteor.call("staffposting.getPostingSummary", (error, response) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(response);
-      }
-    });
   }
 
   SheettoArray(sheet) {
@@ -31,6 +22,7 @@ class Index extends React.Component {
     var rowNum;
     var colNum;
     var range = XLSX.utils.decode_range(sheet["!ref"]);
+    console.dir(range);
     for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
       row = [];
       for (colNum = range.s.c; colNum <= range.e.c; colNum++) {

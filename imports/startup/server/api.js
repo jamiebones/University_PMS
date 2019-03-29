@@ -16,7 +16,9 @@ import "../../api/StaffPosting/methods";
 import "../../api/Designation/server/publications";
 import "../../api/Designation/methods";
 
-import "../../api/UniversityCadre/server/methods";
+import "../../api/NigeriaStates/server/publications";
+import "../../api/NigeriaStates/methods";
+
 import "../../api/UniversityCadre/server/publications";
 import "../../api/UniversityCadre/methods";
 

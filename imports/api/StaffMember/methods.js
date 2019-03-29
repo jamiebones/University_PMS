@@ -10,7 +10,14 @@ Meteor.methods({
     check(excelData, Array);
     let numSaved = 0;
     let errorArr = [];
-    for (let i = 5; i < excelData.length; i++) {
+    let faculty = "";
+    let numUnitSaved;
+    const RemoveNull = arr => {
+      return arr.filter(el => {
+        return el != null;
+      });
+    };
+    for (let i = 4; i < excelData.length; i++) {
       const rowArray = excelData[i];
       //loop through row data;
       //lets build the person here
@@ -18,6 +25,18 @@ Meteor.methods({
         biodata: {}
       };
       let canSave = false;
+      if (rowArray[1] == null) {
+        //this role is likely a unit
+        const universityFaculty = RemoveNull(rowArray)
+          .join(" ")
+          .trim();
+        faculty = universityFaculty;
+        console.log(faculty);
+        const newUnit = new UniversityUnit();
+        newUnit.name = faculty;
+        newUnit.save();
+        numUnitSaved += 1;
+      }
       for (let k = 0; k < rowArray.length; k++) {
         if (rowArray[rowArray.length] !== null) {
           if (rowArray[k] !== null) {
@@ -27,39 +46,43 @@ Meteor.methods({
               case 1:
                 canSave = true;
                 staff.staffId = rowArray[k];
+                staff.currentPosting = faculty;
+                //console.log(faculty);
                 break;
 
               case 2:
-                staff.biodata.surname = rowArray[k];
+                staff.biodata.surname = rowArray[k].trim();
                 break;
               case 3:
-                staff.biodata.firstName = rowArray[k]
+                staff.biodata.firstName = rowArray[k].trim()
                   ? rowArray[k]
                   : "No firstname";
                 break;
               case 4:
-                staff.biodata.middleName = rowArray[k];
+                staff.biodata.middleName = rowArray[k] && rowArray[k].trim();
                 break;
               case 5:
-                staff.sex = rowArray[k];
+                staff.sex = rowArray[k] && rowArray[k].trim();
                 break;
               case 6:
-                staff.maritalStatus = rowArray[k];
+                staff.maritalStatus = rowArray[k] && rowArray[k].trim();
                 break;
               case 7:
-                staff.stateOfOrigin = rowArray[k];
+                staff.stateOfOrigin = rowArray[k] && rowArray[k].trim();
                 break;
               case 8:
-                staff.lgaOfOrigin = rowArray[k];
+                staff.lgaOfOrigin = rowArray[k] && rowArray[k].trim();
                 break;
               case 9:
-                staff.dob = rowArray[k] ? rowArray[k] : "No date";
+                staff.dob = rowArray[k] ? rowArray[k].trim() : "No date";
                 break;
               case 10:
-                staff.dateOfFirstAppointment = rowArray[k];
+                staff.dateOfFirstAppointment =
+                  rowArray[k] && rowArray[k].trim();
                 break;
               case 11:
-                staff.dateOfAppointmentInUniversity = rowArray[k];
+                staff.dateOfAppointmentInUniversity =
+                  rowArray[k] && rowArray[k].trim();
                 break;
               case 12:
                 //we have certificate here
@@ -83,7 +106,7 @@ Meteor.methods({
                 staff.employmentStatus = "active";
                 break;
               case 14:
-                staff.designation = rowArray[k];
+                staff.designation = rowArray[k] && rowArray[k].trim();
                 break;
               case 15:
                 const salaryStructure = rowArray[k];
@@ -123,18 +146,18 @@ Meteor.methods({
           numSaved++;
         } catch (error) {
           //i failed here go to next item
-          errorArr.push(error);
+          errorArr.push(staff);
           continue;
         }
       }
     }
     console.log(`Total data saved : ${numSaved}`);
+    console.log(`University unit saved : ${numUnitSaved}`);
     console.log(errorArr);
     console.log(errorArr.length);
   },
   buildRanks: function Customersmethod(excelData) {
     check(excelData, Array);
-    debugger;
     let numSaved = 0;
     let errorArr = [];
     let ranks = {};

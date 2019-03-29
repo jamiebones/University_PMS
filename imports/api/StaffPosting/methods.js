@@ -36,7 +36,6 @@ Meteor.methods({
     //so as we don't mutate the object
 
     const editedPosting = { ...findPosting };
-    debugger;
     editedPosting.postingStatus = status;
     const newPostToSave = new Postings(editedPosting);
     //remove the old obj in the array
@@ -85,7 +84,6 @@ Meteor.methods({
       newPosting.previousPostings = previousPostings;
       newPosting.designation = designation;
       try {
-        debugger;
         let postingSerial = FindMax(postedStaff.postings, "serial");
         postingSerial += 1;
         const postingObj = {

@@ -15,18 +15,13 @@ import {
 
 const Departments = [
   "SATS Personnel",
-  "SBC",
-  "Gossiping Dancing",
-  "Gossiping mischieve",
-  "Gossiping Blame game",
+  "Senate Business Committee",
+  "Staff Records Unit",
   "Faculty of Science",
-  "Geography",
-  "Panel stuffs",
-  "Flashing",
-  "Gossiping Postering",
-  "Works",
-  "White house",
-  "Hell"
+  "Faculty of Law",
+  "Chemistry Deparment",
+  "Physics Department",
+  "Faculty of Science"
 ];
 
 const StaffPostingStyles = styled.div`

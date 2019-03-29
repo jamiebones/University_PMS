@@ -13,10 +13,13 @@ import { Link } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
 import { Bert } from "meteor/themeteorchef:bert";
 import validate from "../../../modules/validate";
+import { withTracker } from "meteor/react-meteor-data";
 import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
+import { NigeriaStates } from "../../../api/NigeriaStates/NigeriaStatesClass";
 import moment from "moment";
 import autoBind from "react-autobind";
+import { _ } from "meteor/underscore";
 
 class StaffBio extends React.Component {
   constructor(props) {
@@ -29,14 +32,25 @@ class StaffBio extends React.Component {
       sex: "",
       maritalStatus: "",
       staffId: "",
-      profilePicture: ""
+      profilePicture: "",
+      state: "",
+      lga: [],
+      lgaOrigin: ""
     };
     autoBind(this);
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    if (nextProps.staff !== state.staff) {
-      const { staff } = nextProps;
+    debugger;
+    if (nextProps.staff.stateOfOrigin.trim() !== state.state) {
+      const { staff, states } = nextProps;
+      const selectedState = states.find(st => {
+        return (
+          st.state.toLowerCase().trim() ===
+          staff.stateOfOrigin.toLowerCase().trim()
+        );
+      });
+
       return {
         firstName: staff.biodata.firstName,
         surname: staff.biodata.surname,
@@ -45,7 +59,10 @@ class StaffBio extends React.Component {
         sex: staff.sex,
         dob: moment(staff.dob),
         maritalStatus: staff.maritalStatus,
-        staffId: staff.staffId
+        staffId: staff.staffId,
+        state: staff.stateOfOrigin.trim(),
+        lgaOrigin: staff.lgaOfOrigin.trim()
+        // lga: selectedState && selectedState.lga
       };
     }
     return null;
@@ -53,6 +70,20 @@ class StaffBio extends React.Component {
 
   onChange(e) {
     if (e === "0") return;
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onStateChange(e) {
+    const state = e.target.value;
+    let states = this.props.states;
+    //find lga
+    const selectedState = states.find(st => {
+      return st.state.toLowerCase().trim() === state.toLowerCase().trim();
+    });
+    if (!_.isEmpty(selectedState)) {
+      const lga = selectedState.lga;
+      this.setState({ lga: lga });
+    }
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -87,7 +118,7 @@ class StaffBio extends React.Component {
   handleSubmit() {}
 
   render() {
-    const { staff } = this.props;
+    const { staff, states } = this.props;
     return (
       <div className="StaffBio">
         <Row>
@@ -183,6 +214,38 @@ class StaffBio extends React.Component {
               </FormGroup>
 
               <FormGroup>
+                <ControlLabel>State</ControlLabel>
+                <select
+                  className="form-control"
+                  name="state"
+                  value={this.state.state}
+                  onChange={this.onStateChange}
+                >
+                  <option value="0">select state</option>
+                  {states &&
+                    states.map(({ state }, index) => {
+                      return <option key={index + 9444}>{state}</option>;
+                    })}
+                </select>
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>lga</ControlLabel>
+                <select
+                  className="form-control"
+                  name="lgaOrigin"
+                  value={this.state.lgaOrigin}
+                  onChange={this.onChange}
+                >
+                  <option value="0">select lga</option>
+                  {this.state.lga &&
+                    this.state.lga.map((lga, index) => {
+                      return <option key={index + 400}>{lga}</option>;
+                    })}
+                </select>
+              </FormGroup>
+
+              <FormGroup>
                 <ControlLabel>Staff ID </ControlLabel>
                 <input
                   type="text"
@@ -198,7 +261,7 @@ class StaffBio extends React.Component {
                 bsStyle="success"
                 disabled={this.state.submitted ? true : false}
               >
-                {this.state.submitted ? "Please wait....." : "Log In"}
+                {this.state.submitted ? "Please wait....." : "Save"}
               </Button>
             </form>
           </Col>
@@ -220,4 +283,15 @@ class StaffBio extends React.Component {
   }
 }
 
-export default StaffBio;
+export default (StaffBioContainer = withTracker(() => {
+  let subscription;
+  if (Meteor.isClient) {
+    subscription = Meteor.subscribe("nigeriastates.getallStates");
+  }
+
+  return {
+    loading: subscription && !subscription.ready(),
+    //staff: StaffMembers.find(staffId).fetch(),
+    states: NigeriaStates.find({}).fetch()
+  };
+})(StaffBio));

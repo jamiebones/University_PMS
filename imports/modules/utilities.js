@@ -365,3 +365,13 @@ export const SheetToArray = sheet => {
   }
   return result;
 };
+
+export const SortArrayByKey = (array, key) => {
+  if (array.length) {
+    const sortArray = array.sort((a, b) => {
+      return a[key] - b[key];
+    });
+    return sortArray;
+  }
+  return [];
+};

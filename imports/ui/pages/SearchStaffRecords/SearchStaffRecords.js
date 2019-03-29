@@ -102,14 +102,15 @@ class SearchStaffRecordsPage extends React.Component {
         {staff && staff.length ? (
           <Row className="SearchStaffRecordsDiv">
             <Col md={12}>
-              <p className="lead">
-                Viewing Records for{" "}
-                {this.props.designationReactive.get()
-                  ? this.props.designationReactive.get()
-                  : this.props.staffIdReactive.get()}{" "}
-              </p>
-
               <Table responsive striped>
+                <caption>
+                  <p className="lead">
+                    Viewing Records for{" "}
+                    {this.props.designationReactive.get()
+                      ? this.props.designationReactive.get()
+                      : this.props.staffIdReactive.get()}{" "}
+                  </p>
+                </caption>
                 <thead>
                   <tr>
                     <th>S/N</th>

@@ -64,6 +64,7 @@ injectGlobal`
     padding: 0;
     font-size: 14px;
     line-height: 20px;
+    background-color:#E6ECF0;
     
   }
 
