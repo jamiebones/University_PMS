@@ -11,7 +11,7 @@ import { Bert } from "meteor/themeteorchef:bert";
 import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import autoBind from "react-autobind";
-import StaffPosting from "../../components/StaffPosting/StaffPosting";
+import StaffProposePosting from "../../components/StaffProposePosting/StaffProposePosting";
 import moment from "moment";
 
 const StaffPostingStyle = styled.div`
@@ -92,16 +92,7 @@ class StaffPostingPage extends React.Component {
         {staff && staff.length ? (
           <Row className="staffPostingDiv">
             <Col md={12}>
-              {staff.map((staffMember, index) => {
-                return [
-                  <Col md={4} key={index}>
-                    <StaffPosting
-                      staffMember={staffMember}
-                      department={designations}
-                    />
-                  </Col>
-                ];
-              })}
+              <StaffProposePosting staffMember={staff} />;
             </Col>
           </Row>
         ) : (

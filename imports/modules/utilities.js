@@ -17,6 +17,16 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const FindDeptPostingProposedTo = (postings = []) => {
+  const proposedPosting = postings.find(posting => {
+    return posting.postingStatus == "1";
+  });
+  if (!_.isEmpty(proposedPosting)) {
+    return proposedPosting.unitName;
+  }
+  return "";
+};
+
 export const StaffType = type => {
   const staffType = ["Teaching Staff", "Non-Teaching Staff"];
   return staffType[parseInt(type)];
