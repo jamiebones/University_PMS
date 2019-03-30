@@ -13,6 +13,7 @@ import NotFound from "../../pages/NotFound/NotFound";
 import SearchStaffRecords from "../../pages/SearchStaffRecords/SearchStaffRecords";
 import StaffDetailsPage from "../../pages/StaffDetailsPage/StaffDetailsPage";
 import AddCadrePage from "../../pages/AddCadres/AddCadres";
+import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -97,6 +98,16 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/add_cadre`}
               component={AddCadrePage}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["manage-site", "edit-content", "super-admin"]}
+              group="canEditRecords"
+              userId={userId}
+              exact
+              path={`${match.path}/propose_posting`}
+              component={StaffProposePostingPage}
               {...rest}
             />
 

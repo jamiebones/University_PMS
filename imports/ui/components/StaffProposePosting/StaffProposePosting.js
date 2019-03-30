@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Button, Col, Row, Table, Label, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import autoBind from "react-autobind";
 import { Bert } from "meteor/themeteorchef:bert";
 import moment from "moment";
@@ -29,13 +30,14 @@ class StaffProposePosting extends React.Component {
       <StaffProposePostingStyles>
         <Row>
           <Col md={12}>
-            <Table>
+            <Table responsive striped condensed bordered>
               <thead>
                 <tr>
                   <th>SN</th>
                   <th>NAME</th>
                   <th>DESIGNATION</th>
                   <th>SALARY LEVEL</th>
+                  <th>PF NUMBER</th>
                   <th>CURRENT DEPT</th>
                   <th>PREVIOUS DEPT</th>
                   <th>POSTING PROPOSED</th>
@@ -80,6 +82,10 @@ class StaffProposePosting extends React.Component {
                           </td>
 
                           <td>
+                            <p>{staffId}</p>
+                          </td>
+
+                          <td>
                             <p>
                               {currentPosting}
                               <br />
@@ -95,8 +101,6 @@ class StaffProposePosting extends React.Component {
                               </span>
                             </p>
                           </td>
-
-                          <td />
 
                           <td>
                             <div>
@@ -125,6 +129,26 @@ class StaffProposePosting extends React.Component {
 
                             {postingProposed &&
                               FindDeptPostingProposedTo(postings)}
+                          </td>
+
+                          <td>
+                            <p>
+                              <Link
+                                to={{
+                                  pathname: "/auth/propose_posting",
+                                  state: {
+                                    staffId: staffId,
+                                    biodata: biodata,
+                                    postings: postings,
+                                    designation: designation,
+                                    salaryStructure: salaryStructure,
+                                    currentPosting: currentPosting
+                                  }
+                                }}
+                              >
+                                Propose Posting
+                              </Link>
+                            </p>
                           </td>
                         </tr>
                       );

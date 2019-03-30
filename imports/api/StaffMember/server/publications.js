@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { StaffMembers } from "../StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
+import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 
 Meteor.publish(
   "staffmembers.getStaffbyStaffId",
@@ -11,6 +12,18 @@ Meteor.publish(
       staffId: new RegExp("^" + staffId + "$", "i")
     };
     return StaffMembers.find(query);
+  }
+);
+
+Meteor.publish(
+  "staffmembers.getStaffInDepartment",
+  function StaffMembersPublication(unit) {
+    check(unit, Match.OneOf(String, null, undefined));
+    let query = {
+      currentPosting: new RegExp("^" + unit + "$", "i"),
+      staffType: "2"
+    };
+    return [StaffMembers.find(query), UniversityUnits.find()];
   }
 );
 
