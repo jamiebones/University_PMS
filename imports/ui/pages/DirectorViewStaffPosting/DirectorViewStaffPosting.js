@@ -14,7 +14,6 @@ import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
 import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
-import { SortPostingDuration } from "../../../modules/utilities";
 import StaffPostingApproval from "../../components/StaffPostingApproval/StaffPostingApproval";
 import moment from "moment";
 

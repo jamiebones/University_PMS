@@ -14,7 +14,10 @@ import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
 import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
-import { SortPostingDuration } from "../../../modules/utilities";
+import {
+  SortPostingDuration,
+  StaffPostingStatusMessage
+} from "../../../modules/utilities";
 import moment from "moment";
 
 const StaffPostingApprovalStyles = styled.div`
@@ -29,6 +32,8 @@ const StaffPostingApprovalStyles = styled.div`
   }
 `;
 
+const statusMessage = ["", "", "approve", "cancel", "approve", "cancel"];
+
 class StaffPostingApproval extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +44,9 @@ class StaffPostingApproval extends React.Component {
   handlePostingStatus({ status, staffId, staffName, newUnit, _id }) {
     //confirm the approval
     const confirmedPosting = confirm(
-      `Are you sure, you want to ${status} the  posting of ${staffName} to ${newUnit}`
+      `Are you sure, you want to ${
+        statusMessage[status]
+      } the  posting of ${staffName} to ${newUnit}`
     );
 
     if (!confirmedPosting) return;

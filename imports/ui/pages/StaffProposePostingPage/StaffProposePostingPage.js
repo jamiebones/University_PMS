@@ -14,17 +14,29 @@ import autoBind from "react-autobind";
 import {
   FindMax,
   FindTimeDifference,
-  SortPostingDuration,
+  FindPostingSuccessful,
   FindDeptPostingProposedTo
 } from "../../../modules/utilities";
+import DatePicker from "react-datepicker";
+if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 const StaffProposePostingStyle = styled.div`
-  .staffcard: {
-    margin: 2px solid red;
+  .staffcard {
     background: #fff;
     padding: 10px;
     margin-bottom: 10px;
+    p {
+      line-height: 30px;
+    }
+  }
+  .staffdetails {
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    p {
+      line-height: 30px;
+    }
   }
   .downshift-dropdown {
     margin-left: 0.5px;
@@ -68,7 +80,8 @@ class StaffProposePostingPage extends React.Component {
     this.state = {
       submitted: false,
       department: [],
-      selectedDept: ""
+      selectedDept: "",
+      startDate: moment()
     };
     autoBind(this);
   }
@@ -78,129 +91,278 @@ class StaffProposePostingPage extends React.Component {
     this.props.selectedDeptReactiveVar.set(name);
   }
 
+  proposePosting() {
+    const {
+      biodata,
+      postings,
+      designation,
+      staffId,
+      currentPosting
+    } = this.props.location.state;
+    const newDept = this.state.selectedDept;
+    let currentDept = currentPosting;
+    const staffName = `${biodata.firstName} ${biodata.middleName} ${
+      biodata.surname
+    }`;
+    const previousPostings = postings || [];
+    //if currentDept === "" or null
+    if (newDept === "") {
+      Bert.alert(
+        `Select the department you are posting ${staffName} to`,
+        "danger"
+      );
+      return;
+    }
+    if (currentDept == "") {
+      //we have a first posting
+      currentDept = "first posting";
+    }
+
+    const startingDate = moment(this.state.startDate).toISOString();
+    const posting = {
+      staffId,
+      staffName,
+      designation,
+      unitFrom: currentDept,
+      newUnit: newDept,
+      startingDate,
+      previousPostings
+    };
+
+    if (currentDept === newDept) {
+      Bert.alert(
+        `${staffName} cannot be posted to the same department he is 
+                  currently in`,
+        "danger"
+      );
+      return;
+    }
+
+    const confirmPostingDetails = confirm(`Please confirm the posting details:
+                                            Name : ${staffName}
+                                            Proposed Department: ${newDept}
+                                            Resumption Date: ${moment(
+                                              startingDate
+                                            ).format("MMMM DD YYYY")}
+                                        `);
+
+    if (confirmPostingDetails) {
+      //we go to save
+      this.setState({ submitted: !this.state.submitted });
+      Meteor.call(
+        "staffposting.proposeNewPosting",
+        posting,
+        (error, response) => {
+          if (!error) {
+            this.setState({ submitted: !this.state.submitted });
+            Bert.alert(
+              "Proposed posting successful. Awaiting the Director's approval",
+              "success"
+            );
+            //redirect to search page
+            this.props.history.push("/auth/staff_posting");
+          } else {
+            this.setState({ submitted: !this.state.submitted });
+            Bert.alert(`There was an error ${error}`, "danger");
+          }
+        }
+      );
+    }
+  }
+
+  handleChange(date) {
+    this.setState({ startDate: date });
+  }
+
   render() {
     const { department, staffInUnit } = this.props;
     const { selectedDept } = this.state;
-    console.log(this.props.location.state);
+    const {
+      biodata,
+      postings,
+      designation,
+      salaryStructure,
+      staffId,
+      currentPosting
+    } = this.props.location.state;
+
     return (
       <StaffProposePostingStyle>
         <Row>
-          <Col md={6} />
+          <Col md={6}>
+            <div className="staffdetails">
+              <p>
+                Name: {biodata.firstName} {biodata.middleName} {biodata.surname}
+              </p>
+
+              <p>Designation : {designation}</p>
+
+              <p>Salary Step: {salaryStructure}</p>
+
+              <p>Staff ID : {staffId}</p>
+
+              <p>Current Department: {currentPosting}</p>
+
+              <p>
+                Time spent in current Unit :
+                {postings &&
+                  postings.length &&
+                  FindTimeDifference(
+                    FindPostingSuccessful(
+                      postings[FindMax(postings, "serial") - 1].postingDate
+                    ),
+                    moment().format("MMMM DD YYYY")
+                  )}
+              </p>
+
+              <FormGroup>
+                <Downshift
+                  onChange={this.onChange}
+                  itemToString={department =>
+                    department ? `${department}` : ""
+                  }
+                >
+                  {({
+                    getInputProps,
+                    getItemProps,
+                    isOpen,
+                    inputValue,
+                    highlightedIndex,
+                    selectedItem,
+                    getLabelProps
+                  }) => (
+                    <div>
+                      <label
+                        style={{ marginTop: "1rem", display: "block" }}
+                        {...getLabelProps()}
+                      >
+                        Select a Department/Unit
+                      </label>
+
+                      <input
+                        {...getInputProps({
+                          placeholder: "Search department..."
+                        })}
+                        className="form-control"
+                        id="deptInput"
+                      />
+
+                      {isOpen ? (
+                        <div className="downshift-dropdown">
+                          {// filter the books and return items that match the inputValue
+                          department &&
+                            department
+                              .filter(
+                                item =>
+                                  !inputValue ||
+                                  item.name
+                                    .toLowerCase()
+                                    .includes(inputValue.toLowerCase())
+                              )
+                              // map the return value and return a div
+                              .map(({ name }, index) => (
+                                <div
+                                  className="dropdown-item"
+                                  {...getItemProps({
+                                    key: index + name,
+                                    index,
+                                    item: name
+                                  })}
+                                  style={{
+                                    backgroundColor:
+                                      highlightedIndex === index
+                                        ? "lightgray"
+                                        : "white",
+                                    fontWeight:
+                                      selectedItem === name ? "bold" : "normal"
+                                  }}
+                                >
+                                  {name}
+                                </div>
+                              ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                </Downshift>
+              </FormGroup>
+
+              <FormGroup>
+                <p>Resumption Date:</p>
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={this.handleChange}
+                  minDate={new Date()}
+                  className="form-control"
+                  placeholderText="Select a date for resumption"
+                />
+              </FormGroup>
+
+              <Button
+                bsSize="small"
+                disabled={this.state.submitted}
+                bsStyle="success"
+                onClick={this.proposePosting}
+              >
+                {this.state.submitted ? "please wait" : "propose posting"}
+              </Button>
+            </div>
+          </Col>
 
           <Col md={6}>
-            <FormGroup>
-              <Downshift
-                onChange={this.onChange}
-                itemToString={department => (department ? `${department}` : "")}
-              >
-                {({
-                  getInputProps,
-                  getItemProps,
-                  isOpen,
-                  inputValue,
-                  highlightedIndex,
-                  selectedItem,
-                  getLabelProps
-                }) => (
-                  <div>
-                    <label
-                      style={{ marginTop: "1rem", display: "block" }}
-                      {...getLabelProps()}
-                    >
-                      Select a Department/Unit
-                    </label>
+            <div className="staffcard">
+              <p>{selectedDept ? `SELECTED UNIT: ${selectedDept}` : null}</p>
 
-                    <input
-                      {...getInputProps({
-                        placeholder: "Search department..."
-                      })}
-                      className="form-control"
-                      id="deptInput"
-                    />
+              <p>TOTAL : {staffInUnit && staffInUnit.length}</p>
+            </div>
 
-                    {isOpen ? (
-                      <div className="downshift-dropdown">
-                        {// filter the books and return items that match the inputValue
-                        department &&
-                          department
-                            .filter(
-                              item =>
-                                !inputValue ||
-                                item.name
-                                  .toLowerCase()
-                                  .includes(inputValue.toLowerCase())
-                            )
-                            // map the return value and return a div
-                            .map(({ name }, index) => (
-                              <div
-                                className="dropdown-item"
-                                {...getItemProps({
-                                  key: index + name,
-                                  index,
-                                  item: name
-                                })}
-                                style={{
-                                  backgroundColor:
-                                    highlightedIndex === index
-                                      ? "lightgray"
-                                      : "white",
-                                  fontWeight:
-                                    selectedItem === name ? "bold" : "normal"
-                                }}
-                              >
-                                {name}
-                              </div>
-                            ))}
-                      </div>
-                    ) : null}
-                  </div>
-                )}
-              </Downshift>
-            </FormGroup>
+            {staffInUnit && staffInUnit.length
+              ? staffInUnit.map(
+                  (
+                    {
+                      biodata,
+                      postings,
+                      designation,
+                      salaryStructure,
+                      certificate,
+                      currentPosting,
+                      postingProposed
+                    },
+                    index
+                  ) => {
+                    return (
+                      <div className="staffcard" key={index}>
+                        <p>
+                          Name: {biodata.firstName} {biodata.middleName}{" "}
+                          {biodata.surname}
+                        </p>
+                        <p>Designation : {designation}</p>
+                        <p>Salary Step : {salaryStructure}</p>
 
-            <p>{selectedDept ? `Selected Unit: ${selectedDept}` : null}</p>
-
-            {staffInUnit &&
-              staffInUnit.length &&
-              staffInUnit.map(
-                (
-                  {
-                    biodata,
-                    postings,
-                    designation,
-                    salaryStructure,
-                    certificate,
-                    currentPosting
-                  },
-                  index
-                ) => {
-                  return (
-                    <div className="staffcard" key={index}>
-                      <p>
-                        Name: {biodata.firstName} {biodata.MiddleName}
-                        {biodata.surname}
-                      </p>
-                      <p>Designation : {designation}</p>
-                      <p>Rank : {salaryStructure}</p>
-
-                      <p>
-                        {currentPosting}
-                        <br />
-                        Time spent in current Unit :{" "}
-                        <span>
+                        <p>
+                          Time spent in current Unit :
                           {postings &&
                             postings.length &&
                             FindTimeDifference(
-                              postings[FindMax(postings, "serial") - 1]
-                                .postingDate,
+                              FindPostingSuccessful(
+                                postings[FindMax(postings, "serial") - 1]
+                              ).postingDate,
                               moment().format("MMMM DD YYYY")
                             )}
-                        </span>
-                      </p>
-                    </div>
-                  );
-                }
-              )}
+                        </p>
+
+                        <p>
+                          {postingProposed
+                            ? `Proposed Department: ${FindDeptPostingProposedTo(
+                                postings
+                              )}`
+                            : null}
+                        </p>
+                      </div>
+                    );
+                  }
+                )
+              : null}
           </Col>
         </Row>
       </StaffProposePostingStyle>
@@ -220,7 +382,7 @@ export default (StaffProposePostingPageContainer = withTracker(() => {
   }
 
   let query = {
-    currentPosting: new RegExp("^" + selectedDeptReactiveVar.get() + "$", "i"),
+    currentPosting: selectedDeptReactiveVar.get(),
     staffType: "2"
   };
 

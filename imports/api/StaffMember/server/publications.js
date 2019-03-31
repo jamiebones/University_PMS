@@ -20,7 +20,7 @@ Meteor.publish(
   function StaffMembersPublication(unit) {
     check(unit, Match.OneOf(String, null, undefined));
     let query = {
-      currentPosting: new RegExp("^" + unit + "$", "i"),
+      currentPosting: unit,
       staffType: "2"
     };
     return [StaffMembers.find(query), UniversityUnits.find()];

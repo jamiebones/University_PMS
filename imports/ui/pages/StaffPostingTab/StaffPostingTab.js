@@ -2,6 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+FindPostingSuccessful;
 import { Tabs, Tab, Row, Col } from "react-bootstrap";
 //import { Link } from 'react-router-dom';
 import styled from "styled-components";
