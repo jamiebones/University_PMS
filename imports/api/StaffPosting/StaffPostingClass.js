@@ -21,7 +21,11 @@ const Postings = Class.create({
     unitName: String,
     serial: Number,
     postingDate: String,
-    postingStatus: String
+    postingStatus: String,
+    unitFrom: {
+      type: String,
+      optional: true
+    }
   }
 });
 
@@ -30,6 +34,7 @@ const StaffPosting = Class.create({
   collection: StaffPostings,
   fields: {
     staffId: String,
+    staffClass: String,
     designation: String,
     staffName: String,
     unitFrom: {

@@ -22,8 +22,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
         <div>
           <Switch>
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/add_staff_documents`}
@@ -32,8 +32,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/staff_posting`}
@@ -42,8 +42,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/registrar/staff_posting`}
@@ -52,8 +52,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/posting_list`}
@@ -62,8 +62,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/registrar/home`}
@@ -72,8 +72,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/records/search`}
@@ -82,8 +82,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/record/:staffId`}
@@ -92,8 +92,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/add_cadre`}
@@ -102,8 +102,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["manage-site", "edit-content", "super-admin"]}
-              group="canEditRecords"
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/propose_posting`}

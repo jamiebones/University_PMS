@@ -24,7 +24,6 @@ Meteor.methods({
     const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
     const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
     proposedPosting.status = status;
-    debugger;
     //get the last posting
     const postingSerial = FindMax(postedStaff.postings, "serial");
     //get this posting with the serial
@@ -48,6 +47,10 @@ Meteor.methods({
         //posting proposal was rejected by the director
         postedStaff.postingProposed = true;
       } else if (status === "4") {
+        //this is where i have to get an
+        //save this in a cron table
+        //only executes when re
+
         postedStaff.postingProposed = false;
         postedStaff.currentPosting = newUnit;
       }
@@ -83,11 +86,13 @@ Meteor.methods({
       newPosting.dateofPosting = new Date().toISOString();
       newPosting.previousPostings = previousPostings;
       newPosting.designation = designation;
+      newPosting.staffClass = postedStaff.staffClass;
       try {
         let postingSerial = FindMax(postedStaff.postings, "serial");
         postingSerial += 1;
         const postingObj = {
           unitName: newUnit,
+          unitFrom: unitFrom,
           serial: postingSerial,
           postingDate: startingDate,
           postingStatus: "1"

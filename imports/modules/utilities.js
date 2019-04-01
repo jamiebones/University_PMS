@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { _ } from "meteor/underscore";
 import moment from "moment";
 import * as XLSX from "xlsx";
+import { Roles } from "meteor/alanning:roles";
 
 export const FindMax = (arr, key) => {
   if (arr.length) {
@@ -106,6 +107,7 @@ export const SortPostingDuration = pArray => {
     let arr = pArray.sort((a, b) => {
       return a.serial - b.serial;
     });
+    arr.pop();
     let postingArray = [];
     for (let i = 0; i < arr.length; i++) {
       const posting = arr[i];
@@ -361,4 +363,41 @@ export const SortArrayByKey = (array, key) => {
     return sortArray;
   }
   return [];
+};
+
+export const GetDetailsBasedOnRole = (role, group) => {
+  if (Roles.userIsInRole(Meteor.userId(), role, group)) {
+    return true;
+  }
+  return false;
+};
+
+export const GetRealTimeStatus = (difference, postings) => {
+  if (difference) {
+    if (difference.substr("-")) {
+      //if we have minus in the difference
+      //it means staff have not resumed
+      let lastPosting = FindMax(postings, "serial");
+      let unitFrom = null;
+      let postedTo = null;
+
+      if (lastPosting) {
+        if (postings[lastPosting - 1].postingStatus === "4") {
+          const post = postings[lastPosting - 1];
+          unitFrom = post.unitFrom;
+          postedTo = post.unitName;
+        }
+      }
+      return `Still at ${unitFrom} but resuming at ${postedTo} in
+      ${difference.replace("-", "")} time`;
+    }
+    return `Time spent : ${difference}`;
+  }
+};
+
+export const CheckForNegativeDate = difference => {
+  if (difference.substr("-")) {
+    return true;
+  }
+  return false;
 };

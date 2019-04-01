@@ -2,7 +2,6 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-FindPostingSuccessful;
 import { Tabs, Tab, Row, Col } from "react-bootstrap";
 //import { Link } from 'react-router-dom';
 import styled from "styled-components";
@@ -43,14 +42,14 @@ class StaffPostingTab extends React.Component {
               animation={false}
               activeKey={this.state.activeTab}
               onSelect={activeTab => this.setState({ activeTab })}
-              id="manual-upload-tabs"
+              id="postingTabs"
             >
               <br />
               <br />
               <Tab eventKey="startPosting" title="Proposed Posting">
                 <Row>
                   <Col md={12}>
-                    <StaffPostingPage />
+                    <StaffPostingPage {...this.props} />
                   </Col>
                 </Row>
               </Tab>
@@ -58,7 +57,7 @@ class StaffPostingTab extends React.Component {
               <Tab eventKey="approvePosting" title="Approve/Cancel Posting">
                 <Row>
                   <Col md={12}>
-                    <DirectorViewPosting />
+                    <DirectorViewPosting {...this.props} />
                   </Col>
                 </Row>
               </Tab>
@@ -66,7 +65,7 @@ class StaffPostingTab extends React.Component {
               <Tab eventKey="postingApproved" title="Approved list">
                 <Row>
                   <Col md={12}>
-                    <ApprovedPosting />
+                    <ApprovedPosting {...this.props} />
                   </Col>
                 </Row>
               </Tab>

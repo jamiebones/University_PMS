@@ -16,7 +16,8 @@ import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
 import {
   SortPostingDuration,
-  StaffPostingStatusMessage
+  StaffPostingStatusMessage,
+  GetDetailsBasedOnRole
 } from "../../../modules/utilities";
 import moment from "moment";
 
@@ -144,20 +145,25 @@ class StaffPostingApproval extends React.Component {
                             <td>
                               <ButtonToolbar>
                                 <ButtonGroup bsSize="xsmall">
-                                  <Button
-                                    bsStyle="success"
-                                    onClick={() =>
-                                      this.handlePostingStatus({
-                                        status: approve,
-                                        staffId,
-                                        staffName,
-                                        newUnit,
-                                        _id
-                                      })
-                                    }
-                                  >
-                                    Approved
-                                  </Button>
+                                  {GetDetailsBasedOnRole(
+                                    ["Director", "Registrar"],
+                                    "Personnel"
+                                  ) ? (
+                                    <Button
+                                      bsStyle="success"
+                                      onClick={() =>
+                                        this.handlePostingStatus({
+                                          status: approve,
+                                          staffId,
+                                          staffName,
+                                          newUnit,
+                                          _id
+                                        })
+                                      }
+                                    >
+                                      Approved
+                                    </Button>
+                                  ) : null}
                                   <Button
                                     bsStyle="info"
                                     onClick={() =>

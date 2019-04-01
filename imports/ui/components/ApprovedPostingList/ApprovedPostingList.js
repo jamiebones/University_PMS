@@ -15,7 +15,10 @@ import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
 import { ReactiveVar } from "meteor/reactive-var";
-import { SortPostingDuration } from "../../../modules/utilities";
+import {
+  SortPostingDuration,
+  GetDetailsBasedOnRole
+} from "../../../modules/utilities";
 import moment from "moment";
 
 const StaffPostingApprovalStyles = styled.div`
@@ -166,6 +169,15 @@ export default (StaffPostingApprovalContainer = withTracker(() => {
       $gt: date
     }
   };
+
+  if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+    query.staffClass = "Senior Staff";
+  }
+
+  if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+    query.staffClass = "Junior Staff";
+  }
+
   switch (postingDateReactive.get()) {
     case "1":
       query.status = "4";

@@ -904,25 +904,36 @@ if (!Meteor.isProduction) {
 
   const users = [
     {
-      email: "records@admin.com",
+      email: "recordsunit@admin.com",
       password: "password",
       profile: {
         name: { first: "Carl", last: "Winslow" },
         title: "Dr"
       },
-      roles: ["canAddRecords", "canUpdateRecords", "canViewRecords"],
-      group: "Records"
+      roles: ["Records"],
+      group: "Personnel"
     },
 
     {
-      email: "sats@admin.com",
+      email: "satsunit@admin.com",
       password: "password",
       profile: {
         name: { first: "Jamie", last: "Foster" },
         title: "Dr"
       },
-      roles: ["canPost", "canViewRecords"],
-      group: "SATS"
+      roles: ["SATS"],
+      group: "Personnel"
+    },
+
+    {
+      email: "jseunit@admin.com",
+      password: "password",
+      profile: {
+        name: { first: "Jamie", last: "Foster" },
+        title: "Dr"
+      },
+      roles: ["JSE"],
+      group: "Personnel"
     }
   ];
 

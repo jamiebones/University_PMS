@@ -390,7 +390,6 @@ export default (StaffProposePostingPageContainer = withTracker(() => {
     loading: subscription && !subscription.ready(),
     //staff: StaffMembers.find(staffId).fetch(),
     staffInUnit: StaffMembers.find(query).fetch(),
-    m: console.log(StaffMembers.find(query).fetch()),
     department: UniversityUnits.find().fetch(),
     selectedDeptReactiveVar
   };

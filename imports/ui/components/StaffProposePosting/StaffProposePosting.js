@@ -9,7 +9,9 @@ import {
   FindMax,
   FindTimeDifference,
   SortPostingDuration,
-  FindDeptPostingProposedTo
+  FindDeptPostingProposedTo,
+  GetRealTimeStatus,
+  CheckForNegativeDate
 } from "../../../modules/utilities";
 
 const StaffProposePostingStyles = styled.div`
@@ -40,7 +42,6 @@ class StaffProposePosting extends React.Component {
                   <th>PF NUMBER</th>
                   <th>CURRENT DEPT</th>
                   <th>PREVIOUS DEPT</th>
-                  <th>POSTING PROPOSED</th>
                   <th>ACTION</th>
                 </tr>
               </thead>
@@ -86,19 +87,31 @@ class StaffProposePosting extends React.Component {
                           </td>
 
                           <td>
+                            <div>
+                              {postings &&
+                              postings.length &&
+                              CheckForNegativeDate(
+                                FindTimeDifference(
+                                  postings[FindMax(postings, "serial") - 1]
+                                    .postingDate,
+                                  moment().format("MMMM DD YYYY")
+                                )
+                              ) === true ? null : (
+                                <p>{currentPosting}</p>
+                              )}
+                            </div>
+
                             <p>
-                              {currentPosting}
-                              <br />
-                              Time spent in current Unit :{" "}
-                              <span>
-                                {postings &&
-                                  postings.length &&
+                              {postings &&
+                                postings.length &&
+                                GetRealTimeStatus(
                                   FindTimeDifference(
                                     postings[FindMax(postings, "serial") - 1]
                                       .postingDate,
                                     moment().format("MMMM DD YYYY")
-                                  )}
-                              </span>
+                                  ),
+                                  postings
+                                )}
                             </p>
                           </td>
 
@@ -111,7 +124,10 @@ class StaffProposePosting extends React.Component {
                                     ({ unit, duration }, index) => {
                                       return (
                                         <p key={index}>
-                                          {unit} : {duration}
+                                          {unit} :{" "}
+                                          {CheckForNegativeDate(duration)
+                                            ? "Posting was reversed"
+                                            : { duration }}
                                           <br />
                                         </p>
                                       );
@@ -125,29 +141,24 @@ class StaffProposePosting extends React.Component {
                           </td>
 
                           <td>
-                            <p>{postingProposed}</p>
-
-                            {postingProposed &&
-                              FindDeptPostingProposedTo(postings)}
-                          </td>
-
-                          <td>
                             <p>
-                              <Link
-                                to={{
-                                  pathname: "/auth/propose_posting",
-                                  state: {
-                                    staffId: staffId,
-                                    biodata: biodata,
-                                    postings: postings,
-                                    designation: designation,
-                                    salaryStructure: salaryStructure,
-                                    currentPosting: currentPosting
-                                  }
-                                }}
-                              >
-                                Propose Posting
-                              </Link>
+                              {!postingProposed ? (
+                                <Link
+                                  to={{
+                                    pathname: "/auth/propose_posting",
+                                    state: {
+                                      staffId: staffId,
+                                      biodata: biodata,
+                                      postings: postings,
+                                      designation: designation,
+                                      salaryStructure: salaryStructure,
+                                      currentPosting: currentPosting
+                                    }
+                                  }}
+                                >
+                                  Propose Posting
+                                </Link>
+                              ) : null}
                             </p>
                           </td>
                         </tr>

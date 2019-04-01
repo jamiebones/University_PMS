@@ -12,6 +12,7 @@ import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import autoBind from "react-autobind";
 import StaffProposePosting from "../../components/StaffProposePosting/StaffProposePosting";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import moment from "moment";
 
 const StaffPostingStyle = styled.div`
@@ -120,7 +121,7 @@ let query = {
   postingProposed: { $exists: true, $eq: false }
 };
 
-export default (StaffPostingPageContainer = withTracker(() => {
+export default (StaffPostingPageContainer = withTracker(props => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -128,6 +129,16 @@ export default (StaffPostingPageContainer = withTracker(() => {
       designationReactive.get(),
       staffIdReactive.get()
     );
+  }
+
+  //check if the person is in sats or jse
+
+  if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+    query.staffClass = "Senior Staff";
+  }
+
+  if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+    query.staffClass = "Junior Staff";
   }
 
   if (staffIdReactive.get() !== "") {
