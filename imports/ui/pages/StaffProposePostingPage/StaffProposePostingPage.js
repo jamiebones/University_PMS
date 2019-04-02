@@ -15,7 +15,8 @@ import {
   FindMax,
   FindTimeDifference,
   FindPostingSuccessful,
-  FindDeptPostingProposedTo
+  FindDeptPostingProposedTo,
+  FilterSuccesfulPosting
 } from "../../../modules/utilities";
 import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
@@ -208,9 +209,9 @@ class StaffProposePostingPage extends React.Component {
                 {postings &&
                   postings.length &&
                   FindTimeDifference(
-                    FindPostingSuccessful(
-                      postings[FindMax(postings, "serial") - 1].postingDate
-                    ),
+                    postings[
+                      FindMax(FilterSuccesfulPosting(postings), "serial") - 1
+                    ].postingDate,
                     moment().format("MMMM DD YYYY")
                   )}
               </p>

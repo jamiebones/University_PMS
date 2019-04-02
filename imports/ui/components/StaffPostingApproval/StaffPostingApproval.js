@@ -146,7 +146,7 @@ class StaffPostingApproval extends React.Component {
                               <ButtonToolbar>
                                 <ButtonGroup bsSize="xsmall">
                                   {GetDetailsBasedOnRole(
-                                    ["Director", "Registrar"],
+                                    ["Director", "Registrar", "super-admin"],
                                     "Personnel"
                                   ) ? (
                                     <Button

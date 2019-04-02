@@ -18,6 +18,18 @@ Meteor.methods({
       }
     ];
     const result = StaffPostings.aggregate(pipeline);
-    console.log(result);
+  },
+  "staffposting.getApprovedPosting": function StaffPostingmethod() {
+    let date = moment(new Date()).toISOString();
+    const pipeline = [
+      { $match: { status: "4", startingDate: { $gte: date } } },
+      { $group: { _id: "$staffId", data: { $last: "$$ROOT" } } },
+      // { $unwind: "$data" }
+      { $sort: { startingDate: -1, designation: 1 } }
+      // { $limit: 1 }
+    ];
+    const result = StaffPostings.aggregate(pipeline);
+    //console.log(result);
+    return result;
   }
 });

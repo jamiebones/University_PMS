@@ -1,18 +1,22 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, Table, Label } from "react-bootstrap";
+import { Button, Col, Row, Table, Label, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
+import { Link } from "react-router-dom";
 import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
-import { OverStayedStaff } from "../../../modules/utilities";
+import {
+  OverStayedStaff,
+  GetDetailsBasedOnRole
+} from "../../../modules/utilities";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import moment from "moment";
 import { _ } from "meteor/underscore";
 
-const HomePageRegistrarStyles = styled.div``;
+const DashBoardStyles = styled.div``;
 
-class HomePageRegistrar extends React.Component {
+class DashBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,19 +25,20 @@ class HomePageRegistrar extends React.Component {
     autoBind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, state) {
     if (!_.isEmpty(nextProps)) {
-      const { nonTeachingStaff } = this.props;
+      const { nonTeachingStaff } = nextProps;
       const staff = OverStayedStaff(nonTeachingStaff);
-      this.setState({ staff });
+      return { staff };
     }
+    return null;
   }
 
   render() {
     const { loading } = this.props;
     const { staff } = this.state;
     return (
-      <HomePageRegistrarStyles>
+      <DashBoardStyles>
         <Row>
           <Col md={12}>
             <Col md={6} />
@@ -52,6 +57,7 @@ class HomePageRegistrar extends React.Component {
                         <th>Designation</th>
                         <th>Current Department</th>
                         <th> Period Spent</th>
+                        <th>Propose Posting</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -64,7 +70,9 @@ class HomePageRegistrar extends React.Component {
                             days,
                             unit,
                             staffId,
-                            designation
+                            designation,
+                            salaryStructure,
+                            postings
                           },
                           index
                         ) => {
@@ -92,6 +100,26 @@ class HomePageRegistrar extends React.Component {
                                   {years} years {months} months {days} days
                                 </Label>
                               </td>
+
+                              <td>
+                                <p>
+                                  <Link
+                                    to={{
+                                      pathname: "/auth/propose_posting",
+                                      state: {
+                                        staffId: staffId,
+                                        biodata: biodata,
+                                        postings: postings,
+                                        designation: designation,
+                                        salaryStructure: salaryStructure,
+                                        currentPosting: unit
+                                      }
+                                    }}
+                                  >
+                                    Propose Posting
+                                  </Link>
+                                </p>
+                              </td>
                             </tr>
                           );
                         }
@@ -99,7 +127,7 @@ class HomePageRegistrar extends React.Component {
                     </tbody>
                   </Table>
                 ) : (
-                  <p>nothing here boss your boys are clean</p>
+                  <Alert bsStyle="info">No data</Alert>
                 )
               ) : (
                 <Loading />
@@ -107,19 +135,31 @@ class HomePageRegistrar extends React.Component {
             </Col>
           </Col>
         </Row>
-      </HomePageRegistrarStyles>
+      </DashBoardStyles>
     );
   }
 }
 
-export default (HomePageRegistrarContainer = withTracker(() => {
+export default (DashBoardContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe("staffposting.getoverstayedStaff");
   }
 
+  let query = {
+    staffType: "2"
+  };
+
+  if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+    query.staffClass = "Senior Staff";
+  }
+
+  if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+    query.staffClass = "Junior Staff";
+  }
+
   return {
     loading: subscription && !subscription.ready(),
-    nonTeachingStaff: StaffMembers.find({ staffType: "2" }).fetch()
+    nonTeachingStaff: StaffMembers.find(query).fetch()
   };
-})(HomePageRegistrar));
+})(DashBoard));

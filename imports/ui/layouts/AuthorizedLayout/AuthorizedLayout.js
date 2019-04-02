@@ -8,7 +8,7 @@ import StaffPosting from "../../pages/StaffPostingPage/StaffPostingPage";
 import StaffPostingTab from "../../pages/StaffPostingTab/StaffPostingTab";
 import RegistrarViewPosting from "../../pages/RegistrarViewPosting/RegistrarViewPosting";
 import ApprovedPostingList from "../../components/ApprovedPostingList/ApprovedPostingList";
-import HomePageRegistrar from "../../pages/HomePageRegistrar/HomePageRegistrar";
+import DashBoard from "../../pages/DashBoard/DashBoard";
 import NotFound from "../../pages/NotFound/NotFound";
 import SearchStaffRecords from "../../pages/SearchStaffRecords/SearchStaffRecords";
 import StaffDetailsPage from "../../pages/StaffDetailsPage/StaffDetailsPage";
@@ -32,7 +32,14 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
@@ -42,12 +49,20 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "JSE",
+                "Registrar",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/registrar/staff_posting`}
               component={RegistrarViewPosting}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -66,8 +81,8 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               group="Personnel"
               userId={userId}
               exact
-              path={`${match.path}/registrar/home`}
-              component={HomePageRegistrar}
+              path={`${match.path}/dashboard/home`}
+              component={DashBoard}
               {...rest}
             />
 

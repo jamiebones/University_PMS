@@ -915,6 +915,17 @@ if (!Meteor.isProduction) {
     },
 
     {
+      email: "director@admin.com",
+      password: "password",
+      profile: {
+        name: { first: "Carl", last: "Winslow" },
+        title: "Dr"
+      },
+      roles: ["Director"],
+      group: "Personnel"
+    },
+
+    {
       email: "satsunit@admin.com",
       password: "password",
       profile: {
@@ -933,6 +944,16 @@ if (!Meteor.isProduction) {
         title: "Dr"
       },
       roles: ["JSE"],
+      group: "Personnel"
+    },
+    {
+      email: "registrar@admin.com",
+      password: "password",
+      profile: {
+        name: { first: "Jamie", last: "Foster" },
+        title: "Dr"
+      },
+      roles: ["Registrar"],
       group: "Personnel"
     }
   ];

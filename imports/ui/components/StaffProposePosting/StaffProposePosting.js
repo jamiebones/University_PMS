@@ -10,6 +10,7 @@ import {
   FindTimeDifference,
   SortPostingDuration,
   FindDeptPostingProposedTo,
+  FilterSuccesfulPosting,
   GetRealTimeStatus,
   CheckForNegativeDate
 } from "../../../modules/utilities";
@@ -101,17 +102,19 @@ class StaffProposePosting extends React.Component {
                               )}
                             </div>
 
-                            <p>
-                              {postings &&
-                                postings.length &&
-                                GetRealTimeStatus(
-                                  FindTimeDifference(
-                                    postings[FindMax(postings, "serial") - 1]
-                                      .postingDate,
-                                    moment().format("MMMM DD YYYY")
-                                  ),
-                                  postings
-                                )}
+                            <p className="text-info">
+                              <b>
+                                {postings &&
+                                  postings.length &&
+                                  GetRealTimeStatus(
+                                    FindTimeDifference(
+                                      postings[FindMax(postings, "serial") - 1]
+                                        .postingDate,
+                                      moment().format("MMMM DD YYYY")
+                                    ),
+                                    postings
+                                  )}
+                              </b>
                             </p>
                           </td>
 

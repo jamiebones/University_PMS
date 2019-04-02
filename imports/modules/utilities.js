@@ -18,9 +18,18 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const FilterSuccesfulPosting = arr => {
+  if (arr.length) {
+    let filteredArray = arr.filter(posting => {
+      return posting.postingStatus == "4";
+    });
+    return filteredArray;
+  }
+};
+
 export const FindPostingSuccessful = obj => {
-  if (obj.postingStatus === "4") {
-    return obj;
+  if (obj.postingStatus == "4") {
+    return obj.postingDate;
   }
   return {};
 };
@@ -60,6 +69,8 @@ export const OverStayedStaff = arr => {
       const staffPosting = arr[i].postings;
       const biodata = arr[i].biodata;
       const staffId = arr[i].staffId;
+      const salaryStructure = arr[i].salaryStructure;
+      const postings = arr[i].postings;
       //find the max
       if (staffPosting.length < 1) continue;
       const maxSerial = FindMax(staffPosting, "serial");
@@ -84,7 +95,9 @@ export const OverStayedStaff = arr => {
             months,
             days,
             unit: currentPosting.unitName,
-            staffId
+            staffId,
+            salaryStructure,
+            postings
           };
           staffArray.push(staff);
         }
@@ -373,6 +386,7 @@ export const GetDetailsBasedOnRole = (role, group) => {
 };
 
 export const GetRealTimeStatus = (difference, postings) => {
+  console.log(difference);
   if (difference) {
     if (difference.substr("-")) {
       //if we have minus in the difference
@@ -392,6 +406,8 @@ export const GetRealTimeStatus = (difference, postings) => {
       ${difference.replace("-", "")} time`;
     }
     return `Time spent : ${difference}`;
+  } else {
+    return;
   }
 };
 

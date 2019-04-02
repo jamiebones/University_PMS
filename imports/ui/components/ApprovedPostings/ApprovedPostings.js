@@ -32,35 +32,27 @@ const StaffPostingApprovalStyles = styled.div`
 class StaffPostingApproval extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      postings: []
+    };
     autoBind(this);
   }
 
-  handlePostingStatus({ status, staffId, staffName, newUnit, _id }) {
-    //confirm the approval
-    const confirmedPosting = confirm(
-      `Are you sure, you want to ${status} the  posting of ${staffName} to ${newUnit}`
-    );
-
-    if (!confirmedPosting) return;
-    Meteor.call(
-      "staffposting.approveorcancelposting",
-      status,
-      staffId,
-      newUnit,
-      _id,
-      (error, response) => {
-        if (!error) {
-          Bert.alert(`Successful!`, "success");
-        } else {
-          Bert.alert(`${error}`, "danger");
+  componentDidMount() {
+    if (this.state.postings.length == 0) {
+      Meteor.call("staffposting.getApprovedPosting", (err, res) => {
+        if (!err) {
+          console.log(res);
+          this.setState({ postings: res });
         }
-      }
-    );
+        console.log(err);
+      });
+    }
   }
 
   render() {
-    const { postings, loading } = this.props;
+    const { loading } = this.props;
+    const { postings } = this.state;
 
     return (
       <StaffPostingApprovalStyles>
@@ -72,6 +64,7 @@ class StaffPostingApproval extends React.Component {
                   <tr>
                     <th>S/N</th>
                     <th>Name</th>
+                    <th>PF</th>
                     <th>Designation</th>
                     <th>Current Department</th>
                     <th> Posted To</th>
@@ -80,44 +73,36 @@ class StaffPostingApproval extends React.Component {
                 </thead>
                 <tbody>
                   {postings &&
-                    postings.map(
-                      (
-                        {
-                          staffId,
-                          staffName,
-                          unitFrom,
-                          newUnit,
-                          _id,
-                          previousPostings,
-                          startingDate,
-                          designation
-                        },
-                        index
-                      ) => {
-                        return (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>
-                              <p>{staffName}</p>
-                            </td>
-                            <td>
-                              <p>{designation}</p>
-                            </td>
+                    postings &&
+                    postings.map((post, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <p>{post.data.staffName}</p>
+                          </td>
+                          <td>
+                            <p>{post._id}</p>
+                          </td>
+                          <td>
+                            <p>{post.data.designation}</p>
+                          </td>
 
-                            <td>
-                              <p>{unitFrom}</p>
-                            </td>
-                            <td>
-                              <p>{newUnit}</p>
-                            </td>
+                          <td>
+                            <p>{post.data.unitFrom}</p>
+                          </td>
+                          <td>
+                            <p>{post.data.newUnit}</p>
+                          </td>
 
-                            <td>
-                              {moment(startingDate).format("MMMM DD YYYY")}
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )}
+                          <td>
+                            {moment(post.data.startingDate).format(
+                              "MMMM DD YYYY"
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </Table>
             ) : (
