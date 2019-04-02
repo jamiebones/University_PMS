@@ -73,7 +73,7 @@ class Login extends React.Component {
         } else {
           const user = Meteor.user();
           if (user !== undefined) {
-            history.push("/app/dashboard");
+            history.push("/auth/dashboard/home");
           }
           Bert.alert("You have been logged in successfully!", "success");
         }

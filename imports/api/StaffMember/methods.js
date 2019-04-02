@@ -219,6 +219,27 @@ Meteor.methods({
     }
     console.log(numSaved);
     return numSaved;
+  },
+  "staffMembers.editStaffState": function StaffMethods(lga, state, staffId) {
+    check(lga, String);
+    check(state, String);
+    check(staffId, String);
+    //find the member
+    const editStaff = StaffMember.findOne({ staffId: staffId });
+    editStaff.stateOfOrigin = state;
+    editStaff.lgaOfOrigin = lga;
+    editStaff.save();
+  },
+
+  "staffMembers.saveChanges": function StaffMethods(object) {
+    check(object, Object);
+    const { sex, maritalStatus, title, staffId } = object;
+    //find the member
+    const editStaff = StaffMember.findOne({ staffId: staffId });
+    editStaff.sex = sex;
+    editStaff.maritalStatus = maritalStatus;
+    editStaff.biodata.title = title;
+    editStaff.save();
   }
 });
 

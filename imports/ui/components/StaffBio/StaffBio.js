@@ -6,7 +6,10 @@ import {
   FormGroup,
   ControlLabel,
   Button,
-  Alert
+  Alert,
+  ButtonToolbar,
+  ButtonGroup,
+  InputGroup
 } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -19,6 +22,7 @@ if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
 import { NigeriaStates } from "../../../api/NigeriaStates/NigeriaStatesClass";
 import moment from "moment";
 import autoBind from "react-autobind";
+import StateModal from "../../components/StateModal/StateModal";
 import { _ } from "meteor/underscore";
 
 class StaffBio extends React.Component {
@@ -34,25 +38,23 @@ class StaffBio extends React.Component {
       staffId: "",
       profilePicture: "",
       state: "",
-      lga: [],
-      lgaOrigin: ""
+      stateOfOrigin: "",
+      lgaOfOrigin: "",
+      editStaff: false,
+      showStateModal: false,
+      firstRender: false,
+      title: ""
     };
     autoBind(this);
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    debugger;
-    if (nextProps.staff.stateOfOrigin.trim() !== state.state) {
-      const { staff, states } = nextProps;
-      const selectedState = states.find(st => {
-        return (
-          st.state.toLowerCase().trim() ===
-          staff.stateOfOrigin.toLowerCase().trim()
-        );
-      });
-
+    //if (nextProps.staff.stateOfOrigin.trim() !== state.state) {
+    const { staff, states } = nextProps;
+    if (state.editStaff === false) {
       return {
         firstName: staff.biodata.firstName,
+        title: staff.biodata.title || "",
         surname: staff.biodata.surname,
         middleName: staff.biodata.middleName,
         profilePicture: staff.biodata.profilePicture,
@@ -60,12 +62,12 @@ class StaffBio extends React.Component {
         dob: moment(staff.dob),
         maritalStatus: staff.maritalStatus,
         staffId: staff.staffId,
-        state: staff.stateOfOrigin.trim(),
-        lgaOrigin: staff.lgaOfOrigin.trim()
-        // lga: selectedState && selectedState.lga
+        stateOfOrigin: staff.stateOfOrigin.trim(),
+        lgaOfOrigin: staff.lgaOfOrigin.trim()
       };
+    } else {
+      return {};
     }
-    return null;
   }
 
   onChange(e) {
@@ -73,60 +75,34 @@ class StaffBio extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onStateChange(e) {
-    const state = e.target.value;
-    let states = this.props.states;
-    //find lga
-    const selectedState = states.find(st => {
-      return st.state.toLowerCase().trim() === state.toLowerCase().trim();
-    });
-    if (!_.isEmpty(selectedState)) {
-      const lga = selectedState.lga;
-      this.setState({ lga: lga });
-    }
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
   componentDidMount() {
     const component = this;
+  }
 
-    validate(component.form, {
-      rules: {
-        emailAddress: {
-          required: true,
-          email: true
-        },
-        password: {
-          required: true
-        }
-      },
-      messages: {
-        emailAddress: {
-          required: "Need an email address here.",
-          email: "Is this email address correct?"
-        },
-        password: {
-          required: "Need a password here."
-        }
-      },
-      submitHandler() {
-        component.handleSubmit();
+  saveChanges() {
+    const staffObject = {
+      sex: this.state.sex,
+      maritalStatus: this.state.maritalStatus,
+      title: this.state.title,
+      staffId: this.state.staffId
+    };
+    Meteor.call("staffMembers.saveChanges", staffObject, err => {
+      if (!err) {
+        Bert.alert("state changed successful", "success");
+      } else {
+        Bert.alert(`There was an error: ${error}`, "danger");
       }
     });
   }
 
-  handleSubmit() {}
-
   render() {
-    const { staff, states } = this.props;
+    const { staff, states, history } = this.props;
+    const { editStaff } = this.state;
     return (
       <div className="StaffBio">
         <Row>
           <Col xs={12} sm={8} md={8} lg={8}>
-            <form
-              ref={form => (this.form = form)}
-              onSubmit={event => event.preventDefault()}
-            >
+            <form ref={form => (this.form = form)}>
               <FormGroup>
                 <ControlLabel>Title</ControlLabel>
                 <select
@@ -134,8 +110,13 @@ class StaffBio extends React.Component {
                   name="title"
                   value={this.state.title}
                   onChange={this.onChange}
+                  disabled={!editStaff}
                 >
                   <option value="0">select title</option>
+                  <option value="Mr">Mr</option>
+                  <option value="Mrs">Mrs</option>
+                  <option value="Dr">Dr</option>
+                  <option value="Prof">Professor</option>
                 </select>
               </FormGroup>
 
@@ -144,6 +125,7 @@ class StaffBio extends React.Component {
                 <input
                   type="text"
                   name="firstName"
+                  disabled
                   value={this.state.firstName}
                   onChange={this.onChange}
                   className="form-control"
@@ -155,6 +137,7 @@ class StaffBio extends React.Component {
                 <input
                   type="text"
                   name="middleName"
+                  disabled
                   value={this.state.middleName}
                   onChange={this.onChange}
                   className="form-control"
@@ -166,6 +149,7 @@ class StaffBio extends React.Component {
                 <input
                   type="text"
                   name="surname"
+                  disabled
                   value={this.state.surname}
                   onChange={this.onChange}
                   className="form-control"
@@ -177,6 +161,7 @@ class StaffBio extends React.Component {
                 <DatePicker
                   selected={this.state.dob}
                   onChange={this.onChange}
+                  disabled
                   className="form-control"
                   placeholderText="date of birth"
                 />
@@ -189,6 +174,7 @@ class StaffBio extends React.Component {
                   name="sex"
                   value={this.state.sex}
                   onChange={this.onChange}
+                  disabled={!editStaff}
                 >
                   <option value="0">select sex</option>
                   <option value="M">Male</option>
@@ -200,9 +186,10 @@ class StaffBio extends React.Component {
                 <ControlLabel>Marital Status</ControlLabel>
                 <select
                   className="form-control"
-                  name="sex"
+                  name="maritalStatus"
                   value={this.state.maritalStatus}
                   onChange={this.onChange}
+                  disabled={!editStaff}
                 >
                   <option value="0">select marital status</option>
                   <option value="S">single</option>
@@ -214,35 +201,42 @@ class StaffBio extends React.Component {
               </FormGroup>
 
               <FormGroup>
-                <ControlLabel>State</ControlLabel>
-                <select
-                  className="form-control"
-                  name="state"
-                  value={this.state.state}
-                  onChange={this.onStateChange}
-                >
-                  <option value="0">select state</option>
-                  {states &&
-                    states.map(({ state }, index) => {
-                      return <option key={index + 9444}>{state}</option>;
-                    })}
-                </select>
+                <ControlLabel>State of Origin</ControlLabel>
+                <InputGroup>
+                  <input
+                    type="text"
+                    disabled
+                    name="stateOfOrigin"
+                    value={this.state.stateOfOrigin}
+                    onChange={this.onChange}
+                    className="form-control"
+                  />
+                  <InputGroup.Button>
+                    <Button
+                      bsStyle="info"
+                      onClick={() =>
+                        this.setState({
+                          showStateModal: true,
+                          firstRender: true
+                        })
+                      }
+                    >
+                      Edit State
+                    </Button>
+                  </InputGroup.Button>
+                </InputGroup>
               </FormGroup>
 
               <FormGroup>
-                <ControlLabel>lga</ControlLabel>
-                <select
-                  className="form-control"
-                  name="lgaOrigin"
-                  value={this.state.lgaOrigin}
+                <ControlLabel>LGA</ControlLabel>
+                <input
+                  type="text"
+                  disabled
+                  name="stateOfOrigin"
+                  value={this.state.lgaOfOrigin}
                   onChange={this.onChange}
-                >
-                  <option value="0">select lga</option>
-                  {this.state.lga &&
-                    this.state.lga.map((lga, index) => {
-                      return <option key={index + 400}>{lga}</option>;
-                    })}
-                </select>
+                  className="form-control"
+                />
               </FormGroup>
 
               <FormGroup>
@@ -250,19 +244,34 @@ class StaffBio extends React.Component {
                 <input
                   type="text"
                   name="staffId"
+                  disabled
                   value={this.state.staffId}
                   onChange={this.onChange}
                   className="form-control"
                 />
               </FormGroup>
 
-              <Button
-                type="submit"
-                bsStyle="success"
-                disabled={this.state.submitted ? true : false}
-              >
-                {this.state.submitted ? "Please wait....." : "Save"}
-              </Button>
+              <ButtonToolbar>
+                <ButtonGroup bsSize="small">
+                  <Button
+                    bsStyle="info"
+                    onClick={() =>
+                      this.setState({
+                        editStaff: !this.state.editStaff
+                      })
+                    }
+                  >
+                    Start Edit
+                  </Button>
+                  <Button
+                    bsStyle="success"
+                    disabled={!editStaff}
+                    onClick={this.saveChanges}
+                  >
+                    Save
+                  </Button>
+                </ButtonGroup>
+              </ButtonToolbar>
             </form>
           </Col>
 
@@ -278,6 +287,19 @@ class StaffBio extends React.Component {
             ) : null*/}
           </Col>
         </Row>
+
+        <StateModal
+          staffState={this.state.stateOfOrigin}
+          staffLga={this.state.lgaOfOrigin}
+          staffId={this.state.staffId}
+          show={this.state.showStateModal}
+          onHide={() => this.setState({ showStateModal: false })}
+          history={history}
+          states={states}
+          firstRender={this.state.firstRender}
+          toggleFirstRender={() => this.setState({ firstRender: false })}
+          staff={staff}
+        />
       </div>
     );
   }

@@ -35,7 +35,7 @@ class StaffPostingTab extends React.Component {
       <div className="StaffPostingTab">
         <Row>
           <Col md={12} sm={12} lg={12}>
-            <StaffPostingHeader className="page-header">
+            <StaffPostingHeader className="page-header hidden-print">
               Staff Posting
             </StaffPostingHeader>
             <StaffPostingTabs

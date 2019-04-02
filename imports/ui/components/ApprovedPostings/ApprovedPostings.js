@@ -108,6 +108,18 @@ class StaffPostingApproval extends React.Component {
             ) : (
               <Loading />
             )}
+            {postings && postings.length ? (
+              <div className="pull-right">
+                <Button
+                  className="hidden-print"
+                  bsSize="xsmall"
+                  onClick={() => window.print()}
+                  bsStyle="success"
+                >
+                  Print List
+                </Button>
+              </div>
+            ) : null}
           </Col>
         </Row>
       </StaffPostingApprovalStyles>
