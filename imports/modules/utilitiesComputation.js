@@ -26,7 +26,7 @@ export const FindTimeDifference = staffArray => {
 
     staff.periodSpent = `${years} ${months} ${days}`;
     staff.age = staffAge;
-    //if (parseInt(diffDuration.years()) >= 35) {
+    if (parseInt(diffDuration.years()) >= 35) {
       let yearsToretirement = null;
       if (staffType == "1") {
         //academic staff
