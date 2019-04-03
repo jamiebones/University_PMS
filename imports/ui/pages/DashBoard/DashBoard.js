@@ -10,9 +10,12 @@ import {
   OverStayedStaff,
   GetDetailsBasedOnRole
 } from "../../../modules/utilities";
+import { FindTimeDifference } from "../../../modules/utilitiesComputation";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import moment from "moment";
 import { _ } from "meteor/underscore";
+import { ReactiveVar } from "meteor/reactive-var";
+import { Meteor } from "meteor/meteor";
 
 const DashBoardStyles = styled.div``;
 
@@ -20,27 +23,87 @@ class DashBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      staff: []
+      staff: [],
+      staffData: []
     };
     autoBind(this);
   }
 
-  static getDerivedStateFromProps(nextProps, state) {
-    if (!_.isEmpty(nextProps)) {
-      const { nonTeachingStaff } = nextProps;
-      const staff = OverStayedStaff(nonTeachingStaff);
-      return { staff };
-    }
-    return null;
+  componentDidMount() {
+    Meteor.call("staffmembers.getstaff", (err, res) => {
+      if (!err) {
+        console.dir(FindTimeDifference(res));
+        const result = FindTimeDifference(res);
+        this.setState({ staffData: result });
+      }
+    });
   }
 
   render() {
-    const { loading } = this.props;
-    const { staff } = this.state;
+    const { loading, staff } = this.props;
+    const { staffData } = this.state;
+    // const { staff } = this.state;
     return (
       <DashBoardStyles>
         <Row>
           <Col md={12}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Designation</th>
+                  <th>Service Years</th>
+                  <th>Age</th>
+                  <th>Year(s) to retirement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staffData &&
+                  staffData.map(
+                    (
+                      {
+                        biodata,
+                        periodSpent,
+                        age,
+                        designation,
+                        yearsToretirement
+                      },
+                      index
+                    ) => {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            <p>
+                              {biodata.firstName} {biodata.middleName}{" "}
+                              {biodata.surname}
+                            </p>
+                          </td>
+
+                          <td>
+                            <p>{designation}</p>
+                          </td>
+
+                          <td>
+                            <p>{periodSpent}</p>
+                          </td>
+
+                          <td>
+                            <p>{age}</p>
+                          </td>
+
+                          <td>
+                            <p>
+                              {yearsToretirement <= 0
+                                ? "Retired"
+                                : yearsToretirement}
+                            </p>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )}
+              </tbody>
+            </Table>
             <Col md={6} />
             <Col md={6}>
               <p className="lead">
@@ -140,6 +203,9 @@ class DashBoard extends React.Component {
   }
 }
 
+let overStayedStaffRec = new ReactiveVar();
+let loadingReactive = new ReactiveVar(true);
+
 export default (DashBoardContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
@@ -158,8 +224,17 @@ export default (DashBoardContainer = withTracker(() => {
     query.staffClass = "Junior Staff";
   }
 
+  if (subscription && subscription.ready()) {
+    const teachingStaff = StaffMembers.find(query).fetch();
+
+    OverStayedStaff(teachingStaff).then(staff => {
+      overStayedStaffRec.set(staff);
+      loadingReactive.set(false);
+    });
+  }
+
   return {
-    loading: subscription && !subscription.ready(),
-    nonTeachingStaff: StaffMembers.find(query).fetch()
+    loading: loadingReactive.get(),
+    staff: overStayedStaffRec.get()
   };
 })(DashBoard));

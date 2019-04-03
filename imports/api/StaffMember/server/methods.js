@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
+import moment from "moment";
 
 Meteor.methods({
   getRecords: function StaffMembersmethod() {
@@ -30,6 +31,39 @@ Meteor.methods({
       },
       //  { $unwind: {"$postings"} },
       { $group: { _id: "$staffId" } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+  "staffmembers.getstaff": function StaffMemberMethod() {
+    return StaffMembers.find().fetch();
+  },
+
+  "staffmembers.getstaffStay": function StaffMemberMethod() {
+    const pipeline = [
+      {
+        $project: {
+          staffId: "$staffId",
+          biodata: "$biodata",
+          year: "$dateOfAppointmentInUniversity",
+          timeSpent_total: {
+            $divide: [
+              {
+                $subtract: [
+                  new Date(),
+                  {
+                    $dateFromString: {
+                      dateString: "$dateOfAppointmentInUniversity"
+                    }
+                  }
+                ]
+              },
+              1000 * 60 * 60 * 24 * 365
+            ]
+          }
+        }
+      }
+      //{ $match: { $timeSpent_total: { $gte: 30 } } }
     ];
     const result = StaffMembers.aggregate(pipeline);
     return result;
