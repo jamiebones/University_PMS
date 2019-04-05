@@ -62,87 +62,6 @@ export const StaffType = type => {
   return staffType[parseInt(type)];
 };
 
-const __GetOverStayedStaff = arr => {
-  return new Promise((resolve, reject) => {
-    //loop through the array
-    let staffArray = [];
-    if (arr.length) {
-      for (let i = 0; i < arr.length; i++) {
-        const staffPosting = arr[i].postings;
-        const biodata = arr[i].biodata;
-        const staffId = arr[i].staffId;
-        const salaryStructure = arr[i].salaryStructure;
-        const postings = arr[i].postings;
-        //find the max
-        if (staffPosting.length < 1) continue;
-        const maxSerial = FindMax(staffPosting, "serial");
-        const currentPosting = staffPosting[maxSerial - 1];
-
-        const designation = arr[i].designation;
-        if (currentPosting && currentPosting.postingStatus == "4") {
-          //we have a successful posting let's find how
-          //long they have stayed
-          const todayDate = moment(new Date());
-          const postingDate = currentPosting.postingDate;
-          const diffDuration = moment.duration(todayDate.diff(postingDate));
-          let years = diffDuration.years();
-          let months = diffDuration.months();
-          let days = diffDuration.days();
-          if (years && parseInt(years) >= 3) {
-            //over stayed time to move
-            const staff = {
-              biodata,
-              designation,
-              years,
-              months,
-              days,
-              unit: currentPosting.unitName,
-              staffId,
-              salaryStructure,
-              postings
-            };
-            staffArray.push(staff);
-          }
-        } else {
-          continue;
-        }
-      }
-    }
-
-    resolve(staffArray);
-  });
-};
-
-export const OverStayedStaff = async arr => {
-  //let staffArray = [];
-  if (arr.length) {
-    //lets split the array into 2
-    let startArray = [];
-    let endArray = [];
-    if (arr.length % 2 === 0) {
-      //we have a perfect split
-      startArray = arr.slice[(0, arr.length / 2)];
-      endArray = arr.slice[(arr.length / 2, arr.length)];
-    } else {
-      //we have a decimal number
-      const midPoint = Math.floor(arr.length / 2);
-      startArray = arr.slice(0, midPoint);
-      endArray = arr.slice(midPoint, arr.length);
-    }
-    let finalArray = [
-      ...(await __GetOverStayedStaff(startArray)),
-      ...(await __GetOverStayedStaff(endArray))
-    ];
-
-    if (finalArray.length) {
-      const sortByDuration = finalArray.sort((a, b) => {
-        return b.years - a.years;
-      });
-      return sortByDuration;
-    }
-  }
-};
-
 export const SortPostingDuration = pArray => {
   if (pArray.length) {
     let arr = pArray.sort((a, b) => {
@@ -444,4 +363,26 @@ export const CheckForNegativeDate = difference => {
     return true;
   }
   return false;
+};
+
+export const FormatSalaryStructure = structure => {
+  if (structure) {
+    debugger;
+    const structureArray = Array.from(structure);
+    //build the string
+    let string = null;
+    if (structureArray[0] != "0") {
+      string += structureArray[0];
+    }
+    string += structureArray[1];
+    string += "/";
+    string += structureArray[2];
+
+    if (structureArray[2] != "0") {
+      string += structureArray[2];
+    }
+    string += structureArray[3];
+
+    return string;
+  }
 };

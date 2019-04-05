@@ -22,4 +22,7 @@ import "../../api/NigeriaStates/methods";
 import "../../api/UniversityCadre/server/publications";
 import "../../api/UniversityCadre/methods";
 
+import "../../api/ActivityLog/server/publications";
+import "../../api/ActivityLog/methods";
+
 import "../../api/Utility/server/methods";

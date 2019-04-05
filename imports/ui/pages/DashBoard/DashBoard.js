@@ -3,16 +3,11 @@ import styled from "styled-components";
 import { Button, Col, Row, Table, Label, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { Link } from "react-router-dom";
-import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
-import {
-  OverStayedStaff,
-  GetDetailsBasedOnRole
-} from "../../../modules/utilities";
-import { FindTimeDifference } from "../../../modules/utilitiesComputation";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import { OverStayedStaff } from "../../../modules/utilitiesComputation";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import moment from "moment";
 import { _ } from "meteor/underscore";
 import { ReactiveVar } from "meteor/reactive-var";
 import { Meteor } from "meteor/meteor";
@@ -29,81 +24,12 @@ class DashBoard extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    Meteor.call("staffmembers.getstaff", (err, res) => {
-      if (!err) {
-        console.dir(FindTimeDifference(res));
-        const result = FindTimeDifference(res);
-        this.setState({ staffData: result });
-      }
-    });
-  }
-
   render() {
     const { loading, staff } = this.props;
-    const { staffData } = this.state;
-    // const { staff } = this.state;
     return (
       <DashBoardStyles>
         <Row>
           <Col md={12}>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Designation</th>
-                  <th>Service Years</th>
-                  <th>Age</th>
-                  <th>Year(s) to retirement</th>
-                </tr>
-              </thead>
-              <tbody>
-                {staffData &&
-                  staffData.map(
-                    (
-                      {
-                        biodata,
-                        periodSpent,
-                        age,
-                        designation,
-                        yearsToretirement
-                      },
-                      index
-                    ) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <p>
-                              {biodata.firstName} {biodata.middleName}{" "}
-                              {biodata.surname}
-                            </p>
-                          </td>
-
-                          <td>
-                            <p>{designation}</p>
-                          </td>
-
-                          <td>
-                            <p>{periodSpent}</p>
-                          </td>
-
-                          <td>
-                            <p>{age}</p>
-                          </td>
-
-                          <td>
-                            <p>
-                              {yearsToretirement <= 0
-                                ? "Retired"
-                                : yearsToretirement}
-                            </p>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
-              </tbody>
-            </Table>
             <Col md={6} />
             <Col md={6}>
               <p className="lead">

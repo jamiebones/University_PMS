@@ -16,6 +16,13 @@ Meteor.publish(
 );
 
 Meteor.publish(
+  "staffposting.getStaffDueForPromotion",
+  function StaffMembersPublication() {
+    return [StaffMembers.find({}), Designations.find({})];
+  }
+);
+
+Meteor.publish(
   "staffmembers.getStaffInDepartment",
   function StaffMembersPublication(unit) {
     check(unit, Match.OneOf(String, null, undefined));

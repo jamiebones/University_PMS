@@ -6,6 +6,10 @@ import moment from "moment";
 
 const StaffMembers = new Mongo.Collection("staffmembers");
 
+if (Meteor.isServer) {
+  StaffMembers._ensureIndex({ staffId: 1 });
+}
+
 StaffMembers.allow({
   insert: () => false,
   update: () => false,

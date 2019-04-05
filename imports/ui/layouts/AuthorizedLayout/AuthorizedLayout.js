@@ -14,6 +14,8 @@ import SearchStaffRecords from "../../pages/SearchStaffRecords/SearchStaffRecord
 import StaffDetailsPage from "../../pages/StaffDetailsPage/StaffDetailsPage";
 import AddCadrePage from "../../pages/AddCadres/AddCadres";
 import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
+import PensionDashboard from "../../pages/PensionDashboard/PensionDashboard";
+import StaffPromotion from "../../pages/StaffPromotion/StaffPromotion";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -45,6 +47,40 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/staff_posting`}
               component={StaffPostingTab}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/due_for_promotion`}
+              component={StaffPromotion}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/dashboard/pensions/home`}
+              component={PensionDashboard}
               {...rest}
             />
 
