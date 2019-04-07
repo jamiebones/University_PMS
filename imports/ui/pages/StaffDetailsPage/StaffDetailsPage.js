@@ -1,5 +1,3 @@
-import Tabs from "react-responsive-tabs";
-import StaffBio from "../../components/StaffBio/StaffBio";
 import React from "react";
 import { Meteor } from "meteor/meteor";
 import Loading from "../../components/Loading/Loading";
@@ -9,7 +7,14 @@ import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import autoBind from "react-autobind";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import { ReplaceSlash } from "../../../modules/utilities";
+import {
+  ReplaceSlash,
+  GetDetailsBasedOnRole
+} from "../../../modules/utilities";
+import Tabs from "react-responsive-tabs";
+import StaffBio from "../../components/StaffBio/StaffBio";
+import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
+import StaffQualification from "../../components/StaffQualification/StaffQualification";
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
 }
@@ -26,7 +31,25 @@ class StaffDetailPage extends React.Component {
     const { staff, loading } = this.props;
     const StaffData = [
       { title: "Staff Bio", getContent: () => <StaffBio staff={staff} /> },
-      { name: "Theodore Roosevelt", component: "..." }
+      GetDetailsBasedOnRole("Records", "Personnel") && {
+        title: "Promotion",
+        getContent: () => (
+          <StaffPromotionComponent
+            staffdesignation={staff && staff.designation}
+            biodata={staff && staff.biodata}
+            staffId={staff && staff.staffId}
+            salaryStructure={staff && staff.salaryStructure}
+            dateOfLastPromotion={staff && staff.dateOfLastPromotion}
+            user={this.props.name}
+          />
+        )
+      },
+      {
+        title: "Staff Qualification",
+        getContent: () => (
+          <StaffQualification certificate={staff && staff.certificate} />
+        )
+      }
     ];
 
     return (
@@ -49,7 +72,6 @@ export default (StaffDetailPageContainer = withTracker(({ match }) => {
   let subscription;
   const { staffId } = match.params;
   const staffIdQuery = staffId && ReplaceSlash(staffId);
-  console.log(staffIdQuery);
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
       "staffmembers.getStaffbyStaffId",

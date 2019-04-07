@@ -74,12 +74,13 @@ const Education = Class.create({
   }
 });
 
-const Languages = Class.create({
-  name: "Languages",
+const Promotion = Class.create({
+  name: "Promotion",
   fields: {
-    language: String,
-    spoken: Boolean,
-    written: Boolean
+    designation: String,
+    salaryStructure: String,
+    promotionYear: String,
+    serial: Number
   }
 });
 
@@ -88,16 +89,6 @@ const Documents = Class.create({
   fields: {
     documentId: String,
     serial: Number
-  }
-});
-
-const Promotions = Class.create({
-  name: "Promotions",
-  fields: {
-    serial: Number,
-    promotionYear: String,
-    newRank: String,
-    newContiss: String
   }
 });
 
@@ -133,13 +124,7 @@ const StaffMember = Class.create({
       type: String,
       optional: true
     },
-    languages: {
-      type: [Languages],
-      optional: true,
-      default() {
-        return [];
-      }
-    },
+
     staffType: String,
     documents: {
       type: [Documents],
@@ -155,14 +140,14 @@ const StaffMember = Class.create({
         return [];
       }
     },
-    staffId: String,
     promotions: {
-      type: [Promotions],
+      type: [Promotion],
       optional: true,
       default() {
         return [];
       }
     },
+    staffId: String,
     staffClass: String,
     maritalStatus: {
       type: String,
@@ -233,4 +218,4 @@ const StaffMember = Class.create({
   }
 });
 
-export { StaffMember, StaffMembers, Postings };
+export { StaffMember, StaffMembers, Postings, Promotion };

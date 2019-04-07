@@ -1,9 +1,20 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import rateLimit from "../../modules/rate-limit";
-import { StaffMember } from "../../api/StaffMember/StaffMemberClass";
-import { Designation } from "../../api/Designation/DesignationClass";
+import {
+  StaffMember,
+  StaffMembers,
+  Promotion
+} from "../../api/StaffMember/StaffMemberClass";
+import {
+  Designation,
+  Designations
+} from "../../api/Designation/DesignationClass";
 import { UniversityUnit } from "../../api/UniversityUnit/UniversityUnitClass";
+import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
+import { FindStaffDueForPromotion } from "../../modules/utilitiesComputation";
+import { FindMax } from "../../modules/utilities";
+import { _ } from "meteor/underscore";
 
 Meteor.methods({
   trial: function Customersmethod(excelData) {
@@ -12,6 +23,7 @@ Meteor.methods({
     let errorArr = [];
     let faculty = "";
     let numUnitSaved;
+    let designationArray = [];
     const RemoveNull = arr => {
       return arr.filter(el => {
         return el != null;
@@ -31,7 +43,6 @@ Meteor.methods({
           .join(" ")
           .trim();
         faculty = universityFaculty;
-        console.log(faculty);
         const newUnit = new UniversityUnit();
         newUnit.name = faculty;
         newUnit.save();
@@ -107,6 +118,7 @@ Meteor.methods({
                 break;
               case 14:
                 staff.designation = rowArray[k] && rowArray[k].trim();
+
                 break;
               case 15:
                 const salaryStructure = rowArray[k];
@@ -125,10 +137,45 @@ Meteor.methods({
                   staff.postingProposed = false;
                   if (GL && parseInt(GL) < 6) {
                     //we have a junior non teaching
+                    //build designation here as either junior
+                    //or senior staff
                     staff.staffClass = "Junior Staff";
+                    //get the designation here
+                    const staffDesignation =
+                      rowArray[14] && rowArray[14].trim();
+                    //check if this is already stored in
+                    //the designation array
+                    const findDesignation = designationArray.find(
+                      des => des.rank == staffDesignation
+                    );
+                    //check if we have something inside
+                    if (_.isEmpty(findDesignation)) {
+                      //we need to add the designation here
+                      const obj = {
+                        rank: staffDesignation,
+                        type: "Junior Staff"
+                      };
+                      //push into the array
+                      designationArray.push(obj);
+                    }
                   } else {
                     //we have a senior staff
                     staff.staffClass = "Senior Staff";
+                    const staffDesignation =
+                      rowArray[14] && rowArray[14].trim();
+                    const findDesignation = designationArray.find(
+                      des => des.rank == staffDesignation
+                    );
+                    //check if we have something inside
+                    if (_.isEmpty(findDesignation)) {
+                      //we need to add the designation here
+                      const obj = {
+                        rank: staffDesignation,
+                        type: "Senior Staff"
+                      };
+                      //push into the array
+                      designationArray.push(obj);
+                    }
                   }
                 }
                 break;
@@ -151,59 +198,19 @@ Meteor.methods({
         }
       }
     }
+    //done with our members lets save the designation
+    for (let i = 0; i < designationArray.length; i++) {
+      const staffDesObj = designationArray[i];
+      const newDesination = new Designation();
+      newDesination.rank = staffDesObj.rank;
+      newDesination.type = staffDesObj.type;
+      newDesination.save();
+    }
     console.log(`Total data saved : ${numSaved}`);
+    console.log(`Designation length : ${designationArray.length}`);
     console.log(`University unit saved : ${numUnitSaved}`);
     console.log(errorArr);
     console.log(errorArr.length);
-  },
-  buildRanks: function Customersmethod(excelData) {
-    check(excelData, Array);
-    let numSaved = 0;
-    let errorArr = [];
-    let ranks = {};
-    for (let i = 5; i < excelData.length; i++) {
-      const rowArray = excelData[i];
-      //loop through row data;
-      //lets build the person here
-
-      if (rowArray[14] !== null) {
-        let cadre = rowArray[14].trim();
-        if (ranks.hasOwnProperty(cadre)) {
-          ranks[cadre] = ranks[cadre] + 1;
-        } else {
-          ranks[cadre] = 1;
-        }
-      }
-    }
-    console.log(ranks);
-    //enumerate and get the keys here
-    const cadreArray = Object.keys(ranks);
-    let arr = [];
-    const AcademicStaff = [
-      "Graduate Assistant",
-      "Assistant Lecturer",
-      "Lecturer 11",
-      "Senior Lecturer",
-      "Associate Professor",
-      "Professor",
-      "Graduate Library Assistant",
-      "Assistant Librarian",
-      "Librarian 11",
-      "Librarian 1",
-      "Senior Librarian",
-      "Deputy University Librarian",
-      "University Librarian"
-    ];
-    let num = 0;
-    for (let i = 0; i < cadreArray.length; i++) {
-      const rank = cadreArray[i];
-      const newDesignation = new Designation();
-      newDesignation.rank = rank;
-      newDesignation.save();
-      num++;
-      arr.push(rank);
-    }
-    return { arr, num };
   },
   buildUniversityUnit: function Customersmethod(excelData) {
     check(excelData, Array);
@@ -231,6 +238,20 @@ Meteor.methods({
     editStaff.save();
   },
 
+  "staffMembers.addCertificate": function StaffMethods(cert, date, staffId) {
+    check(cert, String);
+    check(date, String);
+    check(staffId, String);
+    //find the member
+    const editStaff = StaffMember.findOne({ staffId: staffId });
+    const obj = {
+      cert: cert,
+      date: date.toString()
+    };
+    editStaff.certificate.push(obj);
+    editStaff.save();
+  },
+
   "staffMembers.saveChanges": function StaffMethods(object) {
     check(object, Object);
     const { sex, maritalStatus, title, staffId } = object;
@@ -240,6 +261,46 @@ Meteor.methods({
     editStaff.maritalStatus = maritalStatus;
     editStaff.biodata.title = title;
     editStaff.save();
+  },
+
+  "staffMembers.promoteStaff": function StaffMethods(promotionObject) {
+    check(promotionObject, Object);
+    //find the member
+    const {
+      staffId,
+      staffName,
+      oldDesignation,
+      newDesignation,
+      oldSalaryStructure,
+      newSalaryStructure,
+      oldPromotionDate,
+      promotionYear,
+      user
+    } = promotionObject;
+    const promotedStaff = StaffMember.findOne({ staffId: staffId });
+    promotedStaff.designation = newDesignation;
+    promotedStaff.dateOfLastPromotion = `1-Oct-${promotionYear}`;
+    //find max of promotions
+    let maxIndex = FindMax(promotedStaff.promotions, "serial");
+    maxIndex += 1;
+    //create new promotion object
+    const newPromotion = new Promotion();
+    newPromotion.designation = newDesignation;
+    newPromotion.salaryStructure = newSalaryStructure;
+    newPromotion.promotionYear = promotionYear;
+    newPromotion.serial = maxIndex;
+
+    promotedStaff.promotions.push(newPromotion);
+
+    promotedStaff.save();
+
+    const newActivity = new ActivityLog();
+    newActivity.username = Meteor.userId();
+    newActivity.name = user;
+    newActivity.activityTime = new Date().toISOString();
+    newActivity.actionTaken = `Changing the designation of ${staffName} from ${oldDesignation} on ${oldSalaryStructure} to ${newDesignation} on ${newSalaryStructure} and promotion year from ${oldPromotionDate} to ${promotionYear} `;
+    newActivity.type = "promotion";
+    newActivity.save();
   }
 });
 

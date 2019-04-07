@@ -16,9 +16,24 @@ Meteor.publish(
 );
 
 Meteor.publish(
-  "staffposting.getStaffDueForPromotion",
-  function StaffMembersPublication() {
-    return [StaffMembers.find({}), Designations.find({})];
+  "staffmembers.getStaffDueForPromotion",
+  function StaffMembersPublication(query, rankQuery, designation) {
+    check(query, Object);
+    check(rankQuery, Object);
+    check(designation, Match.OneOf(String, null, undefined));
+
+    if (designation) {
+      query.designation = new RegExp("^" + designation + "$", "i");
+    }
+
+    if (designation == "all") {
+      delete query.designation;
+    }
+
+    return [
+      StaffMembers.find(query, designation ? {} : { limit: 100 }),
+      Designations.find(rankQuery)
+    ];
   }
 );
 

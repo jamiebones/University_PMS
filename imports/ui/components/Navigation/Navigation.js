@@ -127,7 +127,7 @@ const Navigation = props => (
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/" className="navbar-brand">
+            <Link to="/auth/dashboard" className="navbar-brand">
               Personnel Management System
             </Link>
           </Navbar.Brand>

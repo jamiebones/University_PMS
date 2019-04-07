@@ -16,6 +16,7 @@ import AddCadrePage from "../../pages/AddCadres/AddCadres";
 import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
 import PensionDashboard from "../../pages/PensionDashboard/PensionDashboard";
 import StaffPromotion from "../../pages/StaffPromotion/StaffPromotion";
+import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -68,14 +69,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={[
-                "SATS",
-                "Records",
-                "ASE",
-                "Director",
-                "JSE",
-                "super-admin"
-              ]}
+              allowedRoles={["Records", "Pensions", "super-admin"]}
               group="Personnel"
               userId={userId}
               exact
@@ -85,14 +79,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={[
-                "SATS",
-                "Records",
-                "ASE",
-                "JSE",
-                "Registrar",
-                "super-admin"
-              ]}
+              allowedRoles={["Registrar", "super-admin"]}
               group="Personnel"
               userId={userId}
               exact
@@ -159,6 +146,24 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/propose_posting`}
               component={StaffProposePostingPage}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "JSE",
+                "Registrar",
+                "super-admin"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/dashboard`}
+              component={HomePageDashboard}
+              pathAfterFailure="/logout"
               {...rest}
             />
 

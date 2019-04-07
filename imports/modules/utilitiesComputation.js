@@ -168,3 +168,147 @@ export const OverStayedStaff = async arr => {
     }
   }
 };
+
+export const AcademicSalaryScale = () => {
+  const scaleArray = [
+    "",
+    { step: 1, max: 6 },
+    { step: 2, max: 8 },
+    { step: 3, max: 8 },
+    { step: 4, max: 9 },
+    { step: 5, max: 13 },
+    { step: 6, max: 10 },
+    { step: 7, max: 10 }
+  ];
+  return scaleArray;
+};
+
+const NonTeachingSalaryScale = () => {
+  const scaleArray = [
+    "",
+    { step: 1, max: 15 },
+    { step: 2, max: 15 },
+    { step: 3, max: 15 },
+    { step: 4, max: 15 },
+    { step: 5, max: 15 },
+    { step: 6, max: 15 },
+    { step: 7, max: 15 },
+    { step: 8, max: 15 },
+    { step: 9, max: 15 },
+    { step: 10, max: 11 },
+    { step: 11, max: 11 },
+    { step: 12, max: 11 },
+    { step: 13, max: 9 },
+    { step: 14, max: 9 },
+    { step: 15, max: 9 }
+  ];
+  return scaleArray;
+};
+
+export const SkipContiss12 = () => {
+  const arr = [
+    "Senior Assistant Registrar",
+    "Principal Accountant",
+    "Principal Internal Auditor",
+    "Senior Medical Officer",
+    "Senior Pharmacist",
+    "Senior Nursing Officer",
+    "Principal Engineer",
+    "Principal Architect",
+    "Principal Town Planner",
+    "Principal Quantity Surveyor"
+  ];
+
+  return arr;
+};
+
+export const NonTeachingPromotionPlacement = step => {
+  let newStep = null;
+  //const salaryScale = NonTeachingSalaryScale();
+  switch (step) {
+    case 1:
+      newStep = step - 2;
+      break;
+    case 2:
+      newStep = step - 2;
+      break;
+    case 3:
+      newStep = step - 2;
+      break;
+    case 4:
+      newStep = step - 2;
+      break;
+    case 5:
+      newStep = step - 2;
+      break;
+    case 6:
+      newStep = step - 2;
+      break;
+    case 7:
+      newStep = step - 2;
+      break;
+    case 8:
+      newStep = step - 2;
+      break;
+    case 9:
+      newStep = step - 2;
+      break;
+    case 11:
+      newStep = step - 1;
+      break;
+    case 12:
+      newStep = step - 2;
+    case 13:
+      newStep = step - 2;
+    case 14:
+      newStep = step - 2;
+  }
+  return newStep;
+};
+
+export const TeachingStaffPromotionPlacement = step => {
+  let newStep = null;
+  //const salaryScale = NonTeachingSalaryScale();
+  switch (step) {
+    case 1:
+      newStep = step - 2;
+      break;
+    case 2:
+      newStep = step - 2;
+      break;
+    case 3:
+      newStep = step - 2;
+      break;
+    case 4:
+      newStep = step - 2;
+      break;
+    case 5:
+      newStep = step - 2;
+      break;
+    case 6:
+      newStep = step - 2;
+      break;
+    case 7:
+      newStep = step - 2;
+      break;
+  }
+  return newStep;
+};
+
+export const FindNextRank = (cadreArray, currentRank) => {
+  //loop through
+  let newRank = { cadre: null, scale: null };
+  for (let i = 0; i < cadreArray.length; i++) {
+    const cadreRank = cadreArray[i];
+    const index = cadreRank.findIndex(
+      x => x.cadre.toUpperCase() == currentRank.toUpperCase()
+    );
+    if (index != -1) {
+      //we have a match here
+      newRank = cadreRank[index + 1];
+      break;
+    }
+    continue;
+  }
+  return newRank;
+};

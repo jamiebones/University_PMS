@@ -11,6 +11,7 @@ import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
 import { _ } from "meteor/underscore";
+import { ReactiveVar } from "meteor/reactive-var";
 import { Meteor } from "meteor/meteor";
 
 const StaffPromotionStyles = styled.div``;
@@ -22,10 +23,12 @@ class StaffPromotion extends React.Component {
       biodata: "",
       staffId: "",
       salaryStructure: "",
+      certificate: "",
       dateOfLastPromotion: "",
       firstRender: true,
       designation: "",
-      showModal: false
+      showModal: false,
+      selectedDesignation: ""
     };
     autoBind(this);
   }
@@ -35,7 +38,8 @@ class StaffPromotion extends React.Component {
     staffId,
     salaryStructure,
     dateOfLastPromotion,
-    designation
+    designation,
+    certificate
   }) {
     this.setState({
       biodata,
@@ -43,24 +47,58 @@ class StaffPromotion extends React.Component {
       salaryStructure,
       dateOfLastPromotion,
       designation,
+      certificate,
       showModal: true
     });
   }
 
+  onChange(e) {
+    if (e.target.value == "0") return;
+    this.setState({ selectedDesignation: e.target.value });
+    this.props.selectedDesignation.set(e.target.value);
+  }
+
   render() {
-    const { loading, staff } = this.props;
-    const {
-      biodata,
-      staffId,
-      salaryStructure,
-      dateOfLastPromotion,
-      designation
-    } = this.state;
+    const { loading, staff, designation } = this.props;
+    const { selectedDesignation } = this.state;
+
     return (
       <StaffPromotionStyles>
         <Row>
           <Col md={12}>
-            <p className="lead text-center">List of Staff Due For Promotion</p>
+            <Row>
+              <Col md={6}>
+                <select
+                  className="form-control"
+                  value={this.state.selectedDesignation}
+                  onChange={this.onChange}
+                >
+                  <option value="0">select a designation</option>
+                  <option value="all">All Eligible For Promotion</option>
+                  {designation &&
+                    designation.map(({ rank }) => {
+                      return (
+                        <option key={rank} value={rank}>
+                          {rank}
+                        </option>
+                      );
+                    })}
+                </select>
+              </Col>
+            </Row>
+
+            <br />
+            <br />
+            {selectedDesignation ? (
+              <p className="lead text-center">
+                Viewing {selectedDesignation} cadre list
+              </p>
+            ) : (
+              <p className="lead text-center">
+                Viewing initial list for promotion
+              </p>
+            )}
+
             {!loading ? (
               staff && staff.length ? (
                 <Table responsive striped bordered condensed>
@@ -83,7 +121,8 @@ class StaffPromotion extends React.Component {
                           staffId,
                           designation,
                           salaryStructure,
-                          dateOfLastPromotion
+                          dateOfLastPromotion,
+                          certificate
                         },
                         index
                       ) => {
@@ -123,7 +162,8 @@ class StaffPromotion extends React.Component {
                                     staffId,
                                     salaryStructure,
                                     dateOfLastPromotion,
-                                    designation
+                                    designation,
+                                    certificate
                                   })
                                 }
                               >
@@ -147,14 +187,12 @@ class StaffPromotion extends React.Component {
               show={this.state.showModal}
               onHide={() => this.setState({ showModal: false })}
               history={history}
-              firstRender={this.state.firstRender}
-              toggleFirstRender={() => this.setState({ firstRender: false })}
-              designation={this.props.designation}
               staffdesignation={this.state.designation}
               biodata={this.state.biodata}
               staffId={this.state.staffId}
               salaryStructure={this.state.salaryStructure}
               dateOfLastPromotion={this.state.dateOfLastPromotion}
+              user={this.props.name}
             />
           </Col>
         </Row>
@@ -163,42 +201,55 @@ class StaffPromotion extends React.Component {
   }
 }
 
+let selectedDesignation = new ReactiveVar("");
+
 export default (StaffPromotionContainer = withTracker(() => {
   let subscription;
   let promotionArray = [];
   let loading = true;
   let designation = [];
   let query = {};
-  if (Meteor.isClient) {
-    subscription = Meteor.subscribe("staffposting.getStaffDueForPromotion");
-  }
-
+  let rankQuery = {};
   if (GetDetailsBasedOnRole("SATS", "Personnel")) {
     query.staffClass = "Senior Staff";
     query.staffType = "2";
+    rankQuery.type = "Senior Staff";
   }
 
   if (GetDetailsBasedOnRole("JSE", "Personnel")) {
     query.staffClass = "Junior Staff";
     query.staffType = "2";
+    rankQuery.type = "Junior Staff";
   }
 
   if (GetDetailsBasedOnRole("ASE", "Personnel")) {
     query.staffType = "1";
   }
 
+  if (Meteor.isClient) {
+    subscription = Meteor.subscribe(
+      "staffmembers.getStaffDueForPromotion",
+      query,
+      rankQuery,
+      selectedDesignation.get()
+    );
+  }
+
   if (subscription && subscription.ready()) {
-    const allStaff = StaffMembers.find(query, {
+    let allStaff = StaffMembers.find(query, {
       sort: { designation: 1 }
     }).fetch();
-    designation = Designations.find({}, { sort: { rank: 1 } }).fetch();
-    loading = false;
+    console.time();
+    designation = Designations.find(rankQuery, { sort: { rank: 1 } }).fetch();
+    console.log(console.timeEnd());
     promotionArray = FindStaffDueForPromotion(allStaff);
+    loading = false;
   }
 
   return {
     loading: loading,
     staff: promotionArray || [],
-    designation: designation || []
+    designation: designation || [],
+    selectedDesignation
   };
 })(StaffPromotion));

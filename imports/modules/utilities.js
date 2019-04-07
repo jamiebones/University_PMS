@@ -386,3 +386,22 @@ export const FormatSalaryStructure = structure => {
     return string;
   }
 };
+
+export const TeachingStaff = () => {
+  const AcademicStaff = [
+    "Graduate Assistant",
+    "Assistant Lecturer",
+    "Lecturer 11",
+    "Senior Lecturer",
+    "Associate Professor",
+    "Professor",
+    "Graduate Library Assistant",
+    "Assistant Librarian",
+    "Librarian 11",
+    "Librarian 1",
+    "Senior Librarian",
+    "Deputy University Librarian",
+    "University Librarian"
+  ];
+  return AcademicStaff;
+};
