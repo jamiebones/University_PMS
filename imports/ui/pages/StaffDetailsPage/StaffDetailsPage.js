@@ -47,7 +47,11 @@ class StaffDetailPage extends React.Component {
       {
         title: "Staff Qualification",
         getContent: () => (
-          <StaffQualification certificate={staff && staff.certificate} />
+          <StaffQualification
+            certificate={staff && staff.certificate}
+            staffId={staff && staff.staffId}
+            user={this.props.name}
+          />
         )
       }
     ];

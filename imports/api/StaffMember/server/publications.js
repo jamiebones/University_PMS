@@ -50,6 +50,23 @@ Meteor.publish(
 );
 
 Meteor.publish(
+  "staffmembers.getNominalRollForDepartment",
+  function StaffMembersPublication(unit) {
+    check(unit, Match.OneOf(String, null, undefined));
+    let query = {
+      currentPosting: unit
+    };
+    return [
+      StaffMembers.find(query, {
+        field: { biodata: 1, salaryStructure: 1, designation: 1, staffId: 1 },
+        sort: { salaryStructure: -1 }
+      }),
+      UniversityUnits.find()
+    ];
+  }
+);
+
+Meteor.publish(
   "staffposting.getoverstayedStaff",
   function StaffMembersPublication() {
     return StaffMembers.find({ staffType: "2" });

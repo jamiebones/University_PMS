@@ -238,10 +238,16 @@ Meteor.methods({
     editStaff.save();
   },
 
-  "staffMembers.addCertificate": function StaffMethods(cert, date, staffId) {
+  "staffMembers.addCertificate": function StaffMethods(
+    cert,
+    date,
+    staffId,
+    user
+  ) {
     check(cert, String);
     check(date, String);
     check(staffId, String);
+    check(user, String);
     //find the member
     const editStaff = StaffMember.findOne({ staffId: staffId });
     const obj = {
@@ -250,6 +256,14 @@ Meteor.methods({
     };
     editStaff.certificate.push(obj);
     editStaff.save();
+
+    const newActivity = new ActivityLog();
+    newActivity.username = Meteor.userId();
+    newActivity.name = user;
+    newActivity.activityTime = new Date().toISOString();
+    newActivity.actionTaken = `Added certificate: ${cert} || year obtained ${date}`;
+    newActivity.type = "added certificate";
+    newActivity.save();
   },
 
   "staffMembers.saveChanges": function StaffMethods(object) {

@@ -10,11 +10,7 @@ import { Meteor } from "meteor/meteor";
 
 const RenderDashboard = props => {
   if (GetDetailsBasedOnRole("SATS", "Personnel")) {
-    return (
-      <Col md={6}>
-        <Sats />
-      </Col>
-    );
+    return <Sats />;
   }
 
   if (GetDetailsBasedOnRole("JSE", "Personnel")) {
@@ -40,13 +36,14 @@ const RenderDashboard = props => {
 const HomePageDashboardStyles = styled.div`
   border: 5px solid #c7c2d0;
   padding: 10px;
-  background-color: red;
   background-color: #0a7773;
-  color: #fff;
-  p {
+
+  .welcome p {
     font-size: 18px;
     font-weight: bold;
     font-style: oblique;
+    color: #fff;
+    margin-bottom: 20px;
   }
 `;
 
@@ -60,29 +57,23 @@ class HomePageDashboard extends React.Component {
   render() {
     const { name, group } = this.props;
     return (
-      <HomePageDashboardStyles>
-        <Row>
-          <Col md={12}>
-            <Col md={6}>
+      <Row>
+        <Col md={6} mdOffset={3}>
+          <HomePageDashboardStyles>
+            <div className="welcome">
               <p>
                 <span>Welcome, {name}</span>
               </p>
 
               <p>
-                <span>Login Type: {group}</span>
+                Login Type: <span>{group}</span>
               </p>
-            </Col>
+            </div>
 
-            <Col md={6}>
-              <p>University Logo</p>
-            </Col>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col md={6}>{RenderDashboard()}</Col>
-        </Row>
-      </HomePageDashboardStyles>
+            {RenderDashboard()}
+          </HomePageDashboardStyles>
+        </Col>
+      </Row>
     );
   }
 }

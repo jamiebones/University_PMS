@@ -205,23 +205,6 @@ const NonTeachingSalaryScale = () => {
   return scaleArray;
 };
 
-export const SkipContiss12 = () => {
-  const arr = [
-    "Senior Assistant Registrar",
-    "Principal Accountant",
-    "Principal Internal Auditor",
-    "Senior Medical Officer",
-    "Senior Pharmacist",
-    "Senior Nursing Officer",
-    "Principal Engineer",
-    "Principal Architect",
-    "Principal Town Planner",
-    "Principal Quantity Surveyor"
-  ];
-
-  return arr;
-};
-
 export const NonTeachingPromotionPlacement = step => {
   let newStep = null;
   //const salaryScale = NonTeachingSalaryScale();

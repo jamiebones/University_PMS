@@ -10,11 +10,26 @@ import {
   ReactInput
 } from "input-format";
 import { Meteor } from "meteor/meteor";
+import autoBind from "react-autobind";
 
 const StaffQualificationStyles = styled.div`
   p {
     font-size: 15px;
     font-style: oblique;
+    background: #227742;
+    margin-bottom: 5px;
+    color: #fff;
+    padding: 5px;
+  }
+
+  span {
+    padding-left: 10px;
+    color: orange;
+    font-weight: 400;
+  }
+
+  .certForm {
+    margin-top: 15px;
   }
 `;
 
@@ -23,9 +38,10 @@ class StaffQualification extends React.Component {
     super(props);
     this.state = {
       certYear: "",
-      certificate: "",
+      cert: "",
       submitted: false
     };
+    autoBind(this);
   }
 
   onCertYearChange(value) {
@@ -33,28 +49,42 @@ class StaffQualification extends React.Component {
   }
 
   onChange(e) {
-    this.setState({ certificate: e.target.value });
+    this.setState({ cert: e.target.value });
   }
 
   saveCertificate() {
-    const cert = this.state.certificate;
+    const cert = this.state.cert;
     const date = this.state.certYear;
     const staffId = this.props.staffId;
+    const name = this.props.user;
 
     if (cert == "" && date == "") {
       Bert.alert("Certificate and date is required", "danger");
       return;
     }
 
-    Meteor.call("staffMembers.addCertificate", cert, date, staffId, err => {
-      if (!err) {
-        Bert.alert(`Certificate added`, "success");
-        this.setState({ submitted: !this.state.submitted });
-      } else {
-        this.setState({ submitted: !this.state.submitted });
-        Bert.alert(`There was an error: ${error}`, "danger");
+    const confirmSubmit = confirm(
+      `You are adding a certificate: ${cert} || year: ${date}. This action is logged `
+    );
+
+    if (!confirmSubmit) return;
+
+    Meteor.call(
+      "staffMembers.addCertificate",
+      cert,
+      date,
+      staffId,
+      name,
+      err => {
+        if (!err) {
+          Bert.alert(`Certificate added`, "success");
+          this.setState({ submitted: !this.state.submitted });
+        } else {
+          this.setState({ submitted: !this.state.submitted });
+          Bert.alert(`There was an error: ${error}`, "danger");
+        }
       }
-    });
+    );
   }
 
   render() {
@@ -65,24 +95,24 @@ class StaffQualification extends React.Component {
     return (
       <StaffQualificationStyles>
         <Row>
-          <Col md={6} mdOffset={2}>
+          <Col md={4} mdOffset={1}>
             {certificate &&
               certificate.map(({ cert, date }, index) => {
                 return (
                   <p key={index}>
-                    <span>{cert}</span> : <span>{date}</span>
+                    {cert} : <span>{date}</span>
                   </p>
                 );
               })}
 
             {GetDetailsBasedOnRole("Records", "Personnel") ? (
-              <div>
+              <div className="certForm">
                 <FormGroup>
                   <ControlLabel>Certificate</ControlLabel>
                   <input
                     type="text"
                     name="certificate"
-                    value={this.state.certificate}
+                    value={this.state.cert}
                     onChange={this.onChange}
                     className="form-control"
                   />

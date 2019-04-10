@@ -405,3 +405,8 @@ export const TeachingStaff = () => {
   ];
   return AcademicStaff;
 };
+
+export const SplitFacultyAndDept = faculty => {
+  const facArray = faculty.split("/");
+  return facArray.length == 2 ? facArray[1] : facArray[0];
+};

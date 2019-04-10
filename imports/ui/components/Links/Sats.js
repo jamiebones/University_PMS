@@ -3,37 +3,57 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const SatsStyles = styled.div`
-  a {
-    display: block;
+  p {
+    background: #ced8cc;
+    padding: 10px;
   }
 
-  a:hover {
+  p a {
+    color: #465d67;
+  }
+
+  span {
+    font-size: 12px;
+    padding: 2px;
+    background: #5772b3;
+    float: right;
+  }
+  p a:hover {
     text-decoration: none;
   }
 `;
 
 const Sats = ({ history }) => (
   <SatsStyles>
-    <ul className="list-group">
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/records/search">Search Staff Records</Link>
-      </li>
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/dashboard/home">Home</Link>
-      </li>
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/posting_list">Posting List</Link>
-      </li>
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/due_for_promotion">Promotion List</Link>
-      </li>
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/staff_posting">Staff Posting</Link>
-      </li>
-      <li className="list-group-item list-group-item-primary">
-        <Link to="/auth/add_staff_documents">Add Documents</Link>
-      </li>
-    </ul>
+    <p>
+      <Link to="/auth/records/search">Search Staff Records</Link>
+      <span>Link to search for staff records</span>
+    </p>
+    <p>
+      <Link to="/auth/nominal_roll">Nominal Roll</Link>
+      <span>List of staff and their current department</span>
+    </p>
+    <p>
+      <Link to="/auth/dashboard/home">Home</Link>
+      <span>Display page of data and statistics</span>
+    </p>
+
+    <p>
+      <Link to="/auth/posting_list">Posting List</Link>
+      <span>Posting list of senior staff</span>
+    </p>
+    <p>
+      <Link to="/auth/due_for_promotion">Promotion List</Link>
+      <span>Promotion list of senior staff</span>
+    </p>
+    <p>
+      <Link to="/auth/staff_posting">Staff Posting</Link>
+      <span>Page to initiate staff posting</span>
+    </p>
+    <p>
+      <Link to="/auth/add_staff_documents">Add Documents</Link>
+      <span>Page to add staff documents</span>
+    </p>
   </SatsStyles>
 );
 
