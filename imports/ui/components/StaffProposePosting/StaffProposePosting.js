@@ -90,7 +90,7 @@ class StaffProposePosting extends React.Component {
                           <td>
                             <div>
                               {postings &&
-                              postings.length &&
+                              postings.length > 0 &&
                               CheckForNegativeDate(
                                 FindTimeDifference(
                                   postings[FindMax(postings, "serial") - 1]

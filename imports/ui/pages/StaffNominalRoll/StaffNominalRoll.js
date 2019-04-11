@@ -2,7 +2,6 @@
 import React from "react";
 import { Row, Col, FormGroup, ControlLabel } from "react-bootstrap";
 import { Meteor } from "meteor/meteor";
-import Collapsible from "react-collapsible";
 import styled from "styled-components";
 import Loading from "../../components/Loading/Loading";
 import Downshift from "downshift";
@@ -11,7 +10,7 @@ import { withTracker } from "meteor/react-meteor-data";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 import autoBind from "react-autobind";
-import { AcademicSalaryScale } from "../../../modules/utilitiesComputation";
+import { RemoveSlash } from "../../../modules/utilities";
 
 const NominalRowStyles = styled.div`
   .Collapsible__trigger {
@@ -111,6 +110,10 @@ const NominalRowStyles = styled.div`
       padding: 4px;
       color: #fff;
     }
+  }
+
+  .staffName {
+    cursor: pointer;
   }
 
   .total {
@@ -222,7 +225,14 @@ class StaffNominalRoll extends React.Component {
                   return (
                     <Col md={4} key={index}>
                       <div className="staffDetails">
-                        <p>
+                        <p
+                          className="staffName"
+                          onClick={() =>
+                            this.props.history.push(
+                              `/auth/record/${staffId && RemoveSlash(staffId)}`
+                            )
+                          }
+                        >
                           Name :{" "}
                           <span>
                             {biodata.firstName} {biodata.middleName}{" "}

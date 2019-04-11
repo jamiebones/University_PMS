@@ -11,16 +11,14 @@ import {
   ButtonGroup,
   InputGroup
 } from "react-bootstrap";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
 import { Bert } from "meteor/themeteorchef:bert";
-import validate from "../../../modules/validate";
 import { withTracker } from "meteor/react-meteor-data";
 import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
 import { NigeriaStates } from "../../../api/NigeriaStates/NigeriaStatesClass";
 import moment from "moment";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import autoBind from "react-autobind";
 import StateModal from "../../components/StateModal/StateModal";
 import { _ } from "meteor/underscore";
@@ -211,19 +209,22 @@ class StaffBio extends React.Component {
                     onChange={this.onChange}
                     className="form-control"
                   />
-                  <InputGroup.Button>
-                    <Button
-                      bsStyle="info"
-                      onClick={() =>
-                        this.setState({
-                          showStateModal: true,
-                          firstRender: true
-                        })
-                      }
-                    >
-                      Edit State
-                    </Button>
-                  </InputGroup.Button>
+
+                  {GetDetailsBasedOnRole("Records", "Personnel") && (
+                    <InputGroup.Button>
+                      <Button
+                        bsStyle="info"
+                        onClick={() =>
+                          this.setState({
+                            showStateModal: true,
+                            firstRender: true
+                          })
+                        }
+                      >
+                        Edit State
+                      </Button>
+                    </InputGroup.Button>
+                  )}
                 </InputGroup>
               </FormGroup>
 
@@ -251,27 +252,29 @@ class StaffBio extends React.Component {
                 />
               </FormGroup>
 
-              <ButtonToolbar>
-                <ButtonGroup bsSize="small">
-                  <Button
-                    bsStyle="info"
-                    onClick={() =>
-                      this.setState({
-                        editStaff: !this.state.editStaff
-                      })
-                    }
-                  >
-                    Start Edit
-                  </Button>
-                  <Button
-                    bsStyle="success"
-                    disabled={!editStaff}
-                    onClick={this.saveChanges}
-                  >
-                    Save
-                  </Button>
-                </ButtonGroup>
-              </ButtonToolbar>
+              {GetDetailsBasedOnRole("Records", "Personnel") && (
+                <ButtonToolbar>
+                  <ButtonGroup bsSize="small">
+                    <Button
+                      bsStyle="info"
+                      onClick={() =>
+                        this.setState({
+                          editStaff: !this.state.editStaff
+                        })
+                      }
+                    >
+                      Start Edit
+                    </Button>
+                    <Button
+                      bsStyle="success"
+                      disabled={!editStaff}
+                      onClick={this.saveChanges}
+                    >
+                      Save
+                    </Button>
+                  </ButtonGroup>
+                </ButtonToolbar>
+              )}
             </form>
           </Col>
 

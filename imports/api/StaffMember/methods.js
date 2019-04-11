@@ -104,8 +104,8 @@ Meteor.methods({
                   for (let j = 0; j < certArray.length; j++) {
                     let certObj = certArray[j].trim().split(" ");
                     let credentials = {
-                      cert: certObj[0],
-                      date: certObj[1]
+                      cert: certObj.splice(0, certObj.length - 1).join(" "),
+                      date: certObj[certObj.length - 1]
                     };
                     certificateArray.push(credentials);
                   }

@@ -31,6 +31,18 @@ const AuthenticatedNavigation = ({ history }) => (
             </NavItem>
           </LinkContainer>
         </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
+            onClick={() => history.push("/auth/nominal_roll")}
+          >
+            <NavItem eventKey={11} href="#">
+              Nominal Roll
+            </NavItem>
+          </LinkContainer>
+        </Nav>
       </React.Fragment>
     ) : null}
 
@@ -44,6 +56,18 @@ const AuthenticatedNavigation = ({ history }) => (
           >
             <NavItem eventKey={4} href="#">
               Posting List
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
+            onClick={() => history.push("/auth/posting_stats")}
+          >
+            <NavItem eventKey={8} href="#">
+              Posting Stats
             </NavItem>
           </LinkContainer>
         </Nav>
