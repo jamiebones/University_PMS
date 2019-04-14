@@ -28,11 +28,11 @@ class AddStaffDocuments extends React.Component {
     super(props);
     this.state = {
       staffId: "",
-      submitted: false,
       staff: {},
       documents: [],
       uploading: [],
       progress: 0,
+      fileStatus: "",
       inProgress: false
     };
     autoBind(this);
@@ -49,14 +49,6 @@ class AddStaffDocuments extends React.Component {
     }
   }
 
-  removeImage(e, index) {
-    let documents = this.state.documents;
-    let remainDocuments = documents.filter((doc, ind) => {
-      return ind !== index;
-    });
-    this.setState({ documents: remainDocuments });
-  }
-
   getStaffDetails(e) {
     if (this.state.staffId === "") {
       return;
@@ -65,129 +57,81 @@ class AddStaffDocuments extends React.Component {
     this.props.staffIdReactive.set(staffId);
   }
 
-  saveImageDisplay(image) {
-    const documents = this.state.documents;
-    this.setState({ documents: [...documents, image] });
-  }
-
-  saveDocuments() {
-    const { documents, staffId } = this.state;
-    const documentArray = {
-      staffId,
-      documents
-    };
-    this.setState({ submitted: !this.state.submitted });
-    Meteor.call(
-      "staffDocument.saveDocuments",
-      documentArray,
-      (error, response) => {
-        if (error) {
-          this.setState({ submitted: !this.state.submitted });
-          Bert.alert(`There was an error: ${error}`, "danger");
-          document.getElementById("input").value = "";
-        } else {
-          Bert.alert(response, "success");
-          this.setState({ submitted: !this.state.submitted, documents: [] });
-          document.getElementById("input").value = "";
-        }
-      }
-    );
-  }
-
-  handleFileSelect(e, callback) {
-    if (!e.target.files || !window.FileReader) return;
-    let files = e.target.files;
-    //loop through and confirm if we have a file
-    //type png
-    let filesArr = Array.prototype.slice.call(files);
-    for (let i = 0; i < filesArr.length; i++) {
-      const file = filesArr[i];
-      const fileExtention = file.name.split(".").pop();
-      if (["png", "jpeg"].includes(fileExtention)) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          //where the image is displayed
-          callback(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert("please select only PNG files");
-        break;
-      }
-    }
-  }
-
   uploadIt(e) {
     e.preventDefault();
-    if (e.currentTarget.files && e.currentTarget.files[0]) {
-      // We upload only one file, in case
-      // there was multiple files selected
-      var file = e.currentTarget.files[0];
+    if (e.target.files) {
+      let files = e.target.files;
+      let filesArr = Array.from(files);
+      let count = null;
+      for (let i = 0; i < filesArr.length; i++) {
+        const file = filesArr[i];
 
-      let self = this;
+        let self = this;
 
-      if (file) {
-        let uploadInstance = Documents.insert(
-          {
-            file: file,
-            meta: {
-              staffId: this.state.staffId
+        if (file) {
+          let uploadInstance = Documents.insert(
+            {
+              file: file,
+              meta: {
+                staffId: this.state.staffId.toUpperCase()
+              },
+              streams: "dynamic",
+              chunkSize: "dynamic",
+              allowWebWorkers: true // If you see issues with uploads, change this to false
             },
-            streams: "dynamic",
-            chunkSize: "dynamic",
-            allowWebWorkers: true // If you see issues with uploads, change this to false
-          },
-          false
-        );
+            false
+          );
 
-        self.setState({
-          uploading: uploadInstance, // Keep track of this instance to use below
-          inProgress: true // Show the progress bar now
-        });
-
-        // These are the event functions, don't need most of them, it shows where we are in the process
-        uploadInstance.on("start", function() {
-          console.log("Starting");
-        });
-
-        uploadInstance.on("end", function(error, fileObj) {
-          console.log("On end File Object: ", fileObj);
-        });
-
-        uploadInstance.on("uploaded", function(error, fileObj) {
-          console.log("uploaded: ", fileObj);
-
-          // Remove the filename from the upload box
-          // self.refs["fileinput"].value = "";
-
-          // Reset our state for the next file
           self.setState({
-            uploading: [],
-            progress: 0,
-            inProgress: false
+            uploading: uploadInstance, // Keep track of this instance to use below
+            inProgress: true // Show the progress bar now
           });
-        });
 
-        uploadInstance.on("error", function(error, fileObj) {
-          console.log("Error during upload: " + error);
-        });
-
-        uploadInstance.on("progress", function(progress, fileObj) {
-          console.log("Upload Percentage: " + progress);
-          // Update our progress bar
-          self.setState({
-            progress: progress
+          // These are the event functions, don't need most of them, it shows where we are in the process
+          uploadInstance.on("start", function() {
+            console.log("Starting");
+            self.setState({ fileStatus: `uploading ${file.name}` });
           });
-        });
 
-        uploadInstance.start(); // Must manually start the upload
+          uploadInstance.on("end", function(error, fileObj) {
+            self.setState({ fileStatus: `Finished uploading ${fileObj.name}` });
+          });
+
+          uploadInstance.on("uploaded", function(error, fileObj) {
+            console.log("uploaded: ", fileObj);
+            count += 1;
+            if (count == filesArr.length) {
+              self.refs["fileinput"].value = "";
+              Bert.alert(`${count} file(s) uploaded successfully`, "success");
+            }
+
+            self.setState({
+              uploading: [],
+              progress: 0,
+              inProgress: false,
+              fileStatus: ""
+            });
+          });
+
+          uploadInstance.on("error", function(error, fileObj) {
+            console.log("Error during upload: " + error);
+          });
+
+          uploadInstance.on("progress", function(progress, fileObj) {
+            console.log("Upload Percentage: " + progress);
+            // Update our progress bar
+            self.setState({
+              progress: progress
+            });
+          });
+
+          uploadInstance.start(); // Must manually start the upload
+        }
       }
     }
   }
 
   showUploads() {
-    console.log("**********************************", this.state.uploading);
-
     if (!_.isEmpty(this.state.uploading)) {
       return (
         <div>
@@ -258,6 +202,7 @@ class AddStaffDocuments extends React.Component {
                   type="file"
                   id="fileinput"
                   disabled={this.state.inProgress}
+                  multiple
                   ref="fileinput"
                   onChange={this.uploadIt}
                 />
@@ -270,45 +215,6 @@ class AddStaffDocuments extends React.Component {
               </div>
             )}
             {this.showUploads()}
-          </Col>
-        </Row>
-
-        <Row>
-          <Col md={12}>
-            {this.state.documents &&
-              this.state.documents.map((document, index) => (
-                <Col md={3} key={index}>
-                  <img
-                    src={document}
-                    className="img img-responsive"
-                    onClick={e => this.removeImage(e, index)}
-                  />
-                </Col>
-              ))}
-          </Col>
-        </Row>
-
-        <Row>
-          <Col md={12}>
-            {this.state.documents && this.state.documents.length ? (
-              <div>
-                <p>
-                  Document(s) selected: <b>{this.state.documents.length}</b>
-                </p>
-                <Button
-                  bsSize="small"
-                  bsStyle="success"
-                  onClick={this.saveDocuments}
-                  disabled={this.state.submitted}
-                >
-                  {this.state.submitted
-                    ? "saving documents......"
-                    : "Save Documents"}
-                </Button>
-              </div>
-            ) : (
-              ""
-            )}
           </Col>
         </Row>
       </StyledAddDocuments>
@@ -328,7 +234,7 @@ export default (AddStaffDocumentContainer = withTracker(({}) => {
   }
 
   let query = {
-    staffId: new RegExp("^" + staffIdReactive.get() + "$", "i")
+    staffId: staffIdReactive.get() && staffIdReactive.get().toUpperCase()
   };
 
   return {

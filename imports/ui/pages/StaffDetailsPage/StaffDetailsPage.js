@@ -15,6 +15,8 @@ import Tabs from "react-responsive-tabs";
 import StaffBio from "../../components/StaffBio/StaffBio";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
 import StaffQualification from "../../components/StaffQualification/StaffQualification";
+import Documents from "../../../api/Documents/Documents";
+import StaffFiles from "../../components/PdfViewer/PdfViewer";
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
 }
@@ -28,7 +30,9 @@ class StaffDetailPage extends React.Component {
   }
 
   render() {
-    const { staff, loading } = this.props;
+    const { staff, loading, documents } = this.props;
+    //loop over the documents;
+
     const StaffData = [
       { title: "Staff Bio", getContent: () => <StaffBio staff={staff} /> },
       GetDetailsBasedOnRole("Records", "Personnel") && {
@@ -61,6 +65,8 @@ class StaffDetailPage extends React.Component {
         {!loading ? (
           <Row>
             <Col md={12}>
+              <StaffFiles documents={documents} user={this.props.name} />
+
               <Tabs items={StaffData} showInkBar={true} />
             </Col>
           </Row>
@@ -86,6 +92,7 @@ export default (StaffDetailPageContainer = withTracker(({ match }) => {
   return {
     loading: subscription && !subscription.ready(),
     staff: StaffMembers.findOne({ staffId: staffIdQuery }),
-    m: console.log(StaffMembers.findOne({ staffId: staffIdQuery }))
+    documents: Documents.find({ "meta.staffId": staffIdQuery }).fetch(),
+    m: console.dir(Documents.find({ "meta.staffId": staffIdQuery }).fetch())
   };
 })(StaffDetailPage));

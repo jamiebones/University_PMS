@@ -58,7 +58,7 @@ export const FindDeptPostingProposedTo = (postings = []) => {
 };
 
 export const StaffType = type => {
-  const staffType = ["Teaching Staff", "Non-Teaching Staff"];
+  const staffType = ["", "Teaching Staff", "Non-Teaching Staff"];
   return staffType[parseInt(type)];
 };
 

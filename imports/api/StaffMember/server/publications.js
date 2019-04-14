@@ -3,6 +3,7 @@ import { check, Match } from "meteor/check";
 import { StaffMembers } from "../StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
+import Documents from "../../../api/Documents/Documents";
 
 Meteor.publish(
   "staffmembers.getStaffbyStaffId",
@@ -11,8 +12,10 @@ Meteor.publish(
     let query = {
       staffId: staffId.toUpperCase()
     };
-    console.log(query);
-    return StaffMembers.find(query);
+    return [
+      StaffMembers.find(query),
+      Documents.find({ "meta.staffId": staffId }).cursor
+    ];
   }
 );
 
