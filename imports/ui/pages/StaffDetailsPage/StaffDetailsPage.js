@@ -85,6 +85,7 @@ export default (StaffDetailPageContainer = withTracker(({ match }) => {
 
   return {
     loading: subscription && !subscription.ready(),
-    staff: StaffMembers.findOne({ staffId: staffIdQuery })
+    staff: StaffMembers.findOne({ staffId: staffIdQuery }),
+    m: console.log(StaffMembers.findOne({ staffId: staffIdQuery }))
   };
 })(StaffDetailPage));

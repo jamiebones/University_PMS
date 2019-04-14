@@ -279,7 +279,6 @@ export default (StaffNominalRoll = withTracker(() => {
     loading: subscription && !subscription.ready(),
     //staff: StaffMembers.find(staffId).fetch(),
     staff: StaffMembers.find(query).fetch(),
-    m: console.log(StaffMembers.find(query).fetch()),
     department: UniversityUnits.find().fetch(),
     selectedDeptReactiveVar
   };

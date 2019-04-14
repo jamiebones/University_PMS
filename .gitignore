@@ -1,3 +1,4 @@
 node_modules/
 deploy/
+data/
 settings-development.json

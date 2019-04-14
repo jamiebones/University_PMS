@@ -82,7 +82,7 @@ class StaffPostingStats extends React.Component {
                                 return (
                                   <p key={index + 20000}>
                                     <span>{designation} :</span>
-                                    <span>
+                                    <span className="spanLabel">
                                       <Label bsStyle="success">{number}</Label>
                                     </span>
                                   </p>

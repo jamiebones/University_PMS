@@ -49,13 +49,13 @@ class StaffBio extends React.Component {
   static getDerivedStateFromProps(nextProps, state) {
     //if (nextProps.staff.stateOfOrigin.trim() !== state.state) {
     const { staff, states } = nextProps;
-    if (state.editStaff === false) {
+    if (staff != undefined && state.editStaff === false) {
       return {
-        firstName: staff.biodata.firstName,
-        title: staff.biodata.title || "",
-        surname: staff.biodata.surname,
-        middleName: staff.biodata.middleName,
-        profilePicture: staff.biodata.profilePicture,
+        firstName: staff && staff.biodata && staff.biodata.firstName,
+        title: (staff && staff.biodata && staff.biodata.title) || "",
+        surname: staff && staff.biodata && staff.biodata.surname,
+        middleName: staff && staff.biodata && staff.biodata.middleName,
+        profilePicture: staff && staff.biodata && staff.biodata.profilePicture,
         sex: staff.sex,
         dob: moment(staff.dob),
         maritalStatus: staff.maritalStatus,

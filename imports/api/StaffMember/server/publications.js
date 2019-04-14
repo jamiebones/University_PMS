@@ -9,8 +9,9 @@ Meteor.publish(
   function StaffMembersPublication(staffId) {
     check(staffId, Match.OneOf(String, null, undefined));
     let query = {
-      staffId: new RegExp("^" + staffId + "$", "i")
+      staffId: staffId.toUpperCase()
     };
+    console.log(query);
     return StaffMembers.find(query);
   }
 );
