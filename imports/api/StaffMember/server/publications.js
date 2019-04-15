@@ -12,10 +12,18 @@ Meteor.publish(
     let query = {
       staffId: staffId.toUpperCase()
     };
-    return [
-      StaffMembers.find(query),
-      Documents.find({ "meta.staffId": staffId }).cursor
-    ];
+    return StaffMembers.find(query);
+  }
+);
+
+Meteor.publish(
+  "staffmembers.getStaffDocuments",
+  function StaffMembersPublication(staffId) {
+    check(staffId, Match.OneOf(String, null, undefined));
+    let query = {
+      staffId: staffId.toUpperCase()
+    };
+    return Documents.find({ "meta.staffId": staffId.toUpperCase() }).cursor;
   }
 );
 

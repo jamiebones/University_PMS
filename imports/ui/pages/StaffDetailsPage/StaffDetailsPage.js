@@ -9,13 +9,13 @@ import autoBind from "react-autobind";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import {
   ReplaceSlash,
-  GetDetailsBasedOnRole
+  GetDetailsBasedOnRole,
+  RemoveSlash
 } from "../../../modules/utilities";
 import Tabs from "react-responsive-tabs";
 import StaffBio from "../../components/StaffBio/StaffBio";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
 import StaffQualification from "../../components/StaffQualification/StaffQualification";
-import Documents from "../../../api/Documents/Documents";
 import StaffFiles from "../../components/PdfViewer/PdfViewer";
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
@@ -26,17 +26,25 @@ const StaffDetailPageRecord = styled.div``;
 class StaffDetailPage extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      tab: ""
+    };
     autoBind(this);
   }
 
   render() {
-    const { staff, loading, documents } = this.props;
+    const { staff, loading } = this.props;
     //loop over the documents;
 
     const StaffData = [
-      { title: "Staff Bio", getContent: () => <StaffBio staff={staff} /> },
+      {
+        title: "Staff Bio",
+        key: "bio",
+        getContent: () => <StaffBio staff={staff} />
+      },
       GetDetailsBasedOnRole("Records", "Personnel") && {
         title: "Promotion",
+        key: "promotion",
         getContent: () => (
           <StaffPromotionComponent
             staffdesignation={staff && staff.designation}
@@ -50,6 +58,7 @@ class StaffDetailPage extends React.Component {
       },
       {
         title: "Staff Qualification",
+        key: "qualification",
         getContent: () => (
           <StaffQualification
             certificate={staff && staff.certificate}
@@ -57,6 +66,14 @@ class StaffDetailPage extends React.Component {
             user={this.props.name}
           />
         )
+      },
+      {
+        title: "Staff Files",
+        key: "files",
+        getContent: () =>
+          this.props.history.push(
+            `/auth/files/${staff && RemoveSlash(staff.staffId)}`
+          )
       }
     ];
 
@@ -65,8 +82,6 @@ class StaffDetailPage extends React.Component {
         {!loading ? (
           <Row>
             <Col md={12}>
-              <StaffFiles documents={documents} user={this.props.name} />
-
               <Tabs items={StaffData} showInkBar={true} />
             </Col>
           </Row>
@@ -91,8 +106,6 @@ export default (StaffDetailPageContainer = withTracker(({ match }) => {
 
   return {
     loading: subscription && !subscription.ready(),
-    staff: StaffMembers.findOne({ staffId: staffIdQuery }),
-    documents: Documents.find({ "meta.staffId": staffIdQuery }).fetch(),
-    m: console.dir(Documents.find({ "meta.staffId": staffIdQuery }).fetch())
+    staff: StaffMembers.findOne({ staffId: staffIdQuery })
   };
 })(StaffDetailPage));

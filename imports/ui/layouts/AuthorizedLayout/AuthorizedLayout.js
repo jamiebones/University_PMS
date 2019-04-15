@@ -19,6 +19,7 @@ import StaffPromotion from "../../pages/StaffPromotion/StaffPromotion";
 import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 import StaffNominalRoll from "../../pages/StaffNominalRoll/StaffNominalRoll";
 import StaffPostingStats from "../../pages/StaffPostingStats/StaffPostingStats";
+import ViewStaffDocuments from "../../components/PdfViewer/PdfViewer";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -155,6 +156,16 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/record/:staffId`}
               component={StaffDetailsPage}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/files/:staffId`}
+              component={ViewStaffDocuments}
               {...rest}
             />
 
