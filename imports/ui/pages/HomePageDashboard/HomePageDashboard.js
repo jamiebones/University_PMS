@@ -5,6 +5,9 @@ import autoBind from "react-autobind";
 import { Link } from "react-router-dom";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import Sats from "../../components/Links/Sats";
+import ASE from "../../components/Links/ASE";
+import JSE from "../../components/Links/JSE";
+import Records from "../../components/Links/Records";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
 
@@ -14,15 +17,15 @@ const RenderDashboard = props => {
   }
 
   if (GetDetailsBasedOnRole("JSE", "Personnel")) {
-    return <p>hello jses</p>;
+    return <JSE />;
   }
 
   if (GetDetailsBasedOnRole("Records", "Personnel")) {
-    return <p>hello records</p>;
+    return <Records />;
   }
 
   if (GetDetailsBasedOnRole("ASE", "Personnel")) {
-    return <p>hello ase</p>;
+    return <ASE />;
   }
 
   if (GetDetailsBasedOnRole("Director", "Personnel")) {
@@ -55,7 +58,7 @@ class HomePageDashboard extends React.Component {
   }
 
   render() {
-    const { name, group } = this.props;
+    const { name, groups } = this.props;
     return (
       <Row>
         <Col md={6} mdOffset={3}>
@@ -66,7 +69,7 @@ class HomePageDashboard extends React.Component {
               </p>
 
               <p>
-                Login Type: <span>{group}</span>
+                Login Type: <span>{groups}</span>
               </p>
             </div>
 

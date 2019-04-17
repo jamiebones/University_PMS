@@ -1,11 +1,15 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import styled from "styled-components";
 import { Button, Col, Row, Table } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Loading from "../../components/Loading/Loading";
-import { FindTimeDifference } from "../../../modules/utilitiesComputation";
+import {
+  FindTimeDifference,
+  CalculateDueForRetirement
+} from "../../../modules/utilitiesComputation";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
+import moment from "moment";
 
 const PensionDashBoardStyles = styled.div`
   .pensionTable tr th {
@@ -27,8 +31,8 @@ class PensionDashBoard extends React.Component {
   componentDidMount() {
     Meteor.call("staffmembers.getstaff", (err, res) => {
       if (!err) {
-        console.dir(FindTimeDifference(res));
-        const result = FindTimeDifference(res);
+        const result = CalculateDueForRetirement(res);
+        console.dir(result);
         this.setState({ staffData: result, loading: false });
       }
     });
@@ -48,20 +52,23 @@ class PensionDashBoard extends React.Component {
                 <Table className="pensionTable" responsive striped>
                   <thead>
                     <tr>
+                      <th>SN</th>
                       <th>Name</th>
                       <th>Designation</th>
                       <th>Service Years</th>
-                      <th>Age</th>
+                      <th>Birthday: Age</th>
                       <th>Year(s) to retirement</th>
                     </tr>
                   </thead>
                   <tbody>
                     {staffData &&
+                      staffData.length > 0 &&
                       staffData.map(
                         (
                           {
                             biodata,
                             periodSpent,
+                            dob,
                             age,
                             designation,
                             yearsToretirement
@@ -70,6 +77,9 @@ class PensionDashBoard extends React.Component {
                         ) => {
                           return (
                             <tr key={index}>
+                              <td>
+                                <p>{index + 1}</p>
+                              </td>
                               <td>
                                 <p>
                                   {biodata.firstName} {biodata.middleName}{" "}
@@ -86,7 +96,9 @@ class PensionDashBoard extends React.Component {
                               </td>
 
                               <td>
-                                <p>{age}</p>
+                                <p>
+                                  {moment(dob).format("MMMM, DD, YYYY")}: {age}
+                                </p>
                               </td>
 
                               <td>

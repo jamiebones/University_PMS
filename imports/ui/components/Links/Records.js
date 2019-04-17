@@ -39,16 +39,16 @@ const Sats = ({ history }) => (
     </p>
 
     <p>
+      <Link to="/auth/add_staff_documents">Add Documents</Link>
+      <span>Page to add staff documents</span>
+    </p>
+    <p>
+      <Link to="/auth/dashboard/pensions/home">Pension List</Link>
+      <span>List of staff ready to retire</span>
+    </p>
+    <p>
       <Link to="/auth/posting_list">Posting List</Link>
-      <span>Posting list of senior staff</span>
-    </p>
-    <p>
-      <Link to="/auth/due_for_promotion">Promotion List</Link>
-      <span>Promotion list of senior staff</span>
-    </p>
-    <p>
-      <Link to="/auth/staff_posting">Staff Posting</Link>
-      <span>Page to initiate staff posting</span>
+      <span>Posting list</span>
     </p>
   </SatsStyles>
 );

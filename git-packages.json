@@ -1,0 +1,5 @@
+{
+  "pdfjs": {
+    "git": "https://github.com/pascoual/meteor-pdfjs.git"
+  }
+}
