@@ -28,9 +28,21 @@ class StaffPromotion extends React.Component {
       firstRender: true,
       designation: "",
       showModal: false,
-      selectedDesignation: ""
+      selectedDesignation: "",
+      staff: [],
+      designations: [],
+      loading: true
     };
     autoBind(this);
+  }
+
+  componentDidMount() {
+    Meteor.call("getStaffDueForPromotion", (err, res) => {
+      if (!err) {
+        this.setState({ staff: res[0], designations: res[1], loading: false });
+        console.dir(res);
+      }
+    });
   }
 
   updatePromotion({
@@ -54,13 +66,22 @@ class StaffPromotion extends React.Component {
 
   onChange(e) {
     if (e.target.value == "0") return;
-    this.setState({ selectedDesignation: e.target.value });
-    this.props.selectedDesignation.set(e.target.value);
+    const designation = e.target.value;
+    this.setState({ loading: true });
+    Meteor.call("getStaffDueForPromotion", designation, (err, res) => {
+      if (!err) {
+        this.setState({
+          staff: res[0],
+          designations: res[1],
+          loading: false,
+          selectedDesignation: designation
+        });
+      }
+    });
   }
 
   render() {
-    const { loading, staff, designation } = this.props;
-    const { selectedDesignation } = this.state;
+    const { selectedDesignation, staff, designations, loading } = this.state;
 
     return (
       <StaffPromotionStyles>
@@ -75,8 +96,8 @@ class StaffPromotion extends React.Component {
                 >
                   <option value="0">select a designation</option>
                   <option value="all">All Eligible For Promotion</option>
-                  {designation &&
-                    designation.map(({ rank }) => {
+                  {designations &&
+                    designations.map(({ rank }) => {
                       return (
                         <option key={rank} value={rank}>
                           {rank}
@@ -109,7 +130,8 @@ class StaffPromotion extends React.Component {
                       <th>Staff ID</th>
                       <th>Designation</th>
                       <th>Salary Structure</th>
-                      <th>Date of Last Promotion</th>
+                      <th>Date of Last Promotion: (Years)</th>
+
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -122,6 +144,7 @@ class StaffPromotion extends React.Component {
                           designation,
                           salaryStructure,
                           dateOfLastPromotion,
+                          yearsSincePromotion,
                           certificate
                         },
                         index
@@ -149,7 +172,9 @@ class StaffPromotion extends React.Component {
                             </td>
 
                             <td>
-                              <p>{dateOfLastPromotion}</p>
+                              <p>
+                                {dateOfLastPromotion}: {yearsSincePromotion}
+                              </p>
                             </td>
 
                             <td>
@@ -201,55 +226,4 @@ class StaffPromotion extends React.Component {
   }
 }
 
-let selectedDesignation = new ReactiveVar("");
-
-export default (StaffPromotionContainer = withTracker(() => {
-  let subscription;
-  let promotionArray = [];
-  let loading = true;
-  let designation = [];
-  let query = {};
-  let rankQuery = {};
-  if (GetDetailsBasedOnRole("SATS", "Personnel")) {
-    query.staffClass = "Senior Staff";
-    query.staffType = "2";
-    rankQuery.type = "Senior Staff";
-  }
-
-  if (GetDetailsBasedOnRole("JSE", "Personnel")) {
-    query.staffClass = "Junior Staff";
-    query.staffType = "2";
-    rankQuery.type = "Junior Staff";
-  }
-
-  if (GetDetailsBasedOnRole("ASE", "Personnel")) {
-    query.staffType = "1";
-  }
-
-  if (Meteor.isClient) {
-    subscription = Meteor.subscribe(
-      "staffmembers.getStaffDueForPromotion",
-      query,
-      rankQuery,
-      selectedDesignation.get()
-    );
-  }
-
-  if (subscription && subscription.ready()) {
-    let allStaff = StaffMembers.find(query, {
-      sort: { designation: 1 }
-    }).fetch();
-    console.time();
-    designation = Designations.find(rankQuery, { sort: { rank: 1 } }).fetch();
-    console.log(console.timeEnd());
-    promotionArray = FindStaffDueForPromotion(allStaff);
-    loading = false;
-  }
-
-  return {
-    loading: loading,
-    staff: promotionArray || [],
-    designation: designation || [],
-    selectedDesignation
-  };
-})(StaffPromotion));
+export default StaffPromotion;

@@ -372,3 +372,15 @@ export const CalculateDueForRetirement = staffArray => {
   console.log(sortArray);
   return sortArray;
 };
+
+export const GetDateInYearsMonthDay = passedDate => {
+  const todayDate = moment(new Date());
+  const diffDuration = moment.duration(todayDate.diff(passedDate));
+  let years = diffDuration.years();
+  let months = diffDuration.months();
+  let days = diffDuration.days();
+  years = years ? `${years} years` : "";
+  months = months ? `${months} months` : "";
+  days = days ? `${days} days` : "";
+  return `${years} ${months} ${days}`;
+};

@@ -8,6 +8,7 @@ const StaffMembers = new Mongo.Collection("staffmembers");
 
 if (Meteor.isServer) {
   StaffMembers._ensureIndex({ staffId: 1 });
+  StaffMembers._ensureIndex({ staffId: 1, designation: 1 });
 }
 
 StaffMembers.allow({

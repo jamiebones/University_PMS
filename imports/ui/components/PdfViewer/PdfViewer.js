@@ -13,11 +13,18 @@ import styled from "styled-components";
 if (Meteor.isClient) {
   pdfjs.GlobalWorkerOptions.workerSrc =
     "/packages/geekho_pdfjs/build/pdf.worker.js";
+  import "react-pdf/dist/Page/AnnotationLayer.css";
 }
 
 const MyPdfViewerStyles = styled.div`
   .react-pdf__Document {
     margin-bottom: 10px;
+  }
+  .pager {
+    width: 50%;
+  }
+  .pager li {
+    display: inline-block;
   }
 `;
 
@@ -49,35 +56,28 @@ class MyPdfViewer extends React.Component {
 
   ScrollToBottom() {
     if (Meteor.isClient) {
-      debugger;
-      window.scrollTo(0, document.body.scrollHeight);
+      window.scrollTo(0, document.querySelector(".divViewer").scrollHeight);
     }
   }
 
   onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({ numPages }, () => {
-      this.ScrollToBottom();
-    });
+    this.setState({ numPages });
   };
 
   increment() {
     this.setState({ documentNum: this.state.documentNum + 1, pageNumber: 1 });
-    this.ScrollToBottom();
   }
 
   decrement() {
     this.setState({ documentNum: this.state.documentNum - 1, pageNumber: 1 });
-    this.ScrollToBottom();
   }
 
   handlePrevious() {
     this.setState({ pageNumber: this.state.pageNumber - 1 });
-    this.ScrollToBottom();
   }
 
   handleNext() {
     this.setState({ pageNumber: this.state.pageNumber + 1 });
-    this.ScrollToBottom();
   }
 
   renderPagination = (page, pages) => {
@@ -134,7 +134,7 @@ class MyPdfViewer extends React.Component {
       <div>
         {!loading ? (
           <MyPdfViewerStyles>
-            <Row>
+            <Row className="divViewer">
               <Col md={8} mdOffset={2}>
                 {documents.length > 0 ? (
                   <div>

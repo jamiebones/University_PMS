@@ -12,6 +12,18 @@ const AuthenticatedNavigation = ({ history }) => (
           <LinkContainer
             to="#"
             exact
+            onClick={() => history.push("/auth/dashboard/home")}
+          >
+            <NavItem eventKey={2} href="#">
+              Dashboard
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
             onClick={() => history.push("/auth/records/search")}
           >
             <NavItem eventKey={2} href="#">

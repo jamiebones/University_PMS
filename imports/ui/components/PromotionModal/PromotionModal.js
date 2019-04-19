@@ -1,17 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Row,
-  Col,
-  FormGroup,
-  ControlLabel,
-  ButtonToolbar,
-  Modal,
-  FormControl,
-  Label,
-  Button,
-  HelpBlock
-} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import autoBind from "react-autobind";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";

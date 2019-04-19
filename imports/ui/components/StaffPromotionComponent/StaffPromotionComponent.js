@@ -71,7 +71,7 @@ class StaffPromotionComponent extends React.Component {
         const cadreArray = TeachingCadresProgression();
         const nextRank = FindNextRank(cadreArray, props.staffdesignation);
         const { cadre, scale } = nextRank;
-        const newStep = TeachingStaffPromotionPlacement(step);
+        const newStep = step - 2;
         //get the level
         return {
           proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,

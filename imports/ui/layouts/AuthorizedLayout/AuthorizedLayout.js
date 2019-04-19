@@ -28,11 +28,12 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
         <div>
           <Switch>
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={["Records"]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/add_staff_documents`}
+              pathAfterFailure="/logout"
               component={AddStaffDocuments}
               {...rest}
             />
@@ -44,23 +45,32 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
                 "ASE",
                 "Director",
                 "JSE",
-                "super-admin"
+                "super-admin",
+                "Registrar"
               ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/staff_posting`}
               component={StaffPostingTab}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
             <Authorized
-              allowedRoles={["SATS", "Director", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Director",
+                "JSE",
+                "Registrar",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/posting_stats`}
               component={StaffPostingStats}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -71,13 +81,15 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
                 "ASE",
                 "Director",
                 "JSE",
-                "super-admin"
+                "super-admin",
+                "Registrar"
               ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/nominal_roll`}
               component={StaffNominalRoll}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -88,13 +100,15 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
                 "ASE",
                 "Director",
                 "JSE",
-                "super-admin"
+                "super-admin",
+                "Registrar"
               ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/due_for_promotion`}
               component={StaffPromotion}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -105,6 +119,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/dashboard/pensions/home`}
               component={PensionDashboard}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -120,72 +135,77 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "Registrar",
+                "Director",
+                "JSE",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/posting_list`}
               component={ApprovedPostingList}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Director",
+                "Records",
+                "Registrar",
+                "ASE",
+                "JSE",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/dashboard/home`}
               component={DashBoard}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "Registrar",
+                "Director",
+                "ASE",
+                "JSE",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/records/search`}
               component={SearchStaffRecords}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "Director",
+                "Registrar",
+                "ASE",
+                "JSE",
+                "super-admin"
+              ]}
               group="Personnel"
               userId={userId}
               exact
               path={`${match.path}/record/:staffId`}
               component={StaffDetailsPage}
-              {...rest}
-            />
-
-            <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/files/:staffId`}
-              component={ViewStaffDocuments}
-              {...rest}
-            />
-
-            <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/add_cadre`}
-              component={AddCadrePage}
-              {...rest}
-            />
-
-            <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/propose_posting`}
-              component={StaffProposePostingPage}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
@@ -196,6 +216,48 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
                 "ASE",
                 "JSE",
                 "Registrar",
+                "Director",
+                "super-admin"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/files/:staffId`}
+              component={ViewStaffDocuments}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_cadre`}
+              component={AddCadrePage}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/propose_posting`}
+              component={StaffProposePostingPage}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "JSE",
+                "Registrar",
+                "Director",
                 "super-admin"
               ]}
               group="Personnel"

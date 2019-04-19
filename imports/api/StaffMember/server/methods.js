@@ -1,8 +1,9 @@
 import { Meteor } from "meteor/meteor";
-import { check } from "meteor/check";
+import { check, Match } from "meteor/check";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import moment from "moment";
+import { Designations } from "../../../api/Designation/DesignationClass";
 import { _ } from "meteor/underscore";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 
 Meteor.methods({
   getRecords: function StaffMembersmethod() {
@@ -70,19 +71,58 @@ Meteor.methods({
     return bb.splice(0, 10);
   },
   getOverStayedStaff: function StaffMembersmethod() {
+    let query = {};
+
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+      query.staffType = "2";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+      query.staffType = "2";
+    }
+
+    query.staffType = "2";
+
     const pipeline = [
-      { $match: { staffType: "2" } },
+      { $match: query },
       {
         $project: {
           _id: 0,
           staffId: 1,
           postings: 1,
           currentPosting: 1,
-          staffClass: 1
+          staffClass: 1,
+          biodata: 1,
+          designation: 1,
+          salaryStructure: 1
         }
       },
-      //  { $unwind: {"$postings"} },
-      { $group: { _id: "$staffId" } }
+
+      { $unwind: { path: "$postings", preserveNullAndEmptyArrays: false } },
+      {
+        $group: {
+          _id: "$staffId",
+          postings: { $last: "$postings" },
+          data: { $push: "$$ROOT" }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          postings: 1,
+          data: 1,
+          periodSpent: {
+            $divide: [
+              { $subtract: [new Date(), { $toDate: "$postings.postingDate" }] },
+              1000 * 60 * 60 * 24 * 365
+            ]
+          }
+        }
+      },
+      { $match: { periodSpent: { $gte: 5 } } },
+      { $sort: { periodSpent: -1 } }
     ];
     const result = StaffMembers.aggregate(pipeline);
     return result;
@@ -119,5 +159,88 @@ Meteor.methods({
     ];
     const result = StaffMembers.aggregate(pipeline);
     return result;
+  },
+  getStaffDueForPromotion: function StaffMembersmethod(designation) {
+    //apply filter here based on role type and designation
+    check(designation, Match.OneOf(String, null, undefined));
+    let query = {};
+    let rankQuery = {};
+
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+      query.staffType = "2";
+      rankQuery.type = "Senior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+      query.staffType = "2";
+      rankQuery.type = "Junior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("ASE", "Personnel")) {
+      query.staffType = "1";
+      delete query.staffClass;
+    }
+
+    if (designation) {
+      query.designation = designation;
+    }
+
+    if (designation == "all") {
+      delete query.designation;
+    }
+
+    query.dateOfLastPromotion = { $ne: "-" };
+
+    const pipeline = [
+      { $match: query },
+      {
+        $project: {
+          yearsSincePromotion: {
+            $subtract: [
+              new Date().getFullYear(),
+              { $year: { $toDate: "$dateOfLastPromotion" } }
+            ]
+          },
+
+          biodata: 1,
+          designation: 1,
+          salaryStructure: 1,
+          currentPosting: 1,
+          dateOfLastPromotion: 1,
+          staffId: 1,
+          certificate: 1
+        }
+      },
+      { $match: { yearsSincePromotion: { $gte: 3 } } }
+    ];
+    const staffArray = StaffMembers.aggregate(pipeline);
+    const designations = Designations.find(rankQuery, {
+      sort: { rank: 1 }
+    }).fetch();
+
+    const careerPeak = [
+      "VICE CHANCELLOR",
+      "PROFESSOR",
+      "PROFESSOR (DEAN)",
+      "REGISTRAR",
+      "DIRECTOR",
+      "DIRECTOR, HEALTH SERVICES",
+      "DIRECTOR INTERNAL AUDITOR",
+      "PROFESSOR (DVC)",
+      "PROFESSOR (DIRECTOR)",
+      "PROFESSOR (PROVOST)",
+      "BURSAR"
+    ];
+    const promotionArray = staffArray.filter(staff => {
+      return !careerPeak.includes(staff.designation.toUpperCase());
+    });
+
+    const sortPromotionArray = promotionArray.sort((a, b) => {
+      return b.designation - a.designation;
+    });
+
+    return [sortPromotionArray, designations];
   }
 });

@@ -159,6 +159,6 @@ export default (StaffPostingPageContainer = withTracker(props => {
     staff: StaffMembers.find(query).fetch(),
     staffIdReactive,
     designationReactive,
-    designations: Designations.find().fetch() || []
+    designations: Designations.find({}, { sort: { rank: 1 } }).fetch() || []
   };
 })(StaffPostingPage));
