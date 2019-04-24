@@ -21,13 +21,7 @@ class DashBoard extends React.Component {
       <DashBoardStyles>
         <Row>
           <Col md={12}>
-            <Col md={6}>
-              <p>Put something here</p>
-            </Col>
-
-            <Col md={6}>
-              <OverStayedStaff />
-            </Col>
+            <OverStayedStaff />
           </Col>
         </Row>
       </DashBoardStyles>

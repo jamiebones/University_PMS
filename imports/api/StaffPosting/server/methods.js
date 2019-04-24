@@ -119,8 +119,21 @@ Meteor.methods({
   },
   "staffposting.getApprovedPosting": function StaffPostingmethod() {
     let date = moment(new Date()).toISOString();
+    let query = {
+      status: "4",
+      startingDate: {
+        $gte: date
+      }
+    };
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+    }
     const pipeline = [
-      { $match: { status: "4", startingDate: { $gte: date } } },
+      { $match: query },
       { $group: { _id: "$staffId", data: { $last: "$$ROOT" } } },
       // { $unwind: "$data" }
       { $sort: { startingDate: -1, designation: 1 } }

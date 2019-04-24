@@ -20,7 +20,14 @@ Meteor.publish(
 Meteor.publish(
   "staffposting.getApprovedPosting",
   function StaffMembersPublication() {
-    return StaffPostings.find({ status: "4" });
+    let date = moment(new Date()).toISOString();
+    let query = {
+      status: "4",
+      startingDate: {
+        $gt: date
+      }
+    };
+    return StaffPostings.find(query);
   }
 );
 

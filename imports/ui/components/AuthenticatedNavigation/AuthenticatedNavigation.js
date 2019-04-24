@@ -3,6 +3,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import RegistrarNavigation from "./RegistrarNavigation";
 
 const AuthenticatedNavigation = ({ history }) => (
   <div>
@@ -113,6 +114,18 @@ const AuthenticatedNavigation = ({ history }) => (
         </Nav>
       </React.Fragment>
     ) : null}
+
+    {GetDetailsBasedOnRole(["Registrar"], "Personnel") ? (
+      <RegistrarNavigation />
+    ) : null}
+
+    <Nav>
+      <LinkContainer to="#" exact onClick={() => history.push("/auth/profile")}>
+        <NavItem eventKey={5} href="#">
+          Profile
+        </NavItem>
+      </LinkContainer>
+    </Nav>
 
     <Nav>
       <LinkContainer to="#" exact onClick={() => history.push("/logout")}>

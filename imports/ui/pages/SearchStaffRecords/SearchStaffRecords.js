@@ -188,7 +188,7 @@ export default (SearchStaffRecordsPageContainer = withTracker(() => {
   }
 
   if (staffIdReactive.get() !== "") {
-    query.staffId = new RegExp("^" + staffIdReactive.get().trim() + "$", "i");
+    query.staffId = new RegExp(staffIdReactive.get().trim(), "i");
     delete query.designation;
   }
 

@@ -73,6 +73,9 @@ const StaffProposePostingStyle = styled.div`
   #deptInput {
     width: 60%;
   }
+  .react-datepicker {
+    font-size: 1rem;
+  }
 `;
 
 class StaffProposePostingPage extends React.Component {

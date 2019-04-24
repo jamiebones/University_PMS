@@ -1,20 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  Button,
-  Col,
-  Row,
-  FormGroup,
-  Table,
-  ButtonToolbar,
-  ButtonGroup
-} from "react-bootstrap";
+import { Button, Col, Row, Table } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
-import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
-import { SortPostingDuration } from "../../../modules/utilities";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import moment from "moment";
 
 const StaffPostingApprovalStyles = styled.div`
@@ -127,17 +118,4 @@ class StaffPostingApproval extends React.Component {
   }
 }
 
-export default (ViewStaffPostingContainer = withTracker(() => {
-  let subscription;
-  if (Meteor.isClient) {
-    subscription = Meteor.subscribe("staffposting.getApprovedPosting");
-  }
-
-  return {
-    loading: subscription && !subscription.ready(),
-    postings: StaffPostings.find(
-      { status: "4" },
-      { sort: { designation: 1 } }
-    ).fetch()
-  };
-})(StaffPostingApproval));
+export default StaffPostingApproval;

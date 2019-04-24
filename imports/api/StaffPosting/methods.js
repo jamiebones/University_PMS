@@ -7,7 +7,7 @@ import {
   Postings
 } from "../../api/StaffPosting/StaffPostingClass";
 import { _ } from "meteor/underscore";
-import { FindMax } from "../../modules/utilities";
+import { FindMax, GetDetailsBasedOnRole } from "../../modules/utilities";
 import moment from "moment";
 
 Meteor.methods({
@@ -22,8 +22,7 @@ Meteor.methods({
     check(newUnit, String);
     check(_id, String);
     const proposedPosting = StaffPosting.findOne(_id);
-    const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
-    const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
+    const postedStaff = StaffMember.findOne({ staffId: staffId.toUpperCase() });
     proposedPosting.status = status;
     //get the last posting
     const postingSerial = FindMax(postedStaff.postings, "serial");
@@ -73,8 +72,8 @@ Meteor.methods({
       previousPostings,
       designation
     } = posting;
-    const staffIdRegEx = new RegExp("^" + staffId + "$", "i");
-    const postedStaff = StaffMember.findOne({ staffId: staffIdRegEx });
+
+    const postedStaff = StaffMember.findOne({ staffId: staffId.toUpperCase() });
     if (!_.isEmpty(postedStaff)) {
       //lets do the posting here
       let newPosting = new StaffPosting();
@@ -98,6 +97,12 @@ Meteor.methods({
           postingDate: startingDate,
           postingStatus: "1"
         };
+
+        //if the posting is been done by register just approved it
+        if (GetDetailsBasedOnRole("Registrar", "Personnel")) {
+          postingObj.postingStatus = "4";
+          newPosting.status = "4";
+        }
         let posting = new Postings(postingObj);
 
         postedStaff.postings = [...postedStaff.postings, posting];

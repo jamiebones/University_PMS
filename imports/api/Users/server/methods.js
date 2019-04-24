@@ -24,8 +24,7 @@ Meteor.methods({
         name: {
           first: String,
           last: String
-        },
-        title: String
+        }
       }
     });
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const SatsStyles = styled.div`
+const RegistrarStyles = styled.div`
   p {
     background: #ced8cc;
     padding: 10px;
@@ -23,8 +23,8 @@ const SatsStyles = styled.div`
   }
 `;
 
-const Sats = ({ history }) => (
-  <SatsStyles>
+const Registrar = ({ history }) => (
+  <RegistrarStyles>
     <p>
       <Link to="/auth/records/search">Search Staff Records</Link>
       <span>Link to search for staff records</span>
@@ -54,7 +54,7 @@ const Sats = ({ history }) => (
       <Link to="/auth/posting_stats">Posting Stats</Link>
       <span>Posting statistics</span>
     </p>
-  </SatsStyles>
+  </RegistrarStyles>
 );
 
-export default Sats;
+export default Registrar;
