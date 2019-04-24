@@ -86,6 +86,34 @@ const AuthenticatedNavigation = ({ history }) => (
       </React.Fragment>
     ) : null}
 
+    {GetDetailsBasedOnRole(["super-admin"], "Personnel") ? (
+      <React.Fragment>
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
+            onClick={() => history.push("/auth/account_creation")}
+          >
+            <NavItem eventKey={4} href="#">
+              Create User Account
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
+            onClick={() => history.push("/auth/account_status")}
+          >
+            <NavItem eventKey={8} href="#">
+              View Accounts
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+      </React.Fragment>
+    ) : null}
+
     <Nav>
       <LinkContainer to="#" exact onClick={() => history.push("/logout")}>
         <NavItem eventKey={5} href="#">

@@ -904,6 +904,16 @@ if (!Meteor.isProduction) {
 
   const users = [
     {
+      email: "admin@admin.com",
+      password: "password",
+      profile: {
+        name: { first: "Carl", last: "Winslow" },
+        title: "Dr"
+      },
+      roles: ["super-admin"],
+      group: Roles.GLOBAL_GROUP
+    },
+    {
       email: "recordsunit@admin.com",
       password: "password",
       profile: {

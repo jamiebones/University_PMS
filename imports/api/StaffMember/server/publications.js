@@ -23,7 +23,10 @@ Meteor.publish(
     let query = {
       staffId: staffId.toUpperCase()
     };
-    return Documents.find({ "meta.staffId": staffId.toUpperCase() }).cursor;
+    return [
+      Documents.find({ "meta.staffId": staffId.toUpperCase() }).cursor,
+      StaffMembers.find(query, { field: { biodata: 1 } })
+    ];
   }
 );
 

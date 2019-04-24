@@ -410,3 +410,34 @@ export const SplitFacultyAndDept = faculty => {
   const facArray = faculty.split("/");
   return facArray.length == 2 ? facArray[1] : facArray[0];
 };
+
+export const StripRolesFromGroup = roles => {
+  let para = "<p>";
+  //assumption is made everybody will be in just one group
+  for (group in roles) {
+    const rolesArray = roles[group].length;
+    para +=
+      group === "__global_roles__"
+        ? ""
+        : rolesArray
+        ? `<span className="text-info"><b>${capAllFirstLetter(
+            group
+          )}</b> &nbsp:</span>`
+        : "";
+
+    for (let i = 0; i < rolesArray; i++) {
+      if (group == "__global_roles__") {
+        para += "Super Admin";
+      } else {
+        para += `&nbsp; ${capAllFirstLetter(roles[group][i])}`;
+      }
+
+      if (i !== rolesArray - 1) {
+        para += "&nbsp; || &nbsp;";
+      }
+    }
+    para += "<br/>";
+  }
+  para += "</p>";
+  return para;
+};

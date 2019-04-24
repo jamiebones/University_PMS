@@ -1,6 +1,6 @@
 import Documents from "../../../api/Documents/Documents";
 import React from "react";
-import { Col, Row, Button, ButtonToolbar } from "react-bootstrap";
+import { Col, Row, Button, ButtonToolbar, Alert } from "react-bootstrap";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 //import PDF from "react-pdf-js";
 import { withTracker } from "meteor/react-meteor-data";
@@ -125,7 +125,7 @@ class MyPdfViewer extends React.Component {
 
   render() {
     let pagination = null;
-    const { loading } = this.props;
+    const { loading, staff } = this.props;
     const { documents, documentNum, pageNumber, numPages } = this.state;
     if (numPages) {
       pagination = this.renderPagination(pageNumber, numPages);
@@ -138,11 +138,11 @@ class MyPdfViewer extends React.Component {
               <Col md={8} mdOffset={2}>
                 {documents.length > 0 ? (
                   <div>
-                    {/*
-                <p className="text-center">
-                  {biodata.firstName} {biodata.middleName} {biodata.surname}
-                </p>
-               */}
+                    <p className="lead">
+                      {staff && staff.biodata.firstName}{" "}
+                      {staff && staff.biodata.middleName}{" "}
+                      {staff && staff.biodata.surname}
+                    </p>
 
                     <div>{pagination}</div>
 
@@ -182,7 +182,9 @@ class MyPdfViewer extends React.Component {
                     </div>
                   </div>
                 ) : (
-                  <p>No files found</p>
+                  <Alert bsStyle="info">
+                    <p className="lead">No files found</p>
+                  </Alert>
                 )}
               </Col>
             </Row>

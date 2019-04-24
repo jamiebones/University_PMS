@@ -20,6 +20,8 @@ import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 import StaffNominalRoll from "../../pages/StaffNominalRoll/StaffNominalRoll";
 import StaffPostingStats from "../../pages/StaffPostingStats/StaffPostingStats";
 import ViewStaffDocuments from "../../components/PdfViewer/PdfViewer";
+import AdminAccountPage from "../../pages/AdminAccountPage/AdminAccountPage";
+import UserStatus from "../../pages/UserStatus/UserStatus";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -27,6 +29,28 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
       <Col md={12}>
         <div>
           <Switch>
+            <Authorized
+              allowedRoles={["super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/account_creation`}
+              component={AdminAccountPage}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/account_status`}
+              component={UserStatus}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
             <Authorized
               allowedRoles={["Records"]}
               group="Personnel"
