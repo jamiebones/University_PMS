@@ -68,6 +68,10 @@ injectGlobal`
     
   }
 
+  .react-datepicker{
+    font-size: 1.0rem;
+  }
+
   
   form label {
     display: block;

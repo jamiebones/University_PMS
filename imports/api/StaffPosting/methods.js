@@ -8,6 +8,7 @@ import {
 } from "../../api/StaffPosting/StaffPostingClass";
 import { _ } from "meteor/underscore";
 import { FindMax } from "../../modules/utilities";
+import moment from "moment";
 
 Meteor.methods({
   "staffposting.approveorcancelposting": function StaffPostingmethod(
@@ -96,6 +97,49 @@ Meteor.methods({
           serial: postingSerial,
           postingDate: startingDate,
           postingStatus: "1"
+        };
+        let posting = new Postings(postingObj);
+
+        postedStaff.postings = [...postedStaff.postings, posting];
+        postedStaff.postingProposed = true;
+        newPosting.save();
+        postedStaff.save();
+      } catch (error) {
+        throw new Meteor.Error(`There was an error: ${error}`);
+      }
+    }
+  },
+  "staffPosting.savePostingDate": function staffPosting(posting) {
+    check(posting, Object);
+    const {
+      staffId,
+      staffName,
+      designation,
+      dateOfPosting,
+      currentPosting
+    } = posting;
+    const postedStaff = StaffMember.findOne({ staffId: staffId.toUpperCase() });
+    if (!_.isEmpty(postedStaff)) {
+      //lets do the posting here
+      let newPosting = new StaffPosting();
+      newPosting.staffId = staffId;
+      newPosting.staffName = staffName;
+      newPosting.unitFrom = "first";
+      newPosting.newUnit = currentPosting;
+      newPosting.status = "4";
+      newPosting.startingDate = dateOfPosting;
+      newPosting.dateofPosting = dateOfPosting;
+      newPosting.designation = designation;
+      newPosting.staffClass = postedStaff.staffClass;
+      try {
+        let postingSerial = FindMax(postedStaff.postings, "serial");
+        postingSerial += 1;
+        const postingObj = {
+          unitName: currentPosting,
+          unitFrom: "first",
+          serial: postingSerial,
+          postingDate: dateOfPosting,
+          postingStatus: "4"
         };
         let posting = new Postings(postingObj);
 

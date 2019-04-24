@@ -16,7 +16,7 @@ import Tabs from "react-responsive-tabs";
 import StaffBio from "../../components/StaffBio/StaffBio";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
 import StaffQualification from "../../components/StaffQualification/StaffQualification";
-import StaffFiles from "../../components/PdfViewer/PdfViewer";
+import PostingDate from "../../components/PostingDate/PostingDate";
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
 }
@@ -56,6 +56,12 @@ class StaffDetailPage extends React.Component {
           />
         )
       },
+      staff &&
+        staff.staffType == "2" && {
+          title: "Posting Date",
+          key: "posting",
+          getContent: () => <PostingDate staff={staff} />
+        },
       {
         title: "Staff Qualification",
         key: "qualification",
