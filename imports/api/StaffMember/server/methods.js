@@ -137,6 +137,7 @@ Meteor.methods({
         $project: {
           staffId: "$staffId",
           biodata: "$biodata",
+          department: "$currentPosting",
           year: "$dateOfAppointmentInUniversity",
           timeSpent_total: {
             $divide: [

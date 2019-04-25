@@ -23,6 +23,8 @@ import ViewStaffDocuments from "../../components/PdfViewer/PdfViewer";
 import AdminAccountPage from "../../pages/AdminAccountPage/AdminAccountPage";
 import UserStatus from "../../pages/UserStatus/UserStatus";
 import Profile from "../../pages/Profile/Profile";
+import AdminUploadStaffData from "../../pages/AdminUploadStaffData/AdminUploadStaffData";
+import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalaryIncrement";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -37,6 +39,28 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/account_creation`}
               component={AdminAccountPage}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/step_increment`}
+              component={AnnualSalaryIncrement}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/upload_data`}
+              component={AdminUploadStaffData}
               pathAfterFailure="/logout"
               {...rest}
             />

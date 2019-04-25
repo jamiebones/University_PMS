@@ -183,7 +183,7 @@ export const AcademicSalaryScale = () => {
   return scaleArray;
 };
 
-const NonTeachingSalaryScale = () => {
+export const NonTeachingSalaryScale = () => {
   const scaleArray = [
     "",
     { step: 1, max: 15 },

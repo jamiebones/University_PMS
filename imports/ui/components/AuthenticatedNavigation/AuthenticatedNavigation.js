@@ -93,6 +93,18 @@ const AuthenticatedNavigation = ({ history }) => (
           <LinkContainer
             to="#"
             exact
+            onClick={() => history.push("/auth/upload_data")}
+          >
+            <NavItem eventKey={8} href="#">
+              Upload Data
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
             onClick={() => history.push("/auth/account_creation")}
           >
             <NavItem eventKey={4} href="#">
@@ -112,6 +124,18 @@ const AuthenticatedNavigation = ({ history }) => (
             </NavItem>
           </LinkContainer>
         </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="#"
+            exact
+            onClick={() => history.push("/auth/step_increment")}
+          >
+            <NavItem eventKey={8} href="#">
+              Step Increment
+            </NavItem>
+          </LinkContainer>
+        </Nav>
       </React.Fragment>
     ) : null}
 
@@ -127,7 +151,7 @@ const AuthenticatedNavigation = ({ history }) => (
       </LinkContainer>
     </Nav>
 
-    <Nav>
+    <Nav className="pull-right">
       <LinkContainer to="#" exact onClick={() => history.push("/logout")}>
         <NavItem eventKey={5} href="#">
           Logout

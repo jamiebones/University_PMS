@@ -55,6 +55,7 @@ class PensionDashBoard extends React.Component {
                       <th>SN</th>
                       <th>Name</th>
                       <th>Designation</th>
+                      <th>Faculty/Unit</th>
                       <th>Service Years</th>
                       <th>Birthday: Age</th>
                       <th>Year(s) to retirement</th>
@@ -71,6 +72,7 @@ class PensionDashBoard extends React.Component {
                             dob,
                             age,
                             designation,
+                            currentPosting,
                             yearsToretirement
                           },
                           index
@@ -89,6 +91,10 @@ class PensionDashBoard extends React.Component {
 
                               <td>
                                 <p>{designation}</p>
+                              </td>
+
+                              <td>
+                                <p>{currentPosting}</p>
                               </td>
 
                               <td>

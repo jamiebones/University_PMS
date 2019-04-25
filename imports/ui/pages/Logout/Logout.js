@@ -1,11 +1,10 @@
 /*eslint-disable */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Meteor } from 'meteor/meteor';
-import { Row, Col } from 'react-bootstrap';
-
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Meteor } from "meteor/meteor";
+import { Row, Col } from "react-bootstrap";
 
 const StyledLogout = styled.div`
   padding: 20px;
@@ -21,7 +20,6 @@ const StyledLogout = styled.div`
   h1 {
     font-size: 24px;
   }
-
 
   ul {
     list-style: none;
@@ -58,7 +56,7 @@ const StyledLogout = styled.div`
     h1 {
       font-size: 28px;
     }
-  
+
     p {
       font-size: 18px;
       line-height: 24px;
@@ -76,22 +74,21 @@ class Logout extends React.Component {
       <StyledLogout>
         <Row className="logoutDiv">
           <Col md={6} mdOffset={3}>
-            <img src="/image/eruditelogo.png" 
-             className="img img-responsive" />
-             <h1>You have been logged out.</h1>
-             <p>Thanks for being a part of Erudite Scholars!</p>
+            <img src="/image/logo.png" className="img img-responsive" />
+            <h1>You have been logged out.</h1>
+            <p>
+              Thanks for using this software. Please send software bugs report
+              to the developer @<b>jamiebones2000@yahoo.co.uk</b>!
+            </p>
           </Col>
         </Row>
-          
-      
       </StyledLogout>
     );
   }
 }
 
 Logout.propTypes = {
-  setAfterLoginPath: PropTypes.func.isRequired,
+  setAfterLoginPath: PropTypes.func.isRequired
 };
 
 export default Logout;
-

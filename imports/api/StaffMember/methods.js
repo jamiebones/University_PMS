@@ -17,7 +17,7 @@ import { FindMax } from "../../modules/utilities";
 import { _ } from "meteor/underscore";
 
 Meteor.methods({
-  trial: function Customersmethod(excelData) {
+  "staffMembers.saveRecordsInDatabase": function StaffMembersmethod(excelData) {
     check(excelData, Array);
     let numSaved = 0;
     let errorArr = [];
@@ -211,21 +211,6 @@ Meteor.methods({
     console.log(`University unit saved : ${numUnitSaved}`);
     console.log(errorArr);
     console.log(errorArr.length);
-  },
-  buildUniversityUnit: function Customersmethod(excelData) {
-    check(excelData, Array);
-    let numSaved = 0;
-    for (let i = 0; i < excelData.length; i++) {
-      debugger;
-      const rowArray = excelData[i];
-      const unitName = rowArray.join(" ").trim();
-      const newUnit = new UniversityUnit();
-      newUnit.name = unitName;
-      newUnit.save();
-      numSaved++;
-    }
-    console.log(numSaved);
-    return numSaved;
   },
   "staffMembers.editStaffState": function StaffMethods(lga, state, staffId) {
     check(lga, String);
