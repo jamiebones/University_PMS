@@ -65,17 +65,22 @@ Meteor.methods({
           //get the staff
           const staffType = staff.staffType;
           const salaryStructure = staff.salaryStructure;
-          const salaryArray = salaryStructure.trim().split(" ");
+          const salaryArray = salaryStructure.trim().split("/");
+          //split the first part to extract the type
+          const scaleArray = salaryArray[0].split(" ");
+
+          const grade = scaleArray[0];
+          const level = scaleArray[1];
+          let step = salaryArray[salaryArray.length - 1];
+
           if (staffType == "1") {
             //academic staff
-            const grade = salaryArray[0];
-            const level = salaryArray[1];
-            let step = salaryArray[3];
+
             //check the step increment for that level
             //find the current level and possible step increment
 
             const stepProgression = AcademicSalaryScale().find(el => {
-              return el.step == level;
+              return el.step == parseInt(level);
             });
 
             if (
@@ -84,7 +89,7 @@ Meteor.methods({
               grade.toUpperCase() == "CONUASS"
             ) {
               //increment our step here
-              const newSalaryStructure = `${grade} ${level}/ ${parseInt(step) +
+              const newSalaryStructure = `${grade} ${level} / ${parseInt(step) +
                 1}`;
               StaffMembers.update(staff._id, {
                 $set: { salaryStructure: newSalaryStructure }
@@ -92,13 +97,10 @@ Meteor.methods({
             }
           } else {
             //non academic staff
-            const grade = salaryArray[0];
-            const level = salaryArray[1];
-            let step = salaryArray[3];
             //check the step increment for that level
             //find the current level and possible step increment
             const stepProgression = NonTeachingSalaryScale().find(el => {
-              return el.step == level;
+              return el.step == parseInt(level);
             });
             if (
               stepProgression &&
@@ -106,7 +108,7 @@ Meteor.methods({
               grade.toUpperCase() == "CONTISS"
             ) {
               //increment our step here
-              const newSalaryStructure = `${grade} ${level}/ ${parseInt(step) +
+              const newSalaryStructure = `${grade} ${level} / ${parseInt(step) +
                 1}`;
               StaffMembers.update(staff._id, {
                 $set: { salaryStructure: newSalaryStructure }

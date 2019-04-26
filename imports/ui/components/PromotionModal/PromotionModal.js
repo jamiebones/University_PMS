@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import autoBind from "react-autobind";

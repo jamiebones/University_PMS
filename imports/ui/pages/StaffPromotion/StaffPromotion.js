@@ -2,16 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Button, Col, Row, Table, Label, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
-import { Link } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
-import { withTracker } from "meteor/react-meteor-data";
-import { GetDetailsBasedOnRole } from "../../../modules/utilities";
-import { FindStaffDueForPromotion } from "../../../modules/utilitiesComputation";
-import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import { Designations } from "../../../api/Designation/DesignationClass";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
 import { _ } from "meteor/underscore";
-import { ReactiveVar } from "meteor/reactive-var";
 import { Meteor } from "meteor/meteor";
 
 const StaffPromotionStyles = styled.div``;
@@ -40,7 +33,6 @@ class StaffPromotion extends React.Component {
     Meteor.call("getStaffDueForPromotion", (err, res) => {
       if (!err) {
         this.setState({ staff: res[0], designations: res[1], loading: false });
-        console.dir(res);
       }
     });
   }
@@ -218,6 +210,7 @@ class StaffPromotion extends React.Component {
               salaryStructure={this.state.salaryStructure}
               dateOfLastPromotion={this.state.dateOfLastPromotion}
               user={this.props.name}
+              designations={designations}
             />
           </Col>
         </Row>

@@ -22,11 +22,11 @@ import {
 
 import {
   NonTeachingPromotionPlacement,
-  TeachingStaffPromotionPlacement,
   FindNextRank
 } from "../../../modules/utilitiesComputation";
 import { NonTeachingCadresAndProgression } from "../../../modules/cadresprogression";
 import { TeachingCadresProgression } from "../../../modules/cadreprogressionacademic";
+import DroplistComponent from "../../components/DroplistComponent/DroplistComponent";
 
 const StaffPromotionComponentStyle = styled.div``;
 
@@ -37,19 +37,24 @@ class StaffPromotionComponent extends React.Component {
       newDesignation: "",
       promotionYear: "",
       proposedSalaryStructure: "",
-      submitted: false
+      submitted: false,
+      selectedDesignation: "",
+      editing: false
     };
     autoBind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.staffdesignation !== state.newDesignation) {
+    if (state.editing == false) {
       //lets try to get the proposed salary step
       const salaryStep = props && props.salaryStructure.trim();
       //split the salarystep by space
-      const salaryArray = salaryStep && salaryStep.split(" ");
-      const scaleType = salaryArray[0];
-      const step = parseInt(salaryArray[3]);
+      const salaryArray = salaryStep && salaryStep.split("/");
+      //split the first part to extract the type
+      const scaleArray = salaryArray[0].split(" ");
+      const scaleType = scaleArray[0];
+
+      const step = parseInt(salaryArray[salaryArray.length - 1]);
       if (scaleType.toUpperCase() == "CONTISS") {
         //non academic staff found here
         //find the next rank the person is moving to
@@ -64,7 +69,8 @@ class StaffPromotionComponent extends React.Component {
 
         return {
           proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-          newDesignation: cadre
+          newDesignation: cadre || "not defined",
+          editing: cadre == null ? true : false
         };
       } else {
         //here is academic staff
@@ -75,16 +81,23 @@ class StaffPromotionComponent extends React.Component {
         //get the level
         return {
           proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-          newDesignation: cadre
+          newDesignation: cadre || "not defined",
+          editing: cadre == null ? true : false
         };
       }
     }
 
-    return {};
+    return {
+      ...state
+    };
   }
 
   onPromotinYearChange(value) {
     this.setState({ promotionYear: value });
+  }
+
+  setSelectedDesignation(designation) {
+    this.setState({ newDesignation: designation, editing: true });
   }
 
   saveChanges() {
@@ -163,11 +176,16 @@ class StaffPromotionComponent extends React.Component {
     });
   }
 
+  proposedSalary(e) {
+    this.setState({ proposedSalaryStructure: e.target.value });
+  }
+
   render() {
     const {
       salaryStructure,
       dateOfLastPromotion,
-      staffdesignation
+      staffdesignation,
+      designations
     } = this.props;
 
     const TEMPLATE2 = "xxxx";
@@ -189,16 +207,6 @@ class StaffPromotionComponent extends React.Component {
             </FormGroup>
 
             <FormGroup>
-              <ControlLabel>Designation after promotion:</ControlLabel>
-              <input
-                type="text"
-                disabled
-                value={this.state.newDesignation}
-                className="form-control"
-              />
-            </FormGroup>
-
-            <FormGroup>
               <ControlLabel>Former salary structure:</ControlLabel>
               <input
                 type="text"
@@ -208,15 +216,51 @@ class StaffPromotionComponent extends React.Component {
               />
             </FormGroup>
 
-            <FormGroup>
-              <ControlLabel>Salary structure after promotion:</ControlLabel>
-              <input
-                type="text"
-                disabled
-                value={this.state.proposedSalaryStructure}
-                className="form-control"
-              />
-            </FormGroup>
+            {this.state.newDesignation == "not defined" ? (
+              <div>
+                <DroplistComponent
+                  data={designations}
+                  field="rank"
+                  label="Designation after promotion"
+                  placeholder="Search designation......"
+                  setValue={this.setSelectedDesignation}
+                />
+
+                <FormGroup>
+                  <ControlLabel>Salary structure after promotion:</ControlLabel>
+                  <input
+                    type="text"
+                    value={this.state.proposedSalaryStructure}
+                    className="form-control"
+                    onChange={this.proposedSalary}
+                  />
+                </FormGroup>
+              </div>
+            ) : null}
+
+            {this.state.newDesignation !== "not defined" ? (
+              <div>
+                <FormGroup>
+                  <ControlLabel>Designation after promotion:</ControlLabel>
+                  <input
+                    type="text"
+                    disabled
+                    value={this.state.newDesignation}
+                    className="form-control"
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Salary structure after promotion:</ControlLabel>
+                  <input
+                    type="text"
+                    disabled
+                    value={this.state.proposedSalaryStructure}
+                    className="form-control"
+                  />
+                </FormGroup>
+              </div>
+            ) : null}
 
             <FormGroup>
               <ControlLabel>Date of Last Promotion:</ControlLabel>
@@ -245,7 +289,7 @@ class StaffPromotionComponent extends React.Component {
                 <Button onClick={this.props.onHide}>Close</Button>
               ) : null}
 
-              {this.state.newDesignation ? (
+              {this.state.newDesignation !== "not defined" ? (
                 <button
                   className="btn btn-danger "
                   disabled={this.state.submitted}

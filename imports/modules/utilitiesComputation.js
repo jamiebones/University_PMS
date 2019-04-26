@@ -245,6 +245,8 @@ export const NonTeachingPromotionPlacement = step => {
       newStep = step - 2;
     case 14:
       newStep = step - 2;
+    case 15:
+      newStep = step - 2;
   }
   return newStep;
 };
