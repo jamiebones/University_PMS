@@ -11,7 +11,7 @@ const AuthenticatedNavigation = ({ history }) => (
       <React.Fragment>
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/dashboard/home"
             exact
             onClick={() => history.push("/auth/dashboard/home")}
           >
@@ -23,7 +23,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/records/search"
             exact
             onClick={() => history.push("/auth/records/search")}
           >
@@ -35,7 +35,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/staff_posting"
             exact
             onClick={() => history.push("/auth/staff_posting")}
           >
@@ -47,12 +47,24 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/nominal_roll"
             exact
             onClick={() => history.push("/auth/nominal_roll")}
           >
             <NavItem eventKey={11} href="#">
               Nominal Roll
+            </NavItem>
+          </LinkContainer>
+        </Nav>
+
+        <Nav>
+          <LinkContainer
+            to="/auth/due_for_promotion"
+            exact
+            onClick={() => history.push("/auth/due_for_promotion")}
+          >
+            <NavItem eventKey={15} href="#">
+              Promotion
             </NavItem>
           </LinkContainer>
         </Nav>
@@ -63,7 +75,7 @@ const AuthenticatedNavigation = ({ history }) => (
       <React.Fragment>
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/posting_list"
             exact
             onClick={() => history.push("/auth/posting_list")}
           >
@@ -75,7 +87,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/posting_stats"
             exact
             onClick={() => history.push("/auth/posting_stats")}
           >
@@ -91,7 +103,7 @@ const AuthenticatedNavigation = ({ history }) => (
       <React.Fragment>
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/upload_data"
             exact
             onClick={() => history.push("/auth/upload_data")}
           >
@@ -103,7 +115,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/account_creation"
             exact
             onClick={() => history.push("/auth/account_creation")}
           >
@@ -115,7 +127,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/account_status"
             exact
             onClick={() => history.push("/auth/account_status")}
           >
@@ -127,7 +139,7 @@ const AuthenticatedNavigation = ({ history }) => (
 
         <Nav>
           <LinkContainer
-            to="#"
+            to="/auth/step_increment"
             exact
             onClick={() => history.push("/auth/step_increment")}
           >
@@ -144,7 +156,11 @@ const AuthenticatedNavigation = ({ history }) => (
     ) : null}
 
     <Nav>
-      <LinkContainer to="#" exact onClick={() => history.push("/auth/profile")}>
+      <LinkContainer
+        to="/auth/profile"
+        exact
+        onClick={() => history.push("/auth/profile")}
+      >
         <NavItem eventKey={5} href="#">
           Profile
         </NavItem>
@@ -152,7 +168,7 @@ const AuthenticatedNavigation = ({ history }) => (
     </Nav>
 
     <Nav className="pull-right">
-      <LinkContainer to="#" exact onClick={() => history.push("/logout")}>
+      <LinkContainer to="/logout" exact onClick={() => history.push("/logout")}>
         <NavItem eventKey={5} href="#">
           Logout
         </NavItem>

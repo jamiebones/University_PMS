@@ -164,6 +164,7 @@ Meteor.methods({
   getStaffDueForPromotion: function StaffMembersmethod(designation) {
     //apply filter here based on role type and designation
     check(designation, Match.OneOf(String, null, undefined));
+
     let query = {};
     let rankQuery = {};
 
@@ -242,6 +243,6 @@ Meteor.methods({
       return b.designation - a.designation;
     });
 
-    return [sortPromotionArray, designations];
+    return [sortPromotionArray, designations, sortPromotionArray.length];
   }
 });

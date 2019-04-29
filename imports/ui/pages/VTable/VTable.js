@@ -1,16 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Table, Label, Alert } from "react-bootstrap";
+import { Button, Col, Row, Table, Label, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Loading from "../../components/Loading/Loading";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
 import { Table as Tables, Column, AutoSizer } from "react-virtualized";
-import { compareValues, SortDirection } from "../../../modules/utilities";
 if (Meteor.isClient) {
   import "react-virtualized/styles.css";
 }
+
+const SortDirection = {
+  ASC: "ASC",
+  DESC: "DESC"
+};
 
 const StaffPromotionStyles = styled.div`
   .Table {
@@ -49,6 +53,26 @@ const StaffPromotionStyles = styled.div`
   }
 `;
 
+function compareValues(key, order = "asc") {
+  return function(a, b) {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+      // property doesn't exist on either object
+      return 0;
+    }
+
+    const varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
+    const varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
+
+    let comparison = 0;
+    if (varA > varB) {
+      comparison = 1;
+    } else if (varA < varB) {
+      comparison = -1;
+    }
+    return order == "desc" ? comparison * -1 : comparison;
+  };
+}
+
 class StaffPromotion extends React.Component {
   constructor(props) {
     super(props);
@@ -71,8 +95,12 @@ class StaffPromotion extends React.Component {
       designations: [],
       loading: true,
       disableHeader: false,
+      headerHeight: 30,
+      height: 270,
       hideIndexRow: false,
       overscanRowCount: 10,
+      rowHeight: 40,
+      rowCount: 1000,
       scrollToIndex: undefined,
       sortBy,
       sortDirection,
@@ -214,12 +242,20 @@ class StaffPromotion extends React.Component {
 
   render() {
     const rowGetter = ({ index }) => this.state.staff[index];
-    const { selectedDesignation, designations, loading } = this.state;
+    const { selectedDesignation, staff, designations, loading } = this.state;
     const {
       disableHeader,
+      headerHeight,
+      height,
+      hideIndexRow,
       overscanRowCount,
+      rowHeight,
+      rowCount,
+      scrollToIndex,
       sortBy,
-      sortDirection
+      sortDirection,
+      sortedList,
+      useDynamicRowHeight
     } = this.state;
     return (
       <StaffPromotionStyles>

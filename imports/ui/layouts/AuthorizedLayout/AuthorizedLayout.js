@@ -25,6 +25,7 @@ import UserStatus from "../../pages/UserStatus/UserStatus";
 import Profile from "../../pages/Profile/Profile";
 import AdminUploadStaffData from "../../pages/AdminUploadStaffData/AdminUploadStaffData";
 import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalaryIncrement";
+import VTable from "../../pages/VTable/VTable";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -32,6 +33,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
       <Col md={12}>
         <div>
           <Switch>
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/table`}
+              component={VTable}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
             <Authorized
               allowedRoles={["super-admin"]}
               group="Personnel"
@@ -181,7 +201,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["Records", "Pensions", "super-admin"]}
+              allowedRoles={["Records", "Pensions", "super-admin", "Registrar"]}
               group="Personnel"
               userId={userId}
               exact

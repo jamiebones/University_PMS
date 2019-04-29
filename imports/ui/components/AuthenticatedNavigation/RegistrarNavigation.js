@@ -7,7 +7,7 @@ const RegistrarNavigation = ({ history }) => (
   <div>
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/dashboard/home"
         exact
         onClick={() => history.push("/auth/dashboard/home")}
       >
@@ -19,7 +19,7 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/records/search"
         exact
         onClick={() => history.push("/auth/records/search")}
       >
@@ -31,7 +31,7 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/staff_posting"
         exact
         onClick={() => history.push("/auth/staff_posting")}
       >
@@ -43,7 +43,7 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/nominal_roll"
         exact
         onClick={() => history.push("/auth/nominal_roll")}
       >
@@ -55,7 +55,7 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/posting_list"
         exact
         onClick={() => history.push("/auth/posting_list")}
       >
@@ -67,12 +67,36 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="#"
+        to="/auth/posting_stats"
         exact
         onClick={() => history.push("/auth/posting_stats")}
       >
         <NavItem eventKey={8} href="#">
           Posting Stats
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+
+    <Nav>
+      <LinkContainer
+        to="/auth/due_for_promotion"
+        exact
+        onClick={() => history.push("/auth/due_for_promotion")}
+      >
+        <NavItem eventKey={18} href="#">
+          Promotion
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+
+    <Nav>
+      <LinkContainer
+        to="/auth/dashboard/pensions/home"
+        exact
+        onClick={() => history.push("/auth/dashboard/pensions/home")}
+      >
+        <NavItem eventKey={18} href="#">
+          Pensions
         </NavItem>
       </LinkContainer>
     </Nav>
