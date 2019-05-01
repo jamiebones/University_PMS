@@ -301,12 +301,8 @@ export const FindNextRank = (cadreArray, currentRank) => {
 export const CalculateDueForRetirement = staffArray => {
   let computedArray = [];
   console.time();
-  //filter and remove years less than 35
+  const todayDate = moment(new Date());
   const dueToRetire = staffArray.filter(staff => {
-    // const employmentDate = staff.dateOfAppointmentInUniversity;
-    // const startDate = moment(employmentDate);
-    // const service = moment.duration(moment().diff(startDate));
-    const todayDate = moment();
     if (staff.staffType == "1") {
       //retirement age 70 years
       //return people with 2 years left
@@ -314,7 +310,7 @@ export const CalculateDueForRetirement = staffArray => {
       const diffAge = moment.duration(todayDate.diff(age));
       let staffAge = diffAge.years();
       const yearsLeft = 70 - parseInt(staffAge);
-      if (yearsLeft <= 2) {
+      if (yearsLeft == 1) {
         return staff;
       }
     } else {
@@ -322,57 +318,71 @@ export const CalculateDueForRetirement = staffArray => {
       const diffAge = moment.duration(todayDate.diff(age));
       let staffAge = diffAge.years();
       const yearsLeft = 65 - parseInt(staffAge);
-      if (yearsLeft <= 2) {
+      if (yearsLeft == 1) {
         return staff;
       }
     }
   });
   for (let i = 0; i < dueToRetire.length; i++) {
     const staff = dueToRetire[i];
-    const employmentDate = dueToRetire[i].dateOfAppointmentInUniversity;
-    const staffType = dueToRetire[i].staffType;
-    const startDate = moment(employmentDate);
-    const todayDate = moment();
-    //Difference in number of days
-    const diffDuration = moment.duration(todayDate.diff(startDate));
-    let years = diffDuration.years();
-    let months = diffDuration.months();
-    let days = diffDuration.days();
-    years = years ? `${years} year(s)` : "";
-    months = months ? `${months} month(s)` : "";
-    days = days ? `${days} day(s)` : "";
-
-    //find the persons age
-    const age = dueToRetire[i].dob;
-    const ageToDate = moment(age);
-    const diffAge = moment.duration(todayDate.diff(ageToDate));
+    const age = moment(staff.dob);
+    const diffAge = moment.duration(todayDate.diff(age));
     let staffAge = diffAge.years();
 
-    staff.periodSpent = `${years} ${months} ${days}`;
-    staff.age = staffAge;
-    // if (parseInt(diffDuration.years()) >= 35) {
+    //months left to retire
+    let bDayArray = staff.dob && staff.dob.split("-");
+    let bday = bDayArray[0];
+    let bMonth = bDayArray[1];
+    let bYear = new Date().getFullYear();
+
+    let staffRetirementBday = moment(`${bday}-${bMonth}-${bYear}`);
+
+    let yearDiff = moment.duration(staffRetirementBday.diff(todayDate));
+
+    const diffBMonth = yearDiff.months();
+    const diffBDay = yearDiff.days();
+    const timeLeft = __filterMinus(diffBMonth, diffBDay);
+
     let yearsToretirement = null;
-    if (staffType == "1") {
+    staff.timeLeft = timeLeft;
+    if (staff.staffType == "1") {
       //academic staff
       yearsToretirement = 70 - staffAge;
-      staff.yearsToretirement = yearsToretirement;
       computedArray.push(staff);
     } else {
       //non teaching staff
       yearsToretirement = 65 - staffAge;
-      staff.yearsToretirement = yearsToretirement;
       computedArray.push(staff);
     }
     //}
   }
 
-  //sort the array
-  const sortArray = computedArray.sort((a, b) => {
-    return a.yearsToretirement - b.yearsToretirement;
-  });
   console.timeEnd();
-  console.log(sortArray);
-  return sortArray;
+  return computedArray;
+};
+
+const __RemoveDash = (months, days) => {
+  let m = months.toString().replace("-", "");
+  let d = days.toString().replace("-", "");
+  if (m.trim() == "0" && d.trim() == "0") {
+    return "Retiring today";
+  } else {
+    m = m != "0" ? `${m} month(s)` : "";
+    d = d != "0" ? `${d} day(s)` : "";
+    return `Retired ${m} ${d} ago`;
+  }
+};
+
+const __filterMinus = (months, days) => {
+  if (days.toString().includes("-") || months.toString().includes("-")) {
+    return __RemoveDash(months, days);
+  } else {
+    let m = months;
+    let d = days;
+    m = m != "0" ? `${m} month(s)` : "";
+    d = d != "0" ? `${d} day(s)` : "";
+    return `Retiring in ${m} ${d}`;
+  }
 };
 
 export const GetDateInYearsMonthDay = passedDate => {

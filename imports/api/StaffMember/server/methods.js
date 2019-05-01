@@ -4,6 +4,7 @@ import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import { _ } from "meteor/underscore";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import { CalculateDueForRetirement } from "../../../modules/utilitiesComputation";
 
 Meteor.methods({
   getRecords: function StaffMembersmethod() {
@@ -129,6 +130,36 @@ Meteor.methods({
   },
   "staffmembers.getstaff": function StaffMemberMethod() {
     return StaffMembers.find().fetch();
+  },
+
+  "staffmembers.getstaffRetirement": function StaffMemberMethod() {
+    const pipeline = [
+      {
+        $project: {
+          _id: 1,
+          biodata: 1,
+          currentPosting: 1,
+          salaryStructure: 1,
+          designation: 1,
+          staffId: 1,
+          dob: 1,
+          dateOfAppointmentInUniversit: 1,
+          staffType: 1,
+          age: {
+            $subtract: [
+              new Date().getFullYear(),
+              { $year: { $toDate: "$dob" } }
+            ]
+          }
+        }
+      },
+      { $match: { age: { $gte: 60 } } }
+    ];
+
+    const staff = StaffMembers.aggregate(pipeline);
+    const result = CalculateDueForRetirement(staff);
+    console.log(result.length);
+    return result;
   },
 
   "staffmembers.getstaffStay": function StaffMemberMethod() {

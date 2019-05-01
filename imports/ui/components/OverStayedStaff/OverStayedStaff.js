@@ -64,7 +64,7 @@ class OverStayedStaff extends React.Component {
                             <td>
                               <p>
                                 {data.length && data[0].biodata.firstName}{" "}
-                                {data[0].biodata.MiddleName}{" "}
+                                {data[0].biodata.middleName}{" "}
                                 {data[0].biodata.surname}
                               </p>
                             </td>

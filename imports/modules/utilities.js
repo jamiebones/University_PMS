@@ -199,7 +199,7 @@ export const Title = () => {
 };
 
 export const capFirstLetter = word => {
-  if (word) {
+  if (typeof word == "string") {
     const first = word.charAt(0).toUpperCase();
     const rest = word.slice(1);
     return first + rest;
@@ -207,13 +207,13 @@ export const capFirstLetter = word => {
 };
 
 export const capAllFirstLetter = word => {
-  if (word) {
+  if (typeof word == "string") {
     const arr = word.split(" ");
     let capWord = "";
     for (let i = 0; i < arr.length; i++) {
       let firstWord = arr[i];
       firstWord = firstWord.charAt(0).toUpperCase();
-      let remainWord = arr[i].slice(1);
+      let remainWord = arr[i].slice(1).toLowerCase();
       capWord += firstWord + remainWord + " ";
     }
     return capWord.trim();

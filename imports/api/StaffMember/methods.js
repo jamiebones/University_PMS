@@ -178,7 +178,19 @@ Meteor.methods({
                     }
                   }
                 }
+
                 break;
+
+              case 18:
+                const remark = rowArray[18];
+                staff.officialRemark = remark;
+                break;
+            }
+          } else {
+            //lets save remark here please
+            //it is null save as official here
+            if (k == 18) {
+              staff.officialRemark = "active";
             }
           }
         } else {

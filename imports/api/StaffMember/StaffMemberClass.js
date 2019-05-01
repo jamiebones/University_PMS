@@ -182,6 +182,10 @@ const StaffMember = Class.create({
     currentPosting: {
       type: String,
       optional: true
+    },
+    officialRemark: {
+      type: String,
+      optional: true
     }
   },
   helpers: {
