@@ -21,7 +21,7 @@ alanning:roles
 twbs:bootstrap
 accounts-base@1.4.3
 accounts-password@1.5.1
-service-configuration@1.0.11
+service-configuration
 accounts-facebook@1.3.2
 accounts-github@1.4.2
 accounts-google@1.3.2

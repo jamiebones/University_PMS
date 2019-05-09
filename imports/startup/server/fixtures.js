@@ -840,8 +840,8 @@ var lga = [
 //production app creates a user which is me of course.
 if (Meteor.isProduction) {
   const adminUser = {
-    email: Meteor.settings.private.AdminEmail,
-    password: Meteor.settings.private.AdminPassword,
+    email: "jamiebones2000@yahoo.co.uk",
+    password: "blazing147",
     profile: {
       name: { first: "James", last: "Oshomah" },
       title: "Mr"

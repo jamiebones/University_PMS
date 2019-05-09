@@ -2,8 +2,10 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { StaffMembers } from "../StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
+import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 import Documents from "../../../api/Documents/Documents";
+import moment from "moment";
 
 Meteor.publish(
   "staffmembers.getStaffbyStaffId",
@@ -38,7 +40,7 @@ Meteor.publish(
     check(designation, Match.OneOf(String, null, undefined));
 
     if (designation) {
-      query.designation = new RegExp("^" + designation + "$", "i");
+      query.designation = new RegExp(designation, "i");
     }
 
     if (designation == "all") {
@@ -93,6 +95,7 @@ Meteor.publish(
   function StaffMembersPublication(designation, staffId) {
     check(designation, Match.OneOf(String, null, undefined));
     check(staffId, Match.OneOf(String, null, undefined));
+    let todayDate = moment(new Date()).toISOString();
 
     let query = {
       staffId: "",
@@ -112,7 +115,11 @@ Meteor.publish(
       delete query.staffId;
     }
 
-    return [StaffMembers.find(query), Designations.find()];
+    return [
+      StaffMembers.find(query),
+      Designations.find(),
+      StaffReliefPostings.find({ reliefEnd: { $lte: todayDate } })
+    ];
   }
 );
 
@@ -128,7 +135,7 @@ Meteor.publish(
     };
 
     if (staffId !== "") {
-      query.staffId = new RegExp("^" + staffId + "$", "i");
+      query.staffId = new RegExp(staffId, "i");
       delete query.designation;
     }
 

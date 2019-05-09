@@ -1,10 +1,12 @@
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
+import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import { _ } from "meteor/underscore";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import { CalculateDueForRetirement } from "../../../modules/utilitiesComputation";
+import moment from "moment";
 
 Meteor.methods({
   getRecords: function StaffMembersmethod() {
@@ -85,6 +87,7 @@ Meteor.methods({
     }
 
     query.staffType = "2";
+    query.postings = { $exists: true, $ne: [] };
 
     const pipeline = [
       { $match: query },
@@ -275,5 +278,53 @@ Meteor.methods({
     });
 
     return [sortPromotionArray, designations, sortPromotionArray.length];
+  },
+  "staffmembers.getNonTeachingStaffInDept": function StaffMembersFunction(
+    dept
+  ) {
+    check(dept, Match.OneOf(String, null, undefined));
+    let query = {};
+    const department = new RegExp(dept, "i");
+
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+    }
+
+    query.staffType = "2";
+    query.currentPosting = department;
+    let todayDate = moment(new Date()).toISOString();
+    const staffArray = StaffMembers.find(query).fetch();
+    let reliefArray = StaffReliefPostings.find({
+      reliefEnd: { $lte: todayDate }
+    }).fetch();
+    let staffOnRelief = [];
+    let finalArray = [];
+    //loop through the staff members array
+    //if we have a posting object add it.
+    for (let i = 0; i < staffArray.length - 1; i++) {
+      //individual array
+      const staffObj = staffArray[i];
+      //find if the staff is on relief duty
+      const findRelief = reliefArray.find(e => {
+        return (
+          e.reliever_staffId.toUpperCase() == staffObj.staffId.toUpperCase()
+        );
+      });
+      if (findRelief) {
+        //idiot is on relief duty add the relief to staff duty
+        staffObj.reliefDuty = findRelief;
+        //remove the object from the array
+        staffOnRelief.push(staffObj);
+        staffArray.splice(staffArray[i], 1);
+      } else {
+        continue;
+      }
+    }
+    finalArray = [...staffArray, ...staffOnRelief];
+    return finalArray;
   }
 });

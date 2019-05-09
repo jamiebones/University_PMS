@@ -1,19 +1,17 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import Loading from "../../components/Loading/Loading";
-import { Alert, Button, Col, Row } from "react-bootstrap";
+import { Alert, Col, Row } from "react-bootstrap";
 import { ReactiveVar } from "meteor/reactive-var";
 import { withTracker } from "meteor/react-meteor-data";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
+import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import TextField from "../../components/Common/TextFieldGroup";
-import { Bert } from "meteor/themeteorchef:bert";
 import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import autoBind from "react-autobind";
 import StaffProposePosting from "../../components/StaffProposePosting/StaffProposePosting";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
-import moment from "moment";
 
 const StaffPostingStyle = styled.div`
   .alertDiv {
@@ -114,6 +112,7 @@ class StaffPostingPage extends React.Component {
 
 let staffIdReactive = new ReactiveVar("");
 let designationReactive = new ReactiveVar("");
+let loadingVar = new ReactiveVar(true);
 
 let query = {
   staffId: "",
@@ -123,6 +122,11 @@ let query = {
 
 export default (StaffPostingPageContainer = withTracker(props => {
   let subscription;
+  let staffArray = [];
+  let staffOnRelief = [];
+  let finalArray = [];
+  let reliefArray = [];
+  let designations = [];
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
       "staffmembers.getStaffbyDesignationAndStaffId",
@@ -142,23 +146,51 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
 
   if (staffIdReactive.get() !== "") {
-    query.staffId = new RegExp("^" + staffIdReactive.get() + "$", "i");
+    query.staffId = new RegExp(staffIdReactive.get(), "i");
     query.staffType = "2";
     delete query.designation;
   }
 
   if (designationReactive.get() !== "") {
-    query.designation = new RegExp("^" + designationReactive.get() + "$", "i");
+    query.designation = new RegExp(designationReactive.get(), "i");
     query.staffType = "2";
     delete query.staffId;
   }
+  if (subscription && subscription.ready()) {
+    staffArray = StaffMembers.find(query).fetch();
+    reliefArray = StaffReliefPostings.find({}).fetch();
+    designations = Designations.find({}, { sort: { rank: 1 } }).fetch();
+    //loop through the staff members array
+    //if we have a posting object add it.
+    for (let i = 0; i < staffArray.length - 1; i++) {
+      //individual array
+      const staffObj = staffArray[i];
+      //find if the staff is on relief duty
+      const findRelief = reliefArray.find(e => {
+        return (
+          e.reliever_staffId.toUpperCase() == staffObj.staffId.toUpperCase()
+        );
+      });
+      if (findRelief) {
+        //idiot is on relief duty add the relief to staff duty
+        staffObj.reliefDuty = findRelief;
+        //remove the object from the array
+        staffOnRelief.push(staffObj);
+        staffArray.splice(staffArray[i], 1);
+      } else {
+        continue;
+      }
+    }
+    //concatenate the array together
+    finalArray = [...staffArray, ...staffOnRelief];
+    loadingVar.set(false);
+  }
 
   return {
-    loading: subscription && !subscription.ready(),
-    //staff: StaffMembers.find(staffId).fetch(),
-    staff: StaffMembers.find(query).fetch(),
+    loading: loadingVar.get(),
+    staff: finalArray,
     staffIdReactive,
     designationReactive,
-    designations: Designations.find({}, { sort: { rank: 1 } }).fetch() || []
+    designations: designations
   };
 })(StaffPostingPage));

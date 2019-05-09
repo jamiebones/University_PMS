@@ -1,16 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, Table, Label, Image } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import autoBind from "react-autobind";
-import { Bert } from "meteor/themeteorchef:bert";
 import moment from "moment";
 import {
   FindMax,
   FindTimeDifference,
   SortPostingDuration,
-  FindDeptPostingProposedTo,
-  FilterSuccesfulPosting,
   GetRealTimeStatus,
   CheckForNegativeDate
 } from "../../../modules/utilities";
@@ -58,7 +55,8 @@ class StaffProposePosting extends React.Component {
                         staffId,
                         currentPosting,
                         postings,
-                        postingProposed
+                        postingProposed,
+                        reliefDuty
                       },
                       index
                     ) => {
@@ -145,7 +143,7 @@ class StaffProposePosting extends React.Component {
 
                           <td>
                             <p>
-                              {!postingProposed ? (
+                              {!postingProposed && !reliefDuty ? (
                                 <Link
                                   to={{
                                     pathname: "/auth/propose_posting",
@@ -163,6 +161,25 @@ class StaffProposePosting extends React.Component {
                                 </Link>
                               ) : null}
                             </p>
+                            {reliefDuty && (
+                              <p>
+                                On Relief Duty
+                                <span>
+                                  Dept on Relief at: {reliefDepartment}
+                                </span>
+                                <br />
+                                <span>
+                                  Start Date:{" "}
+                                  {moment(reliefStart).format("DD MMMM YYYY")}
+                                </span>
+                                <br />
+                                <span>
+                                  End Date:{" "}
+                                  {moment(reliefEnd).format("DD MMMM YYYY")}
+                                </span>
+                                <br />
+                              </p>
+                            )}
                           </td>
                         </tr>
                       );

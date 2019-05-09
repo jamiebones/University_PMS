@@ -26,6 +26,7 @@ import Profile from "../../pages/Profile/Profile";
 import AdminUploadStaffData from "../../pages/AdminUploadStaffData/AdminUploadStaffData";
 import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalaryIncrement";
 import VTable from "../../pages/VTable/VTable";
+import StaffReliefPosting from "../../pages/StaffReliefPosting/StaffReliefPosting";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -48,6 +49,17 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/table`}
               component={VTable}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Director", "JSE", "Registrar"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/relief_posting`}
+              component={StaffReliefPosting}
               pathAfterFailure="/logout"
               {...rest}
             />

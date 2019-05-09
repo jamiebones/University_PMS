@@ -14,15 +14,7 @@ class PromotionModal extends React.Component {
   }
 
   render() {
-    const {
-      biodata,
-      staffId,
-      salaryStructure,
-      dateOfLastPromotion,
-      staffdesignation,
-      show,
-      onHide
-    } = this.props;
+    const { biodata, show, onHide } = this.props;
 
     return (
       <PromotionModalStyle>
