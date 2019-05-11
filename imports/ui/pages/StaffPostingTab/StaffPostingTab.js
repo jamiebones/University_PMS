@@ -8,6 +8,8 @@ import styled from "styled-components";
 import StaffPostingPage from "../../pages/StaffPostingPage/StaffPostingPage";
 import DirectorViewPosting from "../../pages/DirectorViewStaffPosting/DirectorViewStaffPosting";
 import ApprovedPosting from "../../components/ApprovedPostings/ApprovedPostings";
+import ApproveCancelReliefPosting from "../../components/ApproveCancelReiefPosting/ApproveCancelReliefPosting";
+import ApprovedReliefPosting from "../../components/ApprovedReliefPosting/ApprovedReliefPosting";
 import { Meteor } from "meteor/meteor";
 
 const StaffPostingHeader = styled.h4`
@@ -57,6 +59,7 @@ class StaffPostingTab extends React.Component {
               <Tab eventKey="approvePosting" title="Approve/Cancel Posting">
                 <Row>
                   <Col md={12}>
+                    <ApproveCancelReliefPosting {...this.props} />
                     <DirectorViewPosting {...this.props} />
                   </Col>
                 </Row>
@@ -65,6 +68,7 @@ class StaffPostingTab extends React.Component {
               <Tab eventKey="postingApproved" title="Approved list">
                 <Row>
                   <Col md={12}>
+                    <ApprovedReliefPosting {...this.props} />
                     <ApprovedPosting {...this.props} />
                   </Col>
                 </Row>

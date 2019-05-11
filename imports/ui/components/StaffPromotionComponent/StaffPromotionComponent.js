@@ -6,8 +6,7 @@ import {
   FormGroup,
   ControlLabel,
   ButtonToolbar,
-  Button,
-  HelpBlock
+  Button
 } from "react-bootstrap";
 import { Bert } from "meteor/themeteorchef:bert";
 import styled from "styled-components";

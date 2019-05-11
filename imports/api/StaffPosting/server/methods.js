@@ -142,5 +142,15 @@ Meteor.methods({
     const result = StaffPostings.aggregate(pipeline);
     //console.log(result);
     return result;
+  },
+  "staffposting.printpdflist": function StaffPostingmethod(postings) {
+    check(postings, Array);
+    return PrintPostings(postings)
+      .then(html => {
+        return html;
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 });

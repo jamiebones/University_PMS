@@ -163,19 +163,23 @@ class StaffProposePosting extends React.Component {
                             </p>
                             {reliefDuty && (
                               <p>
-                                On Relief Duty
                                 <span>
-                                  Dept on Relief at: {reliefDepartment}
+                                  On Relief Duty at:{" "}
+                                  {reliefDuty.reliefDepartment}
                                 </span>
                                 <br />
                                 <span>
                                   Start Date:{" "}
-                                  {moment(reliefStart).format("DD MMMM YYYY")}
+                                  {moment(reliefDuty.reliefStart).format(
+                                    "DD MMMM YYYY"
+                                  )}
                                 </span>
                                 <br />
                                 <span>
                                   End Date:{" "}
-                                  {moment(reliefEnd).format("DD MMMM YYYY")}
+                                  {moment(reliefDuty.reliefEnd).format(
+                                    "DD MMMM YYYY"
+                                  )}
                                 </span>
                                 <br />
                               </p>

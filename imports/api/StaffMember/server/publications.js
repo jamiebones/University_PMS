@@ -104,13 +104,13 @@ Meteor.publish(
     };
 
     if (staffId !== "") {
-      query.staffId = new RegExp("^" + staffId + "$", "i");
+      query.staffId = new RegExp(staffId, "i");
       query.staffType = "2";
       delete query.designation;
     }
 
     if (designation !== "") {
-      query.designation = new RegExp("^" + designation + "$", "i");
+      query.designation = new RegExp(designation, "i");
       query.staffType = "2";
       delete query.staffId;
     }
@@ -118,7 +118,10 @@ Meteor.publish(
     return [
       StaffMembers.find(query),
       Designations.find(),
-      StaffReliefPostings.find({ reliefEnd: { $lte: todayDate } })
+      StaffReliefPostings.find({
+        status: "approved",
+        reliefEnd: { $gte: todayDate }
+      })
     ];
   }
 );

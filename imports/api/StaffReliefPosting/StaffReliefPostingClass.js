@@ -29,7 +29,8 @@ const StaffReliefPosting = Class.create({
     staff_relivedDepartment: String,
     reliefStart: String,
     reliefEnd: String,
-    reliefDepartment: String
+    reliefDepartment: String,
+    status: String
   }
 });
 

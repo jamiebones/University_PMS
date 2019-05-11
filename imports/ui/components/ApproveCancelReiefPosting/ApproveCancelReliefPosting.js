@@ -4,24 +4,19 @@ import {
   Button,
   Col,
   Row,
-  FormGroup,
   Table,
   ButtonToolbar,
   ButtonGroup
 } from "react-bootstrap";
 import autoBind from "react-autobind";
-import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
 import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import { withTracker } from "meteor/react-meteor-data";
-import {
-  SortPostingDuration,
-  StaffPostingStatusMessage,
-  GetDetailsBasedOnRole
-} from "../../../modules/utilities";
+import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import moment from "moment";
 
-const StaffPostingApprovalStyles = styled.div`
+const ApproveCancelReliefPostingStyles = styled.div`
   .formerDept {
     padding: 5px;
   }
@@ -33,30 +28,22 @@ const StaffPostingApprovalStyles = styled.div`
   }
 `;
 
-const statusMessage = ["", "", "approve", "cancel", "approve", "cancel"];
-
-class StaffPostingApproval extends React.Component {
+class ApproveCancelReliefPosting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
     autoBind(this);
   }
 
-  handlePostingStatus({ status, staffId, staffName, newUnit, _id }) {
+  handlePostingStatus(status, reliefId) {
     //confirm the approval
-    const confirmedPosting = confirm(
-      `Are you sure, you want to ${
-        statusMessage[status]
-      } the  posting of ${staffName} to ${newUnit}`
-    );
+    const confirmedPosting = confirm(`Are you sure`);
 
     if (!confirmedPosting) return;
     Meteor.call(
-      "staffposting.approveorcancelposting",
+      "staffreliefposting.approveorcancelposting",
       status,
-      staffId,
-      newUnit,
-      _id,
+      reliefId,
       (error, response) => {
         if (!error) {
           Bert.alert(`Successful!`, "success");
@@ -68,10 +55,10 @@ class StaffPostingApproval extends React.Component {
   }
 
   render() {
-    const { postings, loading, approve, cancel } = this.props;
+    const { postings, loading } = this.props;
 
     return (
-      <StaffPostingApprovalStyles>
+      <ApproveCancelReliefPostingStyles>
         <Row>
           <Col md={12}>
             {!loading ? (
@@ -81,11 +68,8 @@ class StaffPostingApproval extends React.Component {
                     <tr>
                       <th>S/N</th>
                       <th>Name</th>
-                      <th>Designation</th>
-                      <th>Previous Postings</th>
-                      <th>Current Department</th>
-                      <th>Proposed Department</th>
-                      <th>Resumption Date</th>
+                      <th>Relieving</th>
+                      <th>Period</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -94,14 +78,17 @@ class StaffPostingApproval extends React.Component {
                       postings.map(
                         (
                           {
-                            staffId,
-                            staffName,
-                            unitFrom,
-                            newUnit,
-                            _id,
-                            previousPostings,
-                            startingDate,
-                            designation
+                            reliever_staffId,
+                            reliever_designation,
+                            reliever_department,
+                            reliever_staffName,
+                            staff_relivedStaffId,
+                            staff_relivedName,
+                            staff_relivedDesignation,
+                            staff_relivedDepartment,
+                            reliefStart,
+                            reliefEnd,
+                            _id
                           },
                           index
                         ) => {
@@ -109,38 +96,39 @@ class StaffPostingApproval extends React.Component {
                             <tr key={index}>
                               <td>{index + 1}</td>
                               <td>
-                                <p>{staffName}</p>
+                                <p>
+                                  <span>{reliever_staffName}</span>
+                                  <br />
+                                  <span>{reliever_designation}</span>
+                                  <br />
+                                  <span>{reliever_department}</span>
+                                  <br />
+                                  <span>{reliever_staffId}</span>
+                                </p>
                               </td>
                               <td>
-                                <p>{designation}</p>
+                                <p>
+                                  <span>{staff_relivedName}</span>
+                                  <br />
+                                  <span>{staff_relivedDesignation}</span>
+                                  <br />
+                                  <span>{staff_relivedDepartment}</span>
+                                  <br />
+                                  <span>{staff_relivedStaffId}</span>
+                                </p>
                               </td>
                               <td>
-                                <div>
-                                  <div className="formerDept">
-                                    {previousPostings && previousPostings.length
-                                      ? SortPostingDuration(
-                                          previousPostings
-                                        ).map(({ unit, duration }, index) => {
-                                          return (
-                                            <span key={index}>
-                                              {unit} : {duration}
-                                              <br />
-                                            </span>
-                                          );
-                                        })
-                                      : null}
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <p>{unitFrom}</p>
-                              </td>
-                              <td>
-                                <p>{newUnit}</p>
-                              </td>
-
-                              <td>
-                                {moment(startingDate).format("MMMM DD YYYY")}
+                                <p>
+                                  <span>
+                                    Relief Start :{" "}
+                                    {moment(reliefStart).format("MMMM DD YYYY")}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    Relief End:{" "}
+                                    {moment(reliefEnd).format("MMMM DD YYYY")}
+                                  </span>
+                                </p>
                               </td>
 
                               <td>
@@ -153,13 +141,10 @@ class StaffPostingApproval extends React.Component {
                                       <Button
                                         bsStyle="success"
                                         onClick={() =>
-                                          this.handlePostingStatus({
-                                            status: approve,
-                                            staffId,
-                                            staffName,
-                                            newUnit,
+                                          this.handlePostingStatus(
+                                            "approved",
                                             _id
-                                          })
+                                          )
                                         }
                                       >
                                         Approved
@@ -168,13 +153,10 @@ class StaffPostingApproval extends React.Component {
                                     <Button
                                       bsStyle="info"
                                       onClick={() =>
-                                        this.handlePostingStatus({
-                                          status: cancel,
-                                          staffId,
-                                          staffName,
-                                          newUnit,
+                                        this.handlePostingStatus(
+                                          "cancelled",
                                           _id
-                                        })
+                                        )
                                       }
                                     >
                                       Cancelled
@@ -190,7 +172,9 @@ class StaffPostingApproval extends React.Component {
                 </Table>
               ) : (
                 <div>
-                  <p className="lead">No posting to cancel or approve</p>
+                  <p className="lead">
+                    No relief posting to approve or decline
+                  </p>
                 </div>
               )
             ) : (
@@ -198,9 +182,18 @@ class StaffPostingApproval extends React.Component {
             )}
           </Col>
         </Row>
-      </StaffPostingApprovalStyles>
+      </ApproveCancelReliefPostingStyles>
     );
   }
 }
 
-export default StaffPostingApproval;
+export default (StaffPostingPageContainer = withTracker(props => {
+  if (Meteor.isClient) {
+    subscription = Meteor.subscribe("staffreliefposting.getPendingPosting");
+  }
+
+  return {
+    loading: subscription && !subscription.ready(),
+    postings: StaffReliefPostings.find({ status: "pending" }).fetch()
+  };
+})(ApproveCancelReliefPosting));

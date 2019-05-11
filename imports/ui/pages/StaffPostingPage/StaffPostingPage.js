@@ -158,7 +158,7 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
   if (subscription && subscription.ready()) {
     staffArray = StaffMembers.find(query).fetch();
-    reliefArray = StaffReliefPostings.find({}).fetch();
+    reliefArray = StaffReliefPostings.find({ status: "approved" }).fetch();
     designations = Designations.find({}, { sort: { rank: 1 } }).fetch();
     //loop through the staff members array
     //if we have a posting object add it.

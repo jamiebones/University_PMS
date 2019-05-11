@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Col, Row, Table, Button } from "react-bootstrap";
 import autoBind from "react-autobind";
 import StaffInDepartmentModal from "../../components/StaffInDepartmentModal/StaffInDepartmentModal";
-import moment from "moment";
+import StaffReliefModal from "../../components/StaffReliefModal/StaffReliefModal";
 
 const StaffInDesignationStyles = styled.div`
   .postingdiv: {
@@ -15,8 +15,11 @@ class StaffInDesignation extends React.Component {
     super(props);
     this.state = {
       showModal: false,
+      showModal2: false,
       department: "",
-      staffInDept: []
+      staffInDept: [],
+      reliefStaff: "",
+      otherStaff: ""
     };
     autoBind(this);
   }
@@ -42,10 +45,22 @@ class StaffInDesignation extends React.Component {
     );
   }
 
+  onHide(reliefStaff, otherStaff = "close") {
+    debugger;
+    if (otherStaff == "close") {
+      this.setState({ showModal: false });
+      return;
+    }
+    this.setState({
+      showModal: false,
+      reliefStaff,
+      otherStaff,
+      showModal2: true
+    });
+  }
+
   render() {
     const { staffMember, staff } = this.props;
-    console.log(staff);
-
     return (
       <StaffInDesignationStyles>
         <Row>
@@ -126,10 +141,19 @@ class StaffInDesignation extends React.Component {
             {this.state.department != "" ? (
               <StaffInDepartmentModal
                 show={this.state.showModal}
-                onHide={() => this.setState({ showModal: false })}
+                onHide={this.onHide}
                 department={this.state.department}
                 staffInDept={this.state.staffInDept}
                 person={staff}
+              />
+            ) : null}
+
+            {this.state.reliefStaff != "" ? (
+              <StaffReliefModal
+                show={this.state.showModal2}
+                onHide={() => this.setState({ showModal2: false })}
+                reliever={this.state.reliefStaff}
+                person={this.state.otherStaff}
               />
             ) : null}
           </Col>

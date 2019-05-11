@@ -13,8 +13,28 @@ class StaffInDeptModal extends React.Component {
     autoBind(this);
   }
 
-  savePostingRelief() {
-    this.props.onHide();
+  savePostingRelief({
+    biodata,
+    staffId,
+    designation,
+    salaryStructure,
+    currentPosting,
+    person
+  }) {
+    //this is where we close the
+    //old modal and open a new modal
+    //fill the other modal with goodies
+    const reliefStaff = {
+      biodata,
+      staffId,
+      designation,
+      salaryStructure,
+      currentPosting
+    };
+
+    const otherStaff = person;
+
+    this.props.onHide(reliefStaff, otherStaff);
   }
 
   render() {
