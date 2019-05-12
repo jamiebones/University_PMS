@@ -73,7 +73,7 @@ class ApprovedReliefPosting extends React.Component {
             {!loading ? (
               postings && postings.length ? (
                 <div>
-                  <p>Relief Posting List</p>
+                  <p className="lead">Relief Posting List</p>
                   <Table responsive striped>
                     <thead>
                       <tr>

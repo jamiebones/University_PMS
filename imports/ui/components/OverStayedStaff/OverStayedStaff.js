@@ -24,7 +24,6 @@ class OverStayedStaff extends React.Component {
   componentDidMount() {
     Meteor.call("getOverStayedStaff", (err, res) => {
       if (!err) {
-        console.log(res);
         this.setState({ staff: res, loading: false });
       }
     });
@@ -112,7 +111,9 @@ class OverStayedStaff extends React.Component {
                   </Table>
                 </div>
               ) : (
-                <Alert bsStyle="info">No data</Alert>
+                <Alert bsStyle="info">
+                  <p className="lead">No data for over stayed staff yet</p>
+                </Alert>
               )
             ) : (
               <Loading />

@@ -34,15 +34,42 @@ const AuthenticatedNavigation = ({ history }) => (
         </Nav>
 
         <Nav>
-          <LinkContainer
-            to="/auth/staff_posting"
-            exact
-            onClick={() => history.push("/auth/staff_posting")}
-          >
-            <NavItem eventKey={3} href="#">
-              Staff Posting
-            </NavItem>
-          </LinkContainer>
+          <NavDropdown eventKey="4" title="Postings" id="nav-posting">
+            {GetDetailsBasedOnRole(["SATS", "JSE"], "Personnel") ? (
+              <React.Fragment>
+                <LinkContainer
+                  to="/auth/staff_posting"
+                  exact
+                  onClick={() => history.push("/auth/staff_posting")}
+                >
+                  <MenuItem eventKey="4.1">Staff Posting</MenuItem>
+                </LinkContainer>
+
+                <LinkContainer
+                  to="/auth/relief_posting"
+                  exact
+                  onClick={() => history.push("/auth/relief_posting")}
+                >
+                  <MenuItem eventKey="4.2">Relief Posting</MenuItem>
+                </LinkContainer>
+                <LinkContainer
+                  to="/auth/posting_list"
+                  exact
+                  onClick={() => history.push("/auth/posting_list")}
+                >
+                  <MenuItem eventKey="4.3">Posting List</MenuItem>
+                </LinkContainer>
+
+                <LinkContainer
+                  to="/auth/posting_stats"
+                  exact
+                  onClick={() => history.push("/auth/posting_stats")}
+                >
+                  <MenuItem eventKey="4.4">Posting Stats</MenuItem>
+                </LinkContainer>
+              </React.Fragment>
+            ) : null}
+          </NavDropdown>
         </Nav>
 
         <Nav>
@@ -65,34 +92,6 @@ const AuthenticatedNavigation = ({ history }) => (
           >
             <NavItem eventKey={15} href="#">
               Promotion
-            </NavItem>
-          </LinkContainer>
-        </Nav>
-      </React.Fragment>
-    ) : null}
-
-    {GetDetailsBasedOnRole(["SATS", "JSE"], "Personnel") ? (
-      <React.Fragment>
-        <Nav>
-          <LinkContainer
-            to="/auth/posting_list"
-            exact
-            onClick={() => history.push("/auth/posting_list")}
-          >
-            <NavItem eventKey={4} href="#">
-              Posting List
-            </NavItem>
-          </LinkContainer>
-        </Nav>
-
-        <Nav>
-          <LinkContainer
-            to="/auth/posting_stats"
-            exact
-            onClick={() => history.push("/auth/posting_stats")}
-          >
-            <NavItem eventKey={8} href="#">
-              Posting Stats
             </NavItem>
           </LinkContainer>
         </Nav>

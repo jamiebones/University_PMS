@@ -3,16 +3,13 @@ import styled from "styled-components";
 import { Col, Row, Table, Label, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
 import OverStayedStaff from "../../components/OverStayedStaff/OverStayedStaff";
+import ApprovedReliefPosting from "../../components/ApprovedReliefPosting/ApprovedReliefPosting";
 
 const DashBoardStyles = styled.div``;
 
 class DashBoard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      staff: [],
-      staffData: []
-    };
     autoBind(this);
   }
 
@@ -20,8 +17,12 @@ class DashBoard extends React.Component {
     return (
       <DashBoardStyles>
         <Row>
-          <Col md={12}>
+          <Col md={6}>
             <OverStayedStaff />
+          </Col>
+
+          <Col md={6}>
+            <ApprovedReliefPosting />
           </Col>
         </Row>
       </DashBoardStyles>

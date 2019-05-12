@@ -6,6 +6,10 @@ import moment from "moment";
 Meteor.publish(
   "staffreliefposting.getPendingPosting",
   function StaffReliefPublication() {
-    return StaffReliefPosting.find({ status: "pending" });
+    let todayDate = moment(new Date()).toISOString();
+    return StaffReliefPosting.find({
+      status: "pending",
+      reliefStart: { gte: todayDate }
+    });
   }
 );
