@@ -169,12 +169,16 @@ export default (StaffReliefPostingContainer = withTracker(props => {
     }
 
     if (staffIdReactive.get() !== "") {
-      query.staffId = new RegExp(staffIdReactive.get(), "i");
+      query.staffId = staffIdReactive
+        .get()
+        .trim()
+        .toUpperCase();
       delete query.designation;
     }
 
     if (designationReactive.get() !== "") {
-      query.designation = new RegExp(designationReactive.get(), "i");
+      query.designation = designationReactive.get();
+
       delete query.staffId;
     }
 
@@ -199,6 +203,8 @@ export default (StaffReliefPostingContainer = withTracker(props => {
       );
     }
   }
+
+  console.log(designationReactive.get());
 
   return {
     loading: subscription && !subscription.ready(),

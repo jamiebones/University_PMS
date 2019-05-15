@@ -18,7 +18,10 @@ import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
 import { NigeriaStates } from "../../../api/NigeriaStates/NigeriaStatesClass";
 import moment from "moment";
-import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import {
+  GetDetailsBasedOnRole,
+  StaffEmploymentType
+} from "../../../modules/utilities";
 import autoBind from "react-autobind";
 import StateModal from "../../components/StateModal/StateModal";
 import { _ } from "meteor/underscore";
@@ -61,20 +64,18 @@ class StaffBio extends React.Component {
         maritalStatus: staff.maritalStatus,
         staffId: staff.staffId,
         stateOfOrigin: staff.stateOfOrigin.trim(),
-        lgaOfOrigin: staff.lgaOfOrigin.trim()
+        lgaOfOrigin: staff.lgaOfOrigin.trim(),
+        currentPosting: staff.currentPosting,
+        officialRemark: staff.officialRemark
       };
     } else {
-      return {};
+      return null;
     }
   }
 
   onChange(e) {
     if (e === "0") return;
     this.setState({ [e.target.name]: e.target.value });
-  }
-
-  componentDidMount() {
-    const component = this;
   }
 
   saveChanges() {
@@ -247,6 +248,32 @@ class StaffBio extends React.Component {
                   name="staffId"
                   disabled
                   value={this.state.staffId}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Department </ControlLabel>
+                <input
+                  type="text"
+                  name="staffId"
+                  disabled
+                  value={this.state.currentPosting}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Employment Status</ControlLabel>
+                <input
+                  type="text"
+                  name="staffId"
+                  disabled
+                  value={StaffEmploymentType(
+                    this.state.officialRemark && this.state.officialRemark
+                  )}
                   onChange={this.onChange}
                   className="form-control"
                 />

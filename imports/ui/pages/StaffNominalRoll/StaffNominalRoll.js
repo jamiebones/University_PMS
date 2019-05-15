@@ -10,7 +10,7 @@ import { withTracker } from "meteor/react-meteor-data";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 import autoBind from "react-autobind";
-import { RemoveSlash } from "../../../modules/utilities";
+import { RemoveSlash, StaffEmploymentType } from "../../../modules/utilities";
 
 const NominalRowStyles = styled.div`
   .Collapsible__trigger {
@@ -141,7 +141,7 @@ class StaffNominalRoll extends React.Component {
     return (
       <NominalRowStyles>
         <Row>
-          <Col md={12}>
+          <Col md={8}>
             <FormGroup>
               <Downshift
                 onChange={this.onChange}
@@ -211,7 +211,11 @@ class StaffNominalRoll extends React.Component {
                 )}
               </Downshift>
             </FormGroup>
+          </Col>
+        </Row>
 
+        <Row>
+          <Col md={12}>
             {staff.length != 0 ? (
               <p className="text-right total">
                 <b>Total : {staff && staff.length}</b>
@@ -221,7 +225,16 @@ class StaffNominalRoll extends React.Component {
             {!loading ? (
               staff &&
               staff.map(
-                ({ designation, biodata, staffId, salaryStructure }, index) => {
+                (
+                  {
+                    designation,
+                    biodata,
+                    staffId,
+                    salaryStructure,
+                    officialRemark
+                  },
+                  index
+                ) => {
                   return (
                     <Col md={4} key={index}>
                       <div className="staffDetails">
@@ -245,6 +258,13 @@ class StaffNominalRoll extends React.Component {
                         <p>Salary Scale: {salaryStructure}</p>
 
                         <p>Personal Number: {staffId}</p>
+
+                        <p>
+                          Employment Status:{" "}
+                          {StaffEmploymentType(
+                            officialRemark && officialRemark
+                          )}
+                        </p>
                       </div>
                     </Col>
                   );
@@ -279,7 +299,7 @@ export default (StaffNominalRoll = withTracker(() => {
     loading: subscription && !subscription.ready(),
     //staff: StaffMembers.find(staffId).fetch(),
     staff: StaffMembers.find(query).fetch(),
-    department: UniversityUnits.find().fetch(),
+    department: UniversityUnits.find({}, { sort: { name: 1 } }).fetch(),
     selectedDeptReactiveVar
   };
 })(StaffNominalRoll));

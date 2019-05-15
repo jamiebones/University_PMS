@@ -40,7 +40,7 @@ class StaffPostingApproval extends React.Component {
     }
   }
 
-  downloadPDF(event, postings) {
+  downloadPostingPDF(event, postings) {
     event.preventDefault();
     const { target } = event;
     target.innerHTML = "<em>Downloading...</em>";
@@ -128,7 +128,7 @@ class StaffPostingApproval extends React.Component {
                 <Button
                   className="hidden-print"
                   bsSize="xsmall"
-                  onClick={() => this.downloadPDF(event, postings)}
+                  onClick={() => this.downloadPostingPDF(event, postings)}
                   bsStyle="success"
                 >
                   Print List

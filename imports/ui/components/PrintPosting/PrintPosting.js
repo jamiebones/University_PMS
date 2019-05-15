@@ -1071,13 +1071,21 @@ table {
     }
   }
 
+
+  .centerImg{
+    margin: 0 auto;
+  }
+
 `}
   >
     <div className="container-fluid">
       <div className="row">
         <div className="col-xs-12">
           <div className="text-center">
-            <img src={logo} className="img img-responsive" />
+            <img
+              src={`data:image/png;base64, ${logo}`}
+              className="img img-responsive centerImg"
+            />
           </div>
         </div>
       </div>

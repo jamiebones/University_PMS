@@ -146,13 +146,13 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
 
   if (staffIdReactive.get() !== "") {
-    query.staffId = new RegExp(staffIdReactive.get(), "i");
+    query.staffId = staffIdReactive.get().toUpperCase();
     query.staffType = "2";
     delete query.designation;
   }
 
   if (designationReactive.get() !== "") {
-    query.designation = new RegExp(designationReactive.get(), "i");
+    query.designation = designationReactive.get();
     query.staffType = "2";
     delete query.staffId;
   }

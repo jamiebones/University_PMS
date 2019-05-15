@@ -25,6 +25,7 @@ import UserStatus from "../../pages/UserStatus/UserStatus";
 import Profile from "../../pages/Profile/Profile";
 import AdminUploadStaffData from "../../pages/AdminUploadStaffData/AdminUploadStaffData";
 import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalaryIncrement";
+import PromotionList from "../../pages/PromotionList/PromotionList";
 import VTable from "../../pages/VTable/VTable";
 import StaffReliefPosting from "../../pages/StaffReliefPosting/StaffReliefPosting";
 
@@ -82,6 +83,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             {/* super admin links end  */}
 
             {/* sats|| ase|| director|| registrar|| records|| links start  */}
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/promotion_list`}
+              component={PromotionList}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
 
             <Authorized
               allowedRoles={[

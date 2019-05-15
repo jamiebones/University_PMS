@@ -5,7 +5,7 @@ import { Meteor } from "meteor/meteor";
 import InlineCss from "react-inline-css";
 import moment from "moment";
 
-const PrintReliefPosting = ({ logo, postings }) => (
+const PrintReliefPosting = ({ logo, staff, heading }) => (
   <InlineCss
     stylesheet={`
 
@@ -796,9 +796,14 @@ const PrintReliefPosting = ({ logo, postings }) => (
 
 
 
- .email{
+ body{
   font-size: 14px;
-  color: #c0c0c0;
+  color: #000;
+
+}
+
+.lead{
+    font-size: 20px;
 }
 
 html{
@@ -1074,6 +1079,13 @@ table {
   .centerImg{
     margin: 0 auto;
   }
+  .table-bordered tr th {
+    background: red;
+  }
+  .table-bordered{
+      font-size: 14px;
+      
+  }
 
 `}
   >
@@ -1089,32 +1101,31 @@ table {
 
       <div className="row">
         <div className="col-xs-12">
-          <p className="text-center lead">List of Relief Postings</p>
-          <table className="table responsive striped">
+          <p className="text-center lead">{heading}</p>
+          <table className="table responsive table-bordered Table">
             <thead>
               <tr>
                 <th>S/N</th>
                 <th>Name</th>
-                <th>Relieving</th>
-                <th>Period</th>
+                <th>Previous/Current Designation</th>
+                <th>Previous/Current Salary</th>
+                <th>Previous Promotion Year</th>
+                <th>Promotion Year</th>
               </tr>
             </thead>
             <tbody>
-              {postings &&
-                postings.map(
+              {staff &&
+                staff.map(
                   (
                     {
-                      reliever_staffId,
-                      reliever_designation,
-                      reliever_department,
-                      reliever_staffName,
-                      staff_relivedStaffId,
-                      staff_relivedName,
-                      staff_relivedDesignation,
-                      staff_relivedDepartment,
-                      reliefStart,
-                      reliefEnd,
-                      _id
+                      staffId,
+                      staffName,
+                      oldDesignation,
+                      newDesignation,
+                      oldSalaryStructure,
+                      newSalaryStructure,
+                      oldPromotionDate,
+                      promotionYear
                     },
                     index
                   ) => {
@@ -1122,39 +1133,28 @@ table {
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>
-                          <p>
-                            <span>{reliever_staffName}</span>
-                            <br />
-                            <span>{reliever_designation}</span>
-                            <br />
-                            <span>{reliever_department}</span>
-                            <br />
-                            <span>{reliever_staffId}</span>
-                          </p>
+                          <p>{staffName}</p>
+                          <p>{staffId}</p>
                         </td>
+
                         <td>
                           <p>
-                            <span>{staff_relivedName}</span>
-                            <br />
-                            <span>{staff_relivedDesignation}</span>
-                            <br />
-                            <span>{staff_relivedDepartment}</span>
-                            <br />
-                            <span>{staff_relivedStaffId}</span>
+                            {oldDesignation} to {newDesignation}
                           </p>
                         </td>
+
                         <td>
                           <p>
-                            <span>
-                              Relief Start :{" "}
-                              {moment(reliefStart).format("MMMM DD YYYY")}
-                            </span>
-                            <br />
-                            <span>
-                              Relief End:{" "}
-                              {moment(reliefEnd).format("MMMM DD YYYY")}
-                            </span>
+                            {oldSalaryStructure} to {newSalaryStructure}
                           </p>
+                        </td>
+
+                        <td>
+                          <p>{oldPromotionDate}</p>
+                        </td>
+
+                        <td>
+                          <p>{promotionYear}</p>
                         </td>
                       </tr>
                     );

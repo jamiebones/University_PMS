@@ -466,3 +466,14 @@ export const SortDirection = {
   ASC: "ASC",
   DESC: "DESC"
 };
+
+export const StaffEmploymentType = staff => {
+  if (staff == undefined || staff == "") return;
+  if (staff.toUpperCase() == "ACTIVE") {
+    return "Pensionable";
+  } else if (staff.toUpperCase() == "CONTRACT") {
+    return "Contract";
+  } else {
+    return staff;
+  }
+};

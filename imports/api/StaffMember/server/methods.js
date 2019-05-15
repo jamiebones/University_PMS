@@ -284,7 +284,7 @@ Meteor.methods({
   ) {
     check(dept, Match.OneOf(String, null, undefined));
     let query = {};
-    const department = new RegExp(dept, "i");
+    const department = dept.toUpperCase();
 
     if (GetDetailsBasedOnRole("SATS", "Personnel")) {
       query.staffClass = "Senior Staff";

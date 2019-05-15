@@ -44,6 +44,7 @@ class StaffPromotionComponent extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
+    debugger;
     if (state.editing == false) {
       //lets try to get the proposed salary step
       const salaryStep = props && props.salaryStructure.trim();
@@ -86,9 +87,7 @@ class StaffPromotionComponent extends React.Component {
       }
     }
 
-    return {
-      ...state
-    };
+    return null;
   }
 
   onPromotinYearChange(value) {
@@ -285,17 +284,33 @@ class StaffPromotionComponent extends React.Component {
 
             <ButtonToolbar>
               {this.props.onHide ? (
-                <Button onClick={this.props.onHide}>Close</Button>
+                <Button bsSize="small" onClick={this.props.onHide}>
+                  Close
+                </Button>
               ) : null}
 
+              <Button
+                bsSize="small"
+                bsStyle="info"
+                onClick={() =>
+                  this.setState({
+                    newDesignation: "not defined",
+                    editing: true
+                  })
+                }
+              >
+                Manual
+              </Button>
+
               {this.state.newDesignation !== "not defined" ? (
-                <button
+                <Button
+                  bsSize="small"
                   className="btn btn-danger "
                   disabled={this.state.submitted}
                   onClick={this.saveChanges}
                 >
                   Save Promotion
-                </button>
+                </Button>
               ) : null}
             </ButtonToolbar>
           </Col>

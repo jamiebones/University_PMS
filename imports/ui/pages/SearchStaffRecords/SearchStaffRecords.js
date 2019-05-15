@@ -188,12 +188,16 @@ export default (SearchStaffRecordsPageContainer = withTracker(() => {
   }
 
   if (staffIdReactive.get() !== "") {
-    query.staffId = new RegExp(staffIdReactive.get().trim(), "i");
+    query.staffId = staffIdReactive
+      .get()
+      .trim()
+      .toUpperCase();
     delete query.designation;
   }
 
   if (designationReactive.get() !== "") {
-    query.designation = designationReactive.get().trim();
+    query.designation = designationReactive.get();
+
     delete query.staffId;
   }
 

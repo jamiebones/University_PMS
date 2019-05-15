@@ -1,20 +1,14 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import rateLimit from "../../modules/rate-limit";
-import {
-  StaffMember,
-  StaffMembers,
-  Promotion
-} from "../../api/StaffMember/StaffMemberClass";
-import {
-  Designation,
-  Designations
-} from "../../api/Designation/DesignationClass";
+import { StaffMember, Promotion } from "../../api/StaffMember/StaffMemberClass";
+import { Designation } from "../../api/Designation/DesignationClass";
 import { UniversityUnit } from "../../api/UniversityUnit/UniversityUnitClass";
 import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
-import { FindStaffDueForPromotion } from "../../modules/utilitiesComputation";
 import { FindMax } from "../../modules/utilities";
+import { PromotedStaff as PromotedStaffClass } from "../../api/PromotedStaff/PromotedStaffClass";
 import { _ } from "meteor/underscore";
+import moment from "moment";
 
 Meteor.methods({
   "staffMembers.saveRecordsInDatabase": function StaffMembersmethod(excelData) {
@@ -131,6 +125,12 @@ Meteor.methods({
                 ) {
                   //we have an academic staff
                   staff.staffType = "1";
+                  staff.staffClass = "Senior Staff";
+                } else if (
+                  salaryStructure &&
+                  salaryStructure.toLowerCase().trim() == "conmess"
+                ) {
+                  staff.staffType = "2";
                   staff.staffClass = "Senior Staff";
                 } else {
                   staff.staffType = "2";
@@ -301,9 +301,41 @@ Meteor.methods({
     newPromotion.promotionYear = promotionYear;
     newPromotion.serial = maxIndex;
 
+    if (oldSalaryStructure.toUpperCase().includes("CONTISS")) {
+      //lets split and show if na 5 moving to senior
+      const salaryArray = oldSalaryStructure.split("/");
+      //split the first part to extract the type
+      const scaleArray = salaryArray[0].split(" ");
+      const scaleStep = scaleArray[1];
+
+      if (parseInt(scaleStep) == "5") {
+        //we have promotion to senior here
+        promotedStaff.staffClass = "Senior Staff";
+      }
+    }
+
     promotedStaff.promotions.push(newPromotion);
 
     promotedStaff.save();
+
+    //lets save the details in the promotion staff table
+
+    const newPromotedStaff = new PromotedStaffClass({
+      staffId: staffId,
+      staffName: staffName,
+      oldDesignation,
+      newDesignation,
+      oldSalaryStructure,
+      newSalaryStructure,
+      oldPromotionDate,
+      staffType: promotedStaff.staffType,
+      staffClass: promotedStaff.staffClass,
+      promotionYear,
+      newSalaryStructure,
+      savedDate: moment(new Date()).toISOString()
+    });
+
+    newPromotedStaff.save();
 
     const newActivity = new ActivityLog();
     newActivity.username = Meteor.userId();

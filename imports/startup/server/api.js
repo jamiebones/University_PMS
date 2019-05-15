@@ -31,6 +31,10 @@ import "../../api/Documents/methods";
 import "../../api/SalaryYear/server/publications";
 import "../../api/SalaryYear/methods";
 
+import "../../api/PromotedStaff/server/publications";
+import "../../api/PromotedStaff/server/methods";
+import "../../api/PromotedStaff/methods";
+
 import "../../api/StaffReliefPosting/server/publications";
 import "../../api/StaffReliefPosting/server/methods";
 import "../../api/StaffReliefPosting/methods";

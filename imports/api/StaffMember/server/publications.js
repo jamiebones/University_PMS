@@ -40,9 +40,8 @@ Meteor.publish(
     check(designation, Match.OneOf(String, null, undefined));
 
     if (designation) {
-      query.designation = new RegExp(designation, "i");
+      query.designation = designation;
     }
-
     if (designation == "all") {
       delete query.designation;
     }
@@ -104,13 +103,13 @@ Meteor.publish(
     };
 
     if (staffId !== "") {
-      query.staffId = new RegExp(staffId, "i");
+      query.staffId = staffId.toUpperCase();
       query.staffType = "2";
       delete query.designation;
     }
 
     if (designation !== "") {
-      query.designation = new RegExp(designation, "i");
+      query.designation = designation;
       query.staffType = "2";
       delete query.staffId;
     }
@@ -138,7 +137,7 @@ Meteor.publish(
     };
 
     if (staffId !== "") {
-      query.staffId = new RegExp(staffId, "i");
+      query.staffId = staffId.toUpperCase();
       delete query.designation;
     }
 

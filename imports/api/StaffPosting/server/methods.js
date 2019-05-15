@@ -3,6 +3,7 @@ import { check } from "meteor/check";
 import { StaffPostings } from "../../StaffPosting/StaffPostingClass";
 import { _ } from "meteor/underscore";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import PrintPostings from "../../../modules/server/printposting";
 import moment from "moment";
 
 Meteor.methods({
