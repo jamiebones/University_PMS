@@ -50,8 +50,8 @@ Meteor.methods({
             switch (k) {
               case 1:
                 canSave = true;
-                staff.staffId = rowArray[k];
-                staff.currentPosting = faculty;
+                staff.staffId = rowArray[k] && rowArray[k].toUpperCase();
+                staff.currentPosting = faculty.toUpperCase();
                 //console.log(faculty);
                 break;
 

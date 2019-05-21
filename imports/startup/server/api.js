@@ -39,4 +39,8 @@ import "../../api/StaffReliefPosting/server/publications";
 import "../../api/StaffReliefPosting/server/methods";
 import "../../api/StaffReliefPosting/methods";
 
+import "../../api/WithdrawPromotion/server/publications";
+import "../../api/WithdrawPromotion/server/methods";
+import "../../api/WithdrawPromotion/methods";
+
 import "../../api/Utility/server/methods";

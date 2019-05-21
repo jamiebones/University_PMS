@@ -114,6 +114,9 @@ const DroplistComponentStyles = styled.div`
     font-size: 18;
     font-style: oblique;
   }
+  .dropdown-item {
+    padding: 5px;
+  }
 `;
 
 export default class DroplistComponent extends React.Component {

@@ -44,7 +44,6 @@ class StaffPromotionComponent extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    debugger;
     if (state.editing == false) {
       //lets try to get the proposed salary step
       const salaryStep = props && props.salaryStructure.trim();

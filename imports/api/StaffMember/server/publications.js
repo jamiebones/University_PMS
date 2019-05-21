@@ -66,6 +66,17 @@ Meteor.publish(
 );
 
 Meteor.publish(
+  "staffmembers.getStaffByIdStaffIdAndDesignation",
+  function StaffMembersPublication(staffId) {
+    check(staffId, Match.OneOf(String, null, undefined));
+    let query = {
+      staffId: staffId.toUpperCase()
+    };
+    return [StaffMembers.find(query), Designations.find()];
+  }
+);
+
+Meteor.publish(
   "staffmembers.getNominalRollForDepartment",
   function StaffMembersPublication(unit) {
     check(unit, Match.OneOf(String, null, undefined));

@@ -28,7 +28,7 @@ import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalar
 import PromotionList from "../../pages/PromotionList/PromotionList";
 import VTable from "../../pages/VTable/VTable";
 import StaffReliefPosting from "../../pages/StaffReliefPosting/StaffReliefPosting";
-
+import WithdrawPromotion from "../../components/WithdrawPromotionForm/WithdrawPromotionForm";
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
     <Row>
@@ -309,6 +309,21 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             {/* sats||director|| registrar|| jse|| links end  */}
+
+            {/* sats|| || jse|| links end  */}
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "JSE"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/withdraw_promotion`}
+              component={WithdrawPromotion}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            {/* sats|| || jse|| links  */}
 
             {/* records links start  */}
             <Authorized
