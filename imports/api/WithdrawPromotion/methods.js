@@ -4,6 +4,8 @@ import {
   WithdrawPromotion,
   WithdrawPromotions
 } from "./WithdrawPromotionClass";
+import { StaffMember } from "../../api/StaffMember/StaffMemberClass";
+
 Meteor.methods({
   "withdrawpromotion.makewithrawalrequest": function WithdrawPromotionmethod(
     withdrawObject
@@ -17,5 +19,26 @@ Meteor.methods({
   ) {
     check(id, String);
     return WithdrawPromotions.remove(id);
+  },
+  "withdrawpromotion.registrarapprovecancel": function WithdrawPromotionmethod(
+    withdrawObject
+  ) {
+    check(withdrawObject, Object);
+    const {
+      status,
+      id,
+      staffId,
+      returnToDesignation,
+      returnToSalaryStructure
+    } = withdrawObject;
+    //update the request as appropriate
+    const request = WithdrawPromotion.findOne(id);
+    request.requestStatus = status;
+    request.save();
+    //find the staff and update as appropriate
+    const staff = StaffMember.findOne({ staffId: staffId });
+    staff.designation = returnToDesignation;
+    staff.salaryStructure = returnToSalaryStructure;
+    staff.save();
   }
 });

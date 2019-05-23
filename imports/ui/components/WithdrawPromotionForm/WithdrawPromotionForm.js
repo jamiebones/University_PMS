@@ -55,6 +55,13 @@ const WithdrawPromotionStyle = styled.div`
     font-weight: normal;
     padding: 4px;
   }
+  hr {
+    height: 2px;
+    background: #618da0;
+  }
+  .previous {
+    padding: 6px;
+  }
 `;
 
 class WithdrawPromotionPage extends React.Component {
@@ -118,10 +125,13 @@ class WithdrawPromotionPage extends React.Component {
   }
 
   deleteRequest(e, id) {
+    this.setState({ submitted: !this.state.submitted });
     Meteor.call("withdrawpromotion.deletewithrawalrequest", id, err => {
       if (!err) {
+        this.setState({ submitted: !this.state.submitted });
         Bert.alert("Withdrawal request deleted", "success");
       } else {
+        this.setState({ submitted: !this.state.submitted });
         Bert.alert(`Error : ${err}`);
       }
     });
@@ -158,14 +168,14 @@ class WithdrawPromotionPage extends React.Component {
 
                     <p>
                       Status:{" "}
-                      <span>
+                      <span className="previous">
                         {previousRequest && previousRequest.requestStatus}
                       </span>
                     </p>
 
                     <p>
                       Date :{" "}
-                      <span>
+                      <span className="previous">
                         {moment(
                           previousRequest && previousRequest.requestDate
                         ).format("DD MMMM YYYY")}
@@ -174,7 +184,7 @@ class WithdrawPromotionPage extends React.Component {
 
                     <p>
                       Withdrawal Reason :{" "}
-                      <span>
+                      <span className="previous">
                         {previousRequest && previousRequest.reasonForWithdrawal}
                       </span>
                     </p>
@@ -182,13 +192,19 @@ class WithdrawPromotionPage extends React.Component {
                     <p>
                       <Button
                         bsStyle="danger"
+                        bsSize="xsmall"
+                        disabled={this.state.submitted}
                         onClick={e =>
                           this.deleteRequest(e, previousRequest._id)
                         }
                       >
-                        Delete Request
+                        {this.state.submitted
+                          ? "Please wait"
+                          : "Delete Request"}
                       </Button>
                     </p>
+
+                    <hr />
                   </div>
                 )}
                 <Row>
@@ -256,23 +272,18 @@ class WithdrawPromotionPage extends React.Component {
                     </FormGroup>
 
                     {!previousRequest ? (
-                         <FormGroup>
-                         <Button
-                           bsStyle="success"
-                           disabled={this.state.submitted}
-                           onClick={this.withdrawPromotion}
-                         >
-                           {this.state.submitted
-                             ? "Please wait-----"
-                             : "Withdraw Promotion Request"}
-                         </Button>
-                       </FormGroup>
-                    ): null}
-
-                   
-                   
-                     
-                 
+                      <FormGroup>
+                        <Button
+                          bsStyle="success"
+                          disabled={this.state.submitted}
+                          onClick={this.withdrawPromotion}
+                        >
+                          {this.state.submitted
+                            ? "Please wait-----"
+                            : "Withdraw Promotion Request"}
+                        </Button>
+                      </FormGroup>
+                    ) : null}
                   </Col>
                 </Row>
               </Col>
