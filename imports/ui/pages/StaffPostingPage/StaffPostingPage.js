@@ -12,6 +12,7 @@ import { _ } from "meteor/underscore";
 import autoBind from "react-autobind";
 import StaffProposePosting from "../../components/StaffProposePosting/StaffProposePosting";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import moment from "moment";
 
 const StaffPostingStyle = styled.div`
   .alertDiv {
@@ -75,7 +76,9 @@ class StaffPostingPage extends React.Component {
               value={this.state.designation}
               onChange={this.onSelectChange}
             >
-              <option value="0">select designation</option>
+              <option value="0" disabled>
+                select designation
+              </option>
               {designations &&
                 designations.map(({ rank }) => {
                   return (
@@ -158,10 +161,18 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
   if (subscription && subscription.ready()) {
     staffArray = StaffMembers.find(query).fetch();
-    reliefArray = StaffReliefPostings.find({ status: "approved" }).fetch();
+    console.log(staffArray);
+    const today = moment(new Date()).toISOString();
+    reliefArray = StaffReliefPostings.find({
+      status: "approved",
+      reliefEnd: {
+        $gte: today
+      }
+    }).fetch();
     designations = Designations.find({}, { sort: { rank: 1 } }).fetch();
     //loop through the staff members array
     //if we have a posting object add it.
+    let arrayNumToRemove = [];
     for (let i = 0; i < staffArray.length - 1; i++) {
       //individual array
       const staffObj = staffArray[i];
@@ -176,11 +187,15 @@ export default (StaffPostingPageContainer = withTracker(props => {
         staffObj.reliefDuty = findRelief;
         //remove the object from the array
         staffOnRelief.push(staffObj);
-        staffArray.splice(staffArray[i], 1);
+        arrayNumToRemove.push(i);
       } else {
         continue;
       }
     }
+    //remove item from the saved array index
+    arrayNumToRemove.map(num => {
+      staffArray.splice(num, 1);
+    });
     //concatenate the array together
     finalArray = [...staffArray, ...staffOnRelief];
     loadingVar.set(false);

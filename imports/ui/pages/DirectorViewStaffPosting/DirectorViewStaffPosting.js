@@ -1,21 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  Button,
-  Col,
-  Row,
-  FormGroup,
-  Table,
-  ButtonToolbar,
-  ButtonGroup
-} from "react-bootstrap";
-import autoBind from "react-autobind";
+import { Col, Row } from "react-bootstrap";
 import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
-import { Bert } from "meteor/themeteorchef:bert";
-import Loading from "../../components/Loading/Loading";
 import { withTracker } from "meteor/react-meteor-data";
 import StaffPostingApproval from "../../components/StaffPostingApproval/StaffPostingApproval";
-import moment from "moment";
 
 const ViewStaffPostingStyles = styled.div`
   .formerDept {

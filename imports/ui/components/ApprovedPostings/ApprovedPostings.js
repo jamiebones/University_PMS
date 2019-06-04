@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Button, Col, Row, Table, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
-import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
 import Loading from "../../components/Loading/Loading";
 import { base64ToBlob } from "../../../modules/base64-to-blob.js";
 import fileSaver from "file-saver";
@@ -69,55 +68,62 @@ class StaffPostingApproval extends React.Component {
           <Col md={12}>
             {!loading ? (
               postings && postings.length ? (
-                <Table responsive striped>
-                  <thead>
-                    <tr>
-                      <th>S/N</th>
-                      <th>Name</th>
-                      <th>PF</th>
-                      <th>Designation</th>
-                      <th>Current Department</th>
-                      <th> Posted To</th>
-                      <th>Resumption Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {postings &&
-                      postings &&
-                      postings.map((post, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>
-                              <p>{post.data.staffName}</p>
-                            </td>
-                            <td>
-                              <p>{post._id}</p>
-                            </td>
-                            <td>
-                              <p>{post.data.designation}</p>
-                            </td>
+                <div>
+                  <p className="lead text-center">Staff Posting List</p>
+                  <Table responsive striped>
+                    <thead>
+                      <tr>
+                        <th>S/N</th>
+                        <th>Name</th>
+                        <th>PF</th>
+                        <th>Designation</th>
+                        <th>Current Department</th>
+                        <th> Posted To</th>
+                        <th>Resumption Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {postings &&
+                        postings &&
+                        postings.map((post, index) => {
+                          return (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td>
+                                <p>{post.data.staffName}</p>
+                              </td>
+                              <td>
+                                <p>{post._id}</p>
+                              </td>
+                              <td>
+                                <p>{post.data.designation}</p>
+                              </td>
 
-                            <td>
-                              <p>{post.data.unitFrom}</p>
-                            </td>
-                            <td>
-                              <p>{post.data.newUnit}</p>
-                            </td>
+                              <td>
+                                <p>{post.data.unitFrom}</p>
+                              </td>
+                              <td>
+                                <p>{post.data.newUnit}</p>
+                              </td>
 
-                            <td>
-                              {moment(post.data.startingDate).format(
-                                "MMMM DD YYYY"
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </Table>
+                              <td>
+                                {moment(post.data.startingDate).format(
+                                  "MMMM DD YYYY"
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </Table>
+                </div>
               ) : (
                 <div>
-                  <p className="lead">No approved posting list</p>
+                  <Alert bsStyle="info">
+                    <p className="lead text-danger text-center">
+                      No approved posting list
+                    </p>
+                  </Alert>
                 </div>
               )
             ) : (

@@ -7,7 +7,8 @@ import {
   FormGroup,
   Table,
   ButtonToolbar,
-  ButtonGroup
+  ButtonGroup,
+  Alert
 } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { StaffPostings } from "../../../api/StaffPosting/StaffPostingClass";
@@ -190,7 +191,11 @@ class StaffPostingApproval extends React.Component {
                 </Table>
               ) : (
                 <div>
-                  <p className="lead">No posting to cancel or approve</p>
+                  <Alert bsStyle="info">
+                    <p className="lead text-center text-danger">
+                      No posting to cancel or approve
+                    </p>
+                  </Alert>
                 </div>
               )
             ) : (

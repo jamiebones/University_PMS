@@ -75,6 +75,14 @@ Meteor.methods({
 
     const postedStaff = StaffMember.findOne({ staffId: staffId.toUpperCase() });
     if (!_.isEmpty(postedStaff)) {
+      //lets check if staff posting date has been set before
+      if (postedStaff.postings.length == "0") {
+        //we don't have a first time posting date set
+        //lets throw an error to the client
+        throw new Meteor.Error(
+          "Please set the staff posting date before initiating posting procedures"
+        );
+      }
       //lets do the posting here
       let newPosting = new StaffPosting();
       newPosting.staffId = staffId;
@@ -149,7 +157,6 @@ Meteor.methods({
         let posting = new Postings(postingObj);
 
         postedStaff.postings = [...postedStaff.postings, posting];
-        postedStaff.postingProposed = true;
         newPosting.save();
         postedStaff.save();
       } catch (error) {

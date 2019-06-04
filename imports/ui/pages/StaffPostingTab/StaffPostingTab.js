@@ -10,7 +10,6 @@ import DirectorViewPosting from "../../pages/DirectorViewStaffPosting/DirectorVi
 import ApprovedPosting from "../../components/ApprovedPostings/ApprovedPostings";
 import ApproveCancelReliefPosting from "../../components/ApproveCancelReiefPosting/ApproveCancelReliefPosting";
 import ApprovedReliefPosting from "../../components/ApprovedReliefPosting/ApprovedReliefPosting";
-import { Meteor } from "meteor/meteor";
 
 const StaffPostingHeader = styled.h4`
   .label {

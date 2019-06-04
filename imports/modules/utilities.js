@@ -333,33 +333,40 @@ export const GetDetailsBasedOnRole = (role, group) => {
 };
 
 export const GetRealTimeStatus = (difference, postings) => {
-  console.log(difference);
   if (difference) {
-    if (difference.substr("-")) {
+    let lastPosting = FindMax(FilterSuccesfulPosting(postings), "serial");
+    let unitFrom = null;
+    let postedTo = null;
+
+    if (lastPosting) {
+      if (postings[lastPosting - 1].postingStatus === "4") {
+        const post = postings[lastPosting - 1];
+        unitFrom = post.unitFrom;
+        postedTo = post.unitName;
+      }
+    }
+
+    if (difference.includes("-")) {
       //if we have minus in the difference
       //it means staff have not resumed
-      let lastPosting = FindMax(postings, "serial");
-      let unitFrom = null;
-      let postedTo = null;
-
-      if (lastPosting) {
-        if (postings[lastPosting - 1].postingStatus === "4") {
-          const post = postings[lastPosting - 1];
-          unitFrom = post.unitFrom;
-          postedTo = post.unitName;
-        }
-      }
       return `Still at ${unitFrom} but resuming at ${postedTo} in
       ${difference.replace("-", "")} time`;
+    } else {
+      //here the posting difference is not negative
+      //we either have a new posting
+      if (unitFrom === "first") {
+        //this is the first posting saved in the system
+        return `${postedTo} : ${difference}`;
+      }
+      return `Time spent : ${difference}`;
     }
-    return `Time spent : ${difference}`;
   } else {
     return;
   }
 };
 
 export const CheckForNegativeDate = difference => {
-  if (difference.substr("-")) {
+  if (difference.includes("-")) {
     return true;
   }
   return false;
@@ -367,7 +374,6 @@ export const CheckForNegativeDate = difference => {
 
 export const FormatSalaryStructure = structure => {
   if (structure) {
-    debugger;
     const structureArray = Array.from(structure);
     //build the string
     let string = null;

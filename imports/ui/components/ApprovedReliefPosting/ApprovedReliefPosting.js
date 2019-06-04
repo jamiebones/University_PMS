@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Button, Col, Row, Table, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { base64ToBlob } from "../../../modules/base64-to-blob.js";
 import fileSaver from "file-saver";
@@ -73,7 +73,7 @@ class ApprovedReliefPosting extends React.Component {
             {!loading ? (
               postings && postings.length ? (
                 <div>
-                  <p className="lead">Relief Posting List</p>
+                  <p className="lead text-center">Relief Posting List</p>
                   <Table responsive striped>
                     <thead>
                       <tr>
@@ -151,9 +151,11 @@ class ApprovedReliefPosting extends React.Component {
                 </div>
               ) : (
                 <div>
-                  <p className="lead text-info">
-                    No approved relief posting list
-                  </p>
+                  <Alert bsStyle="info">
+                    <p className="lead text-danger text-center">
+                      No approved relief posting list
+                    </p>
+                  </Alert>
                 </div>
               )
             ) : (

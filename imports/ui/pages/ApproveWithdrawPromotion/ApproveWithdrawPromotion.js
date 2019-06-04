@@ -6,7 +6,8 @@ import {
   Table,
   Button,
   ButtonToolbar,
-  ButtonGroup
+  ButtonGroup,
+  Alert
 } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { Bert } from "meteor/themeteorchef:bert";
@@ -35,15 +36,19 @@ class ApproveWithdrawPromotion extends React.Component {
     id,
     returnToDesignation,
     staffId,
-    returnToSalaryStructure
+    returnToSalaryStructure,
+    returnPromotionDate
   }) {
     const withdrawalObject = {
       status,
       id,
       staffId,
       returnToDesignation,
-      returnToSalaryStructure
+      returnToSalaryStructure,
+      returnPromotionDate
     };
+    const canSubmit = confirm(`Are you sure. ${status} button clicked`);
+    if (!canSubmit) return;
     Meteor.call(
       "withdrawpromotion.registrarapprovecancel",
       withdrawalObject,
@@ -78,7 +83,9 @@ class ApproveWithdrawPromotion extends React.Component {
                         <th>Name</th>
                         <th>Wrongly Promoted to</th>
                         <th>Revert Back to</th>
-                        <th>Reason for reversal</th>
+                        <th style={{ width: 200 + "px" }}>
+                          Reason for reversal
+                        </th>
                         <th>Request made by</th>
                         <th>Action</th>
                       </tr>
@@ -96,7 +103,8 @@ class ApproveWithdrawPromotion extends React.Component {
                             returnToSalaryStructure,
                             reasonForWithdrawal,
                             _id,
-                            user
+                            user,
+                            returnPromotionDate
                           },
                           index
                         ) => {
@@ -124,45 +132,41 @@ class ApproveWithdrawPromotion extends React.Component {
                                 <p>{user}</p>
                               </td>
                               <td>
-                                <p>
-                                  <ButtonToolbar>
-                                    <ButtonGroup bsSize="xsmall">
-                                      <Button
-                                        bsStyle="success"
-                                        onClick={() =>
-                                          this.handleApprovePromotionWithdrawal(
-                                            {
-                                              status: "approved",
-                                              id: _id,
-                                              returnToDesignation,
-                                              staffId,
-                                              returnToSalaryStructure
-                                            }
-                                          )
-                                        }
-                                      >
-                                        Approved
-                                      </Button>
+                                <ButtonToolbar>
+                                  <ButtonGroup bsSize="xsmall">
+                                    <Button
+                                      bsStyle="success"
+                                      onClick={() =>
+                                        this.handleApprovePromotionWithdrawal({
+                                          status: "approved",
+                                          id: _id,
+                                          returnToDesignation,
+                                          staffId,
+                                          returnToSalaryStructure,
+                                          returnPromotionDate
+                                        })
+                                      }
+                                    >
+                                      Approved
+                                    </Button>
 
-                                      <Button
-                                        bsStyle="info"
-                                        onClick={() =>
-                                          this.handleApprovePromotionWithdrawal(
-                                            {
-                                              status: "declined",
-                                              id: _id,
-                                              returnToDesignation,
-                                              staffId,
-                                              returnToSalaryStructure
-                                            }
-                                          )
-                                        }
-                                      >
-                                        Declined
-                                      </Button>
-                                    </ButtonGroup>
-                                  </ButtonToolbar>
-                                </p>
+                                    <Button
+                                      bsStyle="info"
+                                      onClick={() =>
+                                        this.handleApprovePromotionWithdrawal({
+                                          status: "declined",
+                                          id: _id,
+                                          returnToDesignation,
+                                          staffId,
+                                          returnToSalaryStructure,
+                                          returnPromotionDate
+                                        })
+                                      }
+                                    >
+                                      Declined
+                                    </Button>
+                                  </ButtonGroup>
+                                </ButtonToolbar>
                               </td>
                             </tr>
                           );

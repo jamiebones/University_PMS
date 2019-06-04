@@ -6,7 +6,8 @@ import {
   Row,
   Table,
   ButtonToolbar,
-  ButtonGroup
+  ButtonGroup,
+  Alert
 } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { Bert } from "meteor/themeteorchef:bert";
@@ -172,9 +173,11 @@ class ApproveCancelReliefPosting extends React.Component {
                 </Table>
               ) : (
                 <div>
-                  <p className="lead">
-                    No relief posting to approve or decline
-                  </p>
+                  <Alert className="info">
+                    <p className="lead text-center text-danger">
+                      No relief posting to approve or decline
+                    </p>
+                  </Alert>
                 </div>
               )
             ) : (

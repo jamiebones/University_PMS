@@ -65,10 +65,12 @@ class StaffPostingApproval extends React.Component {
                   value={this.state.resumedDate}
                   onChange={this.onChange}
                 >
-                  <option value="0">select</option>
+                  <option value="0" disabled>
+                    select
+                  </option>
                   <option value="1">yet to resume</option>
                   <option value="2">resume a week ago</option>
-                  <option value="3">resumed</option>
+                  <option value="3">resumed with in 3 months ago</option>
                 </select>
               </Col>
             </Row>
@@ -81,7 +83,7 @@ class StaffPostingApproval extends React.Component {
                     <th>S/N</th>
                     <th>Name</th>
                     <th>Designation</th>
-                    <th>Current Department</th>
+                    <th>Former Department</th>
                     <th> Posted To</th>
                     <th>Resumption Date</th>
                   </tr>
@@ -102,7 +104,7 @@ class StaffPostingApproval extends React.Component {
                         },
                         index
                       ) => {
-                        return (
+                        return unitFrom != "first" ? (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>
@@ -123,7 +125,7 @@ class StaffPostingApproval extends React.Component {
                               {moment(startingDate).format("MMMM DD YYYY")}
                             </td>
                           </tr>
-                        );
+                        ) : null;
                       }
                     )}
                 </tbody>

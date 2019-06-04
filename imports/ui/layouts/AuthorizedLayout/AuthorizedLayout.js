@@ -16,6 +16,7 @@ import AddCadrePage from "../../pages/AddCadres/AddCadres";
 import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
 import PensionDashboard from "../../pages/PensionDashboard/PensionDashboard";
 import StaffPromotion from "../../pages/StaffPromotion/StaffPromotion";
+import StaffPromotionNew from "../../pages/StaffPromotionNew/StaffPromotionNew";
 import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 import StaffNominalRoll from "../../pages/StaffNominalRoll/StaffNominalRoll";
 import StaffPostingStats from "../../pages/StaffPostingStats/StaffPostingStats";
@@ -29,6 +30,7 @@ import PromotionList from "../../pages/PromotionList/PromotionList";
 import VTable from "../../pages/VTable/VTable";
 import StaffReliefPosting from "../../pages/StaffReliefPosting/StaffReliefPosting";
 import WithdrawPromotion from "../../components/WithdrawPromotionForm/WithdrawPromotionForm";
+import ApproveWithdrawPromotion from "../../pages/ApproveWithdrawPromotion/ApproveWithdrawPromotion";
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
     <Row>
@@ -155,6 +157,24 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/due_for_promotion`}
               component={StaffPromotion}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/due_for_promotion_new`}
+              component={StaffPromotionNew}
               pathAfterFailure="/logout"
               {...rest}
             />
@@ -357,6 +377,17 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/registrar/staff_posting`}
               component={RegistrarViewPosting}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["Registrar"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/promotion_request_approval`}
+              component={ApproveWithdrawPromotion}
               pathAfterFailure="/logout"
               {...rest}
             />

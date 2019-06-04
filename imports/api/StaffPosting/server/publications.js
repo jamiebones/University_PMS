@@ -58,9 +58,11 @@ Meteor.publish(
         };
         break;
       case "3":
+        let todayDate = new Date();
+        todayDate.setMonth(todayDate.getMonth() - 3); //three months ago
         query.status = "4";
         query["startingDate"] = {
-          $lte: date
+          $gte: moment(todayDate).toISOString()
         };
     }
 

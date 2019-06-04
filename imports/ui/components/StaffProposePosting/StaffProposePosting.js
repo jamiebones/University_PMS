@@ -9,7 +9,8 @@ import {
   FindTimeDifference,
   SortPostingDuration,
   GetRealTimeStatus,
-  CheckForNegativeDate
+  CheckForNegativeDate,
+  FilterSuccesfulPosting
 } from "../../../modules/utilities";
 
 const StaffProposePostingStyles = styled.div`
@@ -91,8 +92,12 @@ class StaffProposePosting extends React.Component {
                               postings.length > 0 &&
                               CheckForNegativeDate(
                                 FindTimeDifference(
-                                  postings[FindMax(postings, "serial") - 1]
-                                    .postingDate,
+                                  postings[
+                                    FindMax(
+                                      FilterSuccesfulPosting(postings),
+                                      "serial"
+                                    ) - 1
+                                  ].postingDate,
                                   moment().format("MMMM DD YYYY")
                                 )
                               ) === true ? null : (
@@ -106,8 +111,12 @@ class StaffProposePosting extends React.Component {
                                   postings.length &&
                                   GetRealTimeStatus(
                                     FindTimeDifference(
-                                      postings[FindMax(postings, "serial") - 1]
-                                        .postingDate,
+                                      postings[
+                                        FindMax(
+                                          FilterSuccesfulPosting(postings),
+                                          "serial"
+                                        ) - 1
+                                      ].postingDate,
                                       moment().format("MMMM DD YYYY")
                                     ),
                                     postings
@@ -118,7 +127,6 @@ class StaffProposePosting extends React.Component {
 
                           <td>
                             <div>
-                              Former Departments:
                               <div className="formerDept">
                                 {postings && postings.length ? (
                                   SortPostingDuration(postings).map(
@@ -126,16 +134,24 @@ class StaffProposePosting extends React.Component {
                                       return (
                                         <p key={index}>
                                           {unit} :{" "}
-                                          {CheckForNegativeDate(duration)
-                                            ? "Posting was reversed"
-                                            : { duration }}
+                                          {CheckForNegativeDate(duration) ? (
+                                            <span className="text-danger">
+                                              Posting was reversed
+                                            </span>
+                                          ) : (
+                                            <span className="text-success">
+                                              {duration}
+                                            </span>
+                                          )}
                                           <br />
                                         </p>
                                       );
                                     }
                                   )
                                 ) : (
-                                  <p>No former department</p>
+                                  <p className="text-danger">
+                                    No former department
+                                  </p>
                                 )}
                               </div>
                             </div>

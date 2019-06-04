@@ -120,6 +120,13 @@ class StaffPromotion extends React.Component {
         });
       }
     });
+    Meteor.call("staffmembers.getStaffDueForPromotion", (err, res) => {
+      if (!err) {
+        console.log(res);
+      } else {
+        console.log(err);
+      }
+    });
   }
 
   updatePromotion({

@@ -326,5 +326,98 @@ Meteor.methods({
     }
     finalArray = [...staffArray, ...staffOnRelief];
     return finalArray;
+  },
+  "staffmembers.getStaffDueForPromotion": function StaffMembersmethod(
+    designation
+  ) {
+    //apply filter here based on role type and designation
+    check(designation, Match.OneOf(String, null, undefined));
+
+    let query = {};
+    let rankQuery = {};
+
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+      query.staffType = "2";
+      rankQuery.type = "Senior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+      query.staffType = "2";
+      rankQuery.type = "Junior Staff";
+    }
+
+    if (GetDetailsBasedOnRole("ASE", "Personnel")) {
+      query.staffType = "1";
+      delete query.staffClass;
+    }
+
+    if (designation) {
+      query.designation = designation;
+    }
+
+    if (designation == "all") {
+      delete query.designation;
+    }
+
+    query.dateOfLastPromotion = { $ne: "-" };
+
+    const pipeline = [
+      { $match: query },
+      {
+        $project: {
+          yearsSincePromotion: {
+            $subtract: [
+              new Date().getFullYear(),
+              { $year: { $toDate: "$dateOfLastPromotion" } }
+            ]
+          },
+
+          biodata: 1,
+          designation: 1,
+          salaryStructure: 1,
+          currentPosting: 1,
+          dateOfLastPromotion: 1,
+          staffId: 1,
+          certificate: 1
+        }
+      },
+      { $match: { yearsSincePromotion: { $gte: 3 } } },
+      //apply grouping here according to designation
+      {
+        $group: {
+          _id: "$designation",
+          data: { $push: "$$ROOT" }
+        }
+      }
+    ];
+    const staffArray = StaffMembers.aggregate(pipeline);
+    const designations = Designations.find(rankQuery, {
+      sort: { rank: 1 }
+    }).fetch();
+
+    const careerPeak = [
+      "VICE CHANCELLOR",
+      "PROFESSOR",
+      "PROFESSOR (DEAN)",
+      "REGISTRAR",
+      "DIRECTOR",
+      "DIRECTOR, HEALTH SERVICES",
+      "DIRECTOR INTERNAL AUDITOR",
+      "PROFESSOR (DVC)",
+      "PROFESSOR (DIRECTOR)",
+      "PROFESSOR (PROVOST)",
+      "BURSAR"
+    ];
+    const promotionArray = staffArray.filter(staff => {
+      return !careerPeak.includes(staff._id.toUpperCase());
+    });
+
+    const sortPromotionArray = promotionArray.sort((a, b) => {
+      return b._id - a._id;
+    });
+
+    return [sortPromotionArray, designations, sortPromotionArray.length];
   }
 });

@@ -29,7 +29,8 @@ Meteor.methods({
       id,
       staffId,
       returnToDesignation,
-      returnToSalaryStructure
+      returnToSalaryStructure,
+      returnPromotionDate
     } = withdrawObject;
     //update the request as appropriate
     const request = WithdrawPromotion.findOne(id);
@@ -39,6 +40,7 @@ Meteor.methods({
     const staff = StaffMember.findOne({ staffId: staffId });
     staff.designation = returnToDesignation;
     staff.salaryStructure = returnToSalaryStructure;
+    staff.dateOfLastPromotion = returnPromotionDate;
     staff.save();
   }
 });

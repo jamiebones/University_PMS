@@ -31,14 +31,61 @@ const RegistrarNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
-        to="/auth/staff_posting"
+        to="/auth/records/search"
         exact
-        onClick={() => history.push("/auth/staff_posting")}
+        onClick={() => history.push("/auth/records/search")}
       >
-        <NavItem eventKey={3} href="#">
-          Staff Posting
+        <NavItem eventKey={2} href="#">
+          Search Records
         </NavItem>
       </LinkContainer>
+    </Nav>
+
+    <Nav>
+      <NavDropdown eventKey="4" title="Postings" id="nav-posting">
+        <React.Fragment>
+          <LinkContainer
+            to="/auth/staff_posting"
+            exact
+            onClick={() => history.push("/auth/staff_posting")}
+          >
+            <MenuItem eventKey="4.1">Staff Posting</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/registrar/staff_posting"
+            exact
+            onClick={() => history.push("/auth/registrar/staff_posting")}
+          >
+            <NavItem eventKey={3} href="#">
+              Approve Posting
+            </NavItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/relief_posting"
+            exact
+            onClick={() => history.push("/auth/relief_posting")}
+          >
+            <MenuItem eventKey="4.2">Relief Posting</MenuItem>
+          </LinkContainer>
+          <LinkContainer
+            to="/auth/posting_list"
+            exact
+            onClick={() => history.push("/auth/posting_list")}
+          >
+            <MenuItem eventKey="4.3">Posting List</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/posting_stats"
+            exact
+            onClick={() => history.push("/auth/posting_stats")}
+          >
+            <MenuItem eventKey="4.4">Posting Stats</MenuItem>
+          </LinkContainer>
+        </React.Fragment>
+      </NavDropdown>
     </Nav>
 
     <Nav>
@@ -49,30 +96,6 @@ const RegistrarNavigation = ({ history }) => (
       >
         <NavItem eventKey={11} href="#">
           Nominal Roll
-        </NavItem>
-      </LinkContainer>
-    </Nav>
-
-    <Nav>
-      <LinkContainer
-        to="/auth/posting_list"
-        exact
-        onClick={() => history.push("/auth/posting_list")}
-      >
-        <NavItem eventKey={4} href="#">
-          Posting List
-        </NavItem>
-      </LinkContainer>
-    </Nav>
-
-    <Nav>
-      <LinkContainer
-        to="/auth/posting_stats"
-        exact
-        onClick={() => history.push("/auth/posting_stats")}
-      >
-        <NavItem eventKey={8} href="#">
-          Posting Stats
         </NavItem>
       </LinkContainer>
     </Nav>
