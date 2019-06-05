@@ -1,18 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Table, Label } from "react-bootstrap";
 import autoBind from "react-autobind";
 
 const ShowPromotionTableStyles = styled.div`
-  .formerDept {
-    padding: 5px;
-  }
-  span {
-    padding: 5px;
-    margin: 5px;
-    font-style: italic;
-    color: darkolivegreen;
-  }
+  cursor: pointer;
 `;
 
 class ShowPromotionTable extends React.Component {
@@ -165,7 +157,9 @@ class ShowPromotionTable extends React.Component {
               </tbody>
             </Table>
             <div className="pull-right">
-              <p>Total: {data.length}</p>
+              <p>
+                Total: <Label bsStyle="success">{data.length}</Label>
+              </p>
             </div>
           </Col>
         </Row>

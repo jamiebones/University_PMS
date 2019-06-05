@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button, Alert } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Loading from "../../components/Loading/Loading";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
@@ -10,7 +10,11 @@ import { base64ToBlob } from "../../../modules/base64-to-blob.js";
 import fileSaver from "file-saver";
 import ShowPromotionTable from "../../components/ShowPromotionTable/ShowPromotionTable";
 
-const StaffPromotionNewStyles = styled.div``;
+const StaffPromotionNewStyles = styled.div`
+  .promoTableDiv {
+    margin-bottom: 10px;
+  }
+`;
 
 class StaffPromotionNew extends React.Component {
   constructor(props) {
@@ -156,11 +160,11 @@ class StaffPromotionNew extends React.Component {
             <br />
             <br />
             {selectedDesignation ? (
-              <p className="lead text-center">
+              <p className="lead text-center text-danger">
                 Viewing {selectedDesignation} cadre list
               </p>
             ) : (
-              <p className="lead text-center">
+              <p className="lead text-center text-danger">
                 Viewing initial list for promotion
               </p>
             )}
@@ -177,6 +181,7 @@ class StaffPromotionNew extends React.Component {
               user={this.props.name}
               designations={designations}
               certificate={this.state.certificate}
+              makeRemoteCall={this.makeRemoteCall}
             />
           </Col>
         </Row>
@@ -188,12 +193,14 @@ class StaffPromotionNew extends React.Component {
                   <div>
                     {staff.map(({ _id, data }, index) => {
                       return (
-                        <ShowPromotionTable
-                          _id={_id}
-                          data={data}
-                          key={index}
-                          modalDetails={this.updatePromotionModal}
-                        />
+                        <div className="promoTableDiv">
+                          <ShowPromotionTable
+                            _id={_id}
+                            data={data}
+                            key={index}
+                            modalDetails={this.updatePromotionModal}
+                          />
+                        </div>
                       );
                     })}
                     <Button
@@ -205,7 +212,16 @@ class StaffPromotionNew extends React.Component {
                     </Button>
                   </div>
                 ) : (
-                  <div>no length</div>
+                  <Row>
+                    <Col md={6}>
+                      <Alert bsStyle="info">
+                        <p className="text-danger lead">
+                          No staff member in the {selectedDesignation} cadre is
+                          due for promotion this year.
+                        </p>
+                      </Alert>
+                    </Col>
+                  </Row>
                 )}
               </div>
             ) : (
