@@ -14,7 +14,7 @@ import { Bert } from "meteor/themeteorchef:bert";
 import Loading from "../../components/Loading/Loading";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
-import { capAllFirstLetter } from "../../../modules/utilities";
+import { GetNameFromUserId } from "../../../modules/utilities";
 import { WithdrawPromotions } from "../../../api/WithdrawPromotion/WithdrawPromotionClass";
 import { withTracker } from "meteor/react-meteor-data";
 import moment from "moment";
@@ -37,7 +37,8 @@ class ApproveWithdrawPromotion extends React.Component {
     returnToDesignation,
     staffId,
     returnToSalaryStructure,
-    returnPromotionDate
+    returnPromotionDate,
+    promotedId
   }) {
     const withdrawalObject = {
       status,
@@ -45,7 +46,8 @@ class ApproveWithdrawPromotion extends React.Component {
       staffId,
       returnToDesignation,
       returnToSalaryStructure,
-      returnPromotionDate
+      returnPromotionDate,
+      promotedId
     };
     const canSubmit = confirm(`Are you sure. ${status} button clicked`);
     if (!canSubmit) return;
@@ -104,7 +106,8 @@ class ApproveWithdrawPromotion extends React.Component {
                             reasonForWithdrawal,
                             _id,
                             user,
-                            returnPromotionDate
+                            returnPromotionDate,
+                            promotedId
                           },
                           index
                         ) => {
@@ -129,7 +132,7 @@ class ApproveWithdrawPromotion extends React.Component {
                                 <p>{reasonForWithdrawal}</p>
                               </td>
                               <td>
-                                <p>{user}</p>
+                                <p>{GetNameFromUserId(user)}</p>
                               </td>
                               <td>
                                 <ButtonToolbar>
@@ -143,7 +146,8 @@ class ApproveWithdrawPromotion extends React.Component {
                                           returnToDesignation,
                                           staffId,
                                           returnToSalaryStructure,
-                                          returnPromotionDate
+                                          returnPromotionDate,
+                                          promotedId
                                         })
                                       }
                                     >
@@ -159,7 +163,8 @@ class ApproveWithdrawPromotion extends React.Component {
                                           returnToDesignation,
                                           staffId,
                                           returnToSalaryStructure,
-                                          returnPromotionDate
+                                          returnPromotionDate,
+                                          promotedId
                                         })
                                       }
                                     >

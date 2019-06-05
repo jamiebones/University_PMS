@@ -9,6 +9,7 @@ import ASE from "../../components/Links/ASE";
 import JSE from "../../components/Links/JSE";
 import Records from "../../components/Links/Records";
 import Registrar from "../../components/Links/Registrar";
+import Director from "../../components/Links/Director";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
 
@@ -30,7 +31,7 @@ const RenderDashboard = props => {
   }
 
   if (GetDetailsBasedOnRole("Director", "Personnel")) {
-    return <p>director</p>;
+    return <Director />;
   }
 
   if (GetDetailsBasedOnRole("Registrar", "Personnel")) {

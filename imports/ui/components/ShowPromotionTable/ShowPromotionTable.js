@@ -19,6 +19,51 @@ class ShowPromotionTable extends React.Component {
   constructor(props) {
     super(props);
     autoBind(this);
+    this.state = {
+      biodata: "",
+      staffId: "",
+      salaryStructure: "",
+      certificate: "",
+      dateOfLastPromotion: "",
+      designation: ""
+    };
+  }
+
+  updatePromotion({
+    biodata,
+    staffId,
+    salaryStructure,
+    dateOfLastPromotion,
+    designation,
+    certificate
+  }) {
+    this.setState({
+      biodata,
+      staffId,
+      salaryStructure,
+      dateOfLastPromotion,
+      designation,
+      certificate,
+      showModal: true
+    });
+  }
+
+  onRowClick({
+    biodata,
+    staffId,
+    salaryStructure,
+    dateOfLastPromotion,
+    designation,
+    certificate
+  }) {
+    this.props.modalDetails({
+      biodata,
+      staffId,
+      salaryStructure,
+      dateOfLastPromotion,
+      designation,
+      certificate
+    });
   }
 
   render() {
@@ -27,18 +72,18 @@ class ShowPromotionTable extends React.Component {
       <ShowPromotionTableStyles>
         <Row>
           <Col md={12}>
-            <p>{_id && _id.toUpperCase()}</p>
+            <p className="text-info">{_id && _id.toUpperCase()}</p>
 
             <Table responsive striped>
               <thead>
                 <tr>
                   <th>S/N</th>
-                  <th>Name</th>
-                  <th>PF</th>
+                  <th>Staff Details</th>
                   <th>Designation</th>
                   <th>Department</th>
-                  <th> Posted To</th>
-                  <th>Resumption Date</th>
+                  <th>Salary Structure</th>
+                  <th>Qualifications</th>
+                  <th>Last Promotion Year</th>
                 </tr>
               </thead>
               <tbody>
@@ -58,27 +103,55 @@ class ShowPromotionTable extends React.Component {
                       index
                     ) => {
                       return (
-                        <tr key={index}>
+                        <tr
+                          key={index}
+                          onClick={e =>
+                            this.onRowClick({
+                              biodata,
+                              certificate,
+                              currentPosting,
+                              dateOfLastPromotion,
+                              designation,
+                              salaryStructure,
+                              staffId,
+                              yearsSincePromotion
+                            })
+                          }
+                        >
                           <td>{index + 1}</td>
                           <td>
                             <p>
-                              {biodata && biodata.firstName}{" "}
-                              {biodata && biodata.middleName}{" "}
-                              {biodata && biodata.surname}
+                              <span>
+                                {biodata && biodata.firstName}{" "}
+                                {biodata && biodata.middleName}{" "}
+                                {biodata && biodata.surname}
+                              </span>
+                              <br />
+                              <span>{staffId}</span>
                             </p>
                           </td>
-                          <td>
-                            <p>{staffId}</p>
-                          </td>
+
                           <td>
                             <p>{designation}</p>
-                          </td>
-                          <td>
-                            <p>{salaryStructure}</p>
                           </td>
 
                           <td>
                             <p>{currentPosting}</p>
+                          </td>
+                          <td>
+                            <p>{salaryStructure}</p>
+                          </td>
+                          <td>
+                            {certificate.map(({ cert, date }, index) => {
+                              return (
+                                <p key={index}>
+                                  <span>
+                                    {cert} : {date}
+                                  </span>
+                                  <br />
+                                </p>
+                              );
+                            })}
                           </td>
                           <td>
                             <p>

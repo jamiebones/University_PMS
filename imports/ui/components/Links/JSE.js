@@ -44,7 +44,11 @@ const JSE = ({ history }) => (
     </p>
     <p>
       <Link to="/auth/due_for_promotion">Promotion List</Link>
-      <span>Promotion list of junior staff</span>
+      <span>Promotion list of junior staff due for promotion</span>
+    </p>
+    <p>
+      <Link to="/auth/promotion_list">Promotion List</Link>
+      <span>Promotion list of staff promoted</span>
     </p>
     <p>
       <Link to="/auth/staff_posting">Staff Posting</Link>

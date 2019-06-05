@@ -40,7 +40,12 @@ const ASE = ({ history }) => (
 
     <p>
       <Link to="/auth/due_for_promotion">Promotion List</Link>
-      <span>Promotion list of academic staff</span>
+      <span>Promotion list of academic staff due</span>
+    </p>
+
+    <p>
+      <Link to="/auth/promotion_list">Promotion List</Link>
+      <span>Promotion list of staff promoted</span>
     </p>
   </ASEStyles>
 );

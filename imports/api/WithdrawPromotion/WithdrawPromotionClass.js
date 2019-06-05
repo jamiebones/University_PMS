@@ -31,7 +31,8 @@ const WithdrawPromotion = Class.create({
     requestStatus: String,
     returnPromotionDate: String,
     user: String,
-    requestDate: String
+    requestDate: String,
+    promotedId: String
   }
 });
 

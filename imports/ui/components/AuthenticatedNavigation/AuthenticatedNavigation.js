@@ -4,6 +4,7 @@ import { Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import RegistrarNavigation from "./RegistrarNavigation";
+import DirectorNavigation from "./DirectorNavigation";
 
 const AuthenticatedNavigation = ({ history }) => (
   <div>
@@ -85,15 +86,35 @@ const AuthenticatedNavigation = ({ history }) => (
         </Nav>
 
         <Nav>
-          <LinkContainer
-            to="/auth/due_for_promotion"
-            exact
-            onClick={() => history.push("/auth/due_for_promotion")}
-          >
-            <NavItem eventKey={15} href="#">
-              Promotion
-            </NavItem>
-          </LinkContainer>
+          <NavDropdown eventKey="4" title="Promotion" id="nav-promotion">
+            {GetDetailsBasedOnRole(["SATS", "JSE", "ASE"], "Personnel") ? (
+              <React.Fragment>
+                <LinkContainer
+                  to="/auth/due_for_promotion"
+                  exact
+                  onClick={() => history.push("/auth/due_for_promotion")}
+                >
+                  <MenuItem eventKey="4.1">Staff Promotion</MenuItem>
+                </LinkContainer>
+
+                <LinkContainer
+                  to="/auth/promotion_list"
+                  exact
+                  onClick={() => history.push("/auth/promotion_list")}
+                >
+                  <MenuItem eventKey="4.1">Staff Promotion List</MenuItem>
+                </LinkContainer>
+
+                <LinkContainer
+                  to="/auth/withdraw_promotion"
+                  exact
+                  onClick={() => history.push("/auth/withdraw_promotion")}
+                >
+                  <MenuItem eventKey="4.2">Withdraw Promotion</MenuItem>
+                </LinkContainer>
+              </React.Fragment>
+            ) : null}
+          </NavDropdown>
         </Nav>
       </React.Fragment>
     ) : null}
@@ -152,6 +173,10 @@ const AuthenticatedNavigation = ({ history }) => (
 
     {GetDetailsBasedOnRole(["Registrar"], "Personnel") ? (
       <RegistrarNavigation />
+    ) : null}
+
+    {GetDetailsBasedOnRole(["Director"], "Personnel") ? (
+      <DirectorNavigation />
     ) : null}
 
     <Nav>

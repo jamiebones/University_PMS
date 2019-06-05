@@ -6,6 +6,7 @@ import { Designations } from "../../../api/Designation/DesignationClass";
 import { _ } from "meteor/underscore";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import { CalculateDueForRetirement } from "../../../modules/utilitiesComputation";
+import PrintStaffDueForPromotion from "../../../modules/server/printdueforpromotionlist";
 import moment from "moment";
 
 Meteor.methods({
@@ -419,5 +420,17 @@ Meteor.methods({
     });
 
     return [sortPromotionArray, designations, sortPromotionArray.length];
+  },
+  "staffmembers.printlistofstaffdueforpromotion": function StaffMembersPrint(
+    staff
+  ) {
+    check(staff, Object);
+    return PrintStaffDueForPromotion(staff)
+      .then(pdf => {
+        return pdf;
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 });

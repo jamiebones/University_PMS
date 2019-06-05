@@ -47,6 +47,10 @@ const Sats = ({ history }) => (
       <span>Promotion list of senior staff</span>
     </p>
     <p>
+      <Link to="/auth/promotion_list">Promotion List</Link>
+      <span>Promotion list of staff promoted</span>
+    </p>
+    <p>
       <Link to="/auth/staff_posting">Staff Posting</Link>
       <span>Page to initiate staff posting</span>
     </p>

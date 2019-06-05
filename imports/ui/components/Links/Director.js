@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const SatsStyles = styled.div`
+const DirectorStyles = styled.div`
   p {
     background: #ced8cc;
     padding: 10px;
@@ -23,8 +23,8 @@ const SatsStyles = styled.div`
   }
 `;
 
-const Sats = ({ history }) => (
-  <SatsStyles>
+const Director = ({ history }) => (
+  <DirectorStyles>
     <p>
       <Link to="/auth/records/search">Search Staff Records</Link>
       <span>Link to search for staff records</span>
@@ -39,22 +39,28 @@ const Sats = ({ history }) => (
     </p>
 
     <p>
-      <Link to="/auth/add_staff_documents">Add Documents</Link>
-      <span>Page to add staff documents</span>
+      <Link to="/auth/posting_list">Posting List</Link>
+      <span>Posting list of staff</span>
     </p>
+    <p>
+      <Link to="/auth/due_for_promotion">Promotion List</Link>
+      <span>Promotion list of staff</span>
+    </p>
+
     <p>
       <Link to="/auth/promotion_list">Promotion List</Link>
       <span>Promotion list of staff promoted</span>
     </p>
+
     <p>
-      <Link to="/auth/dashboard/pensions/home">Pension List</Link>
-      <span>List of staff ready to retire</span>
+      <Link to="/auth/staff_posting">Staff Posting</Link>
+      <span>Page to initiate staff posting</span>
     </p>
     <p>
-      <Link to="/auth/posting_list">Posting List</Link>
-      <span>Posting list</span>
+      <Link to="/auth/posting_stats">Posting Stats</Link>
+      <span>Posting statistics</span>
     </p>
-  </SatsStyles>
+  </DirectorStyles>
 );
 
-export default Sats;
+export default Director;

@@ -116,11 +116,9 @@ export const Capitalize = word => {
 };
 
 export const GetNameFromUserId = userId => {
-  const user = Meteor.users.find(userId).fetch();
-  if (user.length > 0) {
-    return `${user[0].profile.title} ${user[0].profile.name.first} ${
-      user[0].profile.name.last
-    }`;
+  const user = Meteor.users.findOne({ _id: userId });
+  if (!_.isEmpty(user)) {
+    return `${user.profile.name.first} ${user.profile.name.last}`;
   }
 };
 

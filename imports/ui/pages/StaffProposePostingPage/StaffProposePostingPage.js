@@ -308,7 +308,7 @@ class StaffProposePostingPage extends React.Component {
                 bsStyle="success"
                 onClick={this.proposePosting}
               >
-                {this.state.submitted ? "please wait" : "propose posting"}
+                {this.state.submitted ? "please wait" : "proposed posting"}
               </Button>
             </div>
           </Col>

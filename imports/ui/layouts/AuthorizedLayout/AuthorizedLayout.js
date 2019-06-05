@@ -333,7 +333,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             {/* sats|| || jse|| links end  */}
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE"]}
+              allowedRoles={["SATS", "Records", "JSE", "Director"]}
               group="Personnel"
               userId={userId}
               exact

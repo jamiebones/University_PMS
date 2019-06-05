@@ -1,71 +1,30 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Table, Label, Alert } from "react-bootstrap";
+import { Col, Row, Button } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Loading from "../../components/Loading/Loading";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
-import { Table as Tables, Column, AutoSizer } from "react-virtualized";
-import { compareValues, SortDirection } from "../../../modules/utilities";
+import { base64ToBlob } from "../../../modules/base64-to-blob.js";
+import fileSaver from "file-saver";
 import ShowPromotionTable from "../../components/ShowPromotionTable/ShowPromotionTable";
 
-const StaffPromotionNewStyles = styled.div`
-  .Table {
-    width: 100%;
-    margin-top: 15px;
-  }
-  .headerRow,
-  .evenRow,
-  .oddRow {
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .oddRow {
-    background-color: #fafafa;
-  }
-  .headerColumn {
-    text-transform: none;
-    color: darkcyan;
-  }
-  .exampleColumn {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .noRows {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    color: #bdbdbd;
-  }
-`;
+const StaffPromotionNewStyles = styled.div``;
 
 class StaffPromotionNew extends React.Component {
   constructor(props) {
     super(props);
-    const sortBy = "designation";
-    const sortDirection = SortDirection.ASC;
-    //const sortedList = this._sortList({ sortBy, sortDirection });
     this.state = {
       biodata: "",
       staffId: "",
       salaryStructure: "",
-      certificate: "",
+      certificate: [],
       dateOfLastPromotion: "",
-      firstRender: true,
       designation: "",
       showModal: false,
       selectedDesignation: "",
       staff: [],
-      hasMore: true,
-      count: 0,
       designations: [],
       loading: true
     };
@@ -74,7 +33,13 @@ class StaffPromotionNew extends React.Component {
   }
 
   componentDidMount() {
-    this.makeRemoteCall();
+    console.log(this.state);
+    if (this.state.staff.length == "0") {
+      this.makeRemoteCall();
+    } else {
+      //let's strip what we want from the
+      //the state instead of a round trip back
+    }
   }
 
   makeRemoteCall() {
@@ -83,28 +48,15 @@ class StaffPromotionNew extends React.Component {
         this.setState({
           staff: res[0],
           designations: res[1],
-          loading: false,
+          loading: false
+        });
+      } else {
+        this.setState({
+          staff: [],
+          designation: [],
+          loading: false
         });
       }
-    });
-  }
-
-  updatePromotion({
-    biodata,
-    staffId,
-    salaryStructure,
-    dateOfLastPromotion,
-    designation,
-    certificate
-  }) {
-    this.setState({
-      biodata,
-      staffId,
-      salaryStructure,
-      dateOfLastPromotion,
-      designation,
-      certificate,
-      showModal: true
     });
   }
 
@@ -128,23 +80,50 @@ class StaffPromotionNew extends React.Component {
     );
   }
 
-  onRowClick(e) {
-    const {
+  updatePromotionModal({
+    biodata,
+    staffId,
+    salaryStructure,
+    dateOfLastPromotion,
+    designation,
+    certificate
+  }) {
+    this.setState({
       biodata,
       staffId,
       salaryStructure,
       dateOfLastPromotion,
       designation,
-      certificate
-    } = e.rowData;
-    this.updatePromotion({
-      biodata,
-      staffId,
-      salaryStructure,
-      dateOfLastPromotion,
-      designation,
-      certificate
+      certificate,
+      showModal: true
     });
+  }
+
+  printDueForPromotionList(event) {
+    event.preventDefault();
+    const { staff } = this.state;
+    const dueList = {
+      staff
+    };
+    const { target } = event;
+    target.innerHTML = "<em>Downloading...</em>";
+    target.setAttribute("disabled", "disabled");
+    Meteor.call(
+      "staffmembers.printlistofstaffdueforpromotion",
+      dueList,
+      (err, res) => {
+        if (!err) {
+          const blob = base64ToBlob(res);
+          fileSaver.saveAs(blob, "due_for_promotion_list.pdf");
+          target.innerText = "Print List";
+          target.removeAttribute("disabled");
+        } else {
+          target.innerText = "Print List";
+          target.removeAttribute("disabled");
+          console.log(err);
+        }
+      }
+    );
   }
 
   render() {
@@ -197,6 +176,7 @@ class StaffPromotionNew extends React.Component {
               dateOfLastPromotion={this.state.dateOfLastPromotion}
               user={this.props.name}
               designations={designations}
+              certificate={this.state.certificate}
             />
           </Col>
         </Row>
@@ -208,9 +188,21 @@ class StaffPromotionNew extends React.Component {
                   <div>
                     {staff.map(({ _id, data }, index) => {
                       return (
-                        <ShowPromotionTable _id={_id} data={data} key={index} />
+                        <ShowPromotionTable
+                          _id={_id}
+                          data={data}
+                          key={index}
+                          modalDetails={this.updatePromotionModal}
+                        />
                       );
                     })}
+                    <Button
+                      bsStyle="success"
+                      bsSize="small"
+                      onClick={this.printDueForPromotionList}
+                    >
+                      Print List
+                    </Button>
                   </div>
                 ) : (
                   <div>no length</div>

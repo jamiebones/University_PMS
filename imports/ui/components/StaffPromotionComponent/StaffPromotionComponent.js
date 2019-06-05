@@ -168,7 +168,7 @@ class StaffPromotionComponent extends React.Component {
         this.props.onHide();
       } else {
         this.setState({ submitted: !this.state.submitted });
-        Bert.alert(`There was an error: ${error}`, "danger");
+        Bert.alert(`There was an error: ${err}`, "danger");
       }
     });
   }

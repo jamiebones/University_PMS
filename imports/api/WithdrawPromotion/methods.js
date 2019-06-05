@@ -5,6 +5,7 @@ import {
   WithdrawPromotions
 } from "./WithdrawPromotionClass";
 import { StaffMember } from "../../api/StaffMember/StaffMemberClass";
+import { PromotedStaff } from "../../api/PromotedStaff/PromotedStaffClass";
 
 Meteor.methods({
   "withdrawpromotion.makewithrawalrequest": function WithdrawPromotionmethod(
@@ -30,8 +31,13 @@ Meteor.methods({
       staffId,
       returnToDesignation,
       returnToSalaryStructure,
-      returnPromotionDate
+      returnPromotionDate,
+      promotedId
     } = withdrawObject;
+    if (status == "declined") {
+      //we are deleting it
+      return WithdrawPromotions.remove(id);
+    }
     //update the request as appropriate
     const request = WithdrawPromotion.findOne(id);
     request.requestStatus = status;
@@ -42,5 +48,7 @@ Meteor.methods({
     staff.salaryStructure = returnToSalaryStructure;
     staff.dateOfLastPromotion = returnPromotionDate;
     staff.save();
+    //remove the promotion staff from the promoted staff table
+    return PromotedStaff.remove(promotedId);
   }
 });

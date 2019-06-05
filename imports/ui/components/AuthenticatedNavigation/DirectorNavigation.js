@@ -3,7 +3,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
-const RegistrarNavigation = ({ history }) => (
+const DirectorNavigation = ({ history }) => (
   <div>
     <Nav>
       <LinkContainer
@@ -30,7 +30,7 @@ const RegistrarNavigation = ({ history }) => (
     </Nav>
 
     <Nav>
-      <NavDropdown eventKey="4" title="Postings" id="nav-regposting">
+      <NavDropdown eventKey="4" title="Postings" id="nav-dirposting">
         <React.Fragment>
           <LinkContainer
             to="/auth/staff_posting"
@@ -38,14 +38,6 @@ const RegistrarNavigation = ({ history }) => (
             onClick={() => history.push("/auth/staff_posting")}
           >
             <MenuItem eventKey="4.1">Staff Posting</MenuItem>
-          </LinkContainer>
-
-          <LinkContainer
-            to="/auth/registrar/staff_posting"
-            exact
-            onClick={() => history.push("/auth/registrar/staff_posting")}
-          >
-            <MenuItem eventKey="4.4">Approve Posting</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -75,7 +67,7 @@ const RegistrarNavigation = ({ history }) => (
     </Nav>
 
     <Nav>
-      <NavDropdown eventKey="4" title="Staff Promotion" id="nav-regpromotion">
+      <NavDropdown eventKey="4" title="Staff Promotion" id="nav-dirpromotion">
         <React.Fragment>
           <LinkContainer
             to="/auth/due_for_promotion"
@@ -92,12 +84,13 @@ const RegistrarNavigation = ({ history }) => (
           >
             <MenuItem eventKey="4.1">Staff Promotion List</MenuItem>
           </LinkContainer>
+
           <LinkContainer
-            to="/auth/promotion_request_approval"
+            to="/auth/withdraw_promotion"
             exact
-            onClick={() => history.push("/auth/promotion_request_approval")}
+            onClick={() => history.push("/auth/withdraw_promotion")}
           >
-            <MenuItem eventKey="4.2"> Promotion Withdrawal Request</MenuItem>
+            <MenuItem eventKey="4.2">Withdraw Promotion</MenuItem>
           </LinkContainer>
         </React.Fragment>
       </NavDropdown>
@@ -131,4 +124,4 @@ const RegistrarNavigation = ({ history }) => (
   </div>
 );
 
-export default withRouter(RegistrarNavigation);
+export default withRouter(DirectorNavigation);

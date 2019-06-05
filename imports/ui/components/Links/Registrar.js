@@ -44,7 +44,17 @@ const Registrar = ({ history }) => (
     </p>
     <p>
       <Link to="/auth/due_for_promotion">Promotion List</Link>
-      <span>Promotion list of senior staff</span>
+      <span>Promotion list of staff due for promotion</span>
+    </p>
+
+    <p>
+      <Link to="/auth/promotion_list">Promotion List</Link>
+      <span>Promotion list of staff promoted</span>
+    </p>
+
+    <p>
+      <Link to="auth/promotion_request_approval">Promotion Withdrawal</Link>
+      <span>Promotion withdrawal request</span>
     </p>
     <p>
       <Link to="/auth/staff_posting">Staff Posting</Link>

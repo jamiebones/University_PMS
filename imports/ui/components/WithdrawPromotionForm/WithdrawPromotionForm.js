@@ -106,7 +106,8 @@ class WithdrawPromotionPage extends React.Component {
       reasonForWithdrawal: this.state.reason,
       user: Meteor.userId(),
       requestStatus: "pending",
-      requestDate: new Date().toISOString()
+      requestDate: new Date().toISOString(),
+      promotedId: staff._id
     };
     this.setState({ submitted: !this.state.submitted });
     Meteor.call(
