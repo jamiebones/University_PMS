@@ -88,7 +88,19 @@ class App extends React.Component {
         <Navigation {...props} {...state} />
         <Grid fluid>
           <Switch>
-            <Route exact name="index" path="/" component={Index} />
+            <Route
+              exact
+              name="index"
+              path="/"
+              render={routeProps => (
+                <Index
+                  {...routeProps}
+                  {...props}
+                  {...state}
+                  setAfterLoginPath={setAfterLoginPath}
+                />
+              )}
+            />
 
             <Route
               path="/auth"

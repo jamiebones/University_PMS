@@ -59,7 +59,7 @@ class ShowPromotionTable extends React.Component {
   }
 
   render() {
-    const { _id, data } = this.props;
+    const { _id, data, loadMore } = this.props;
     return (
       <ShowPromotionTableStyles>
         <Row>
@@ -156,11 +156,16 @@ class ShowPromotionTable extends React.Component {
                   )}
               </tbody>
             </Table>
+
             <div className="pull-right">
               <p>
                 Total: <Label bsStyle="success">{data.length}</Label>
               </p>
             </div>
+
+            {loadMore && (
+              <p className="lead text-info">Fetching more data........</p>
+            )}
           </Col>
         </Row>
       </ShowPromotionTableStyles>

@@ -333,6 +333,7 @@ Meteor.methods({
   ) {
     //apply filter here based on role type and designation
     check(designation, Match.OneOf(String, null, undefined));
+    //check(initialPull, Match.OneOf(Number, null, undefined));
 
     let query = {};
     let rankQuery = {};
@@ -419,6 +420,9 @@ Meteor.methods({
     const sortPromotionArray = promotionArray.sort((a, b) => {
       return b._id - a._id;
     });
+
+    //initial pull is the amount first requested
+    //then you can get everything
 
     return [sortPromotionArray, designations, sortPromotionArray.length];
   },

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Button, Alert } from "react-bootstrap";
+import { Col, Row, Button, Alert, Label } from "react-bootstrap";
 import autoBind from "react-autobind";
 import Loading from "../../components/Loading/Loading";
 import PromotionModal from "../../components/PromotionModal/PromotionModal";
@@ -30,6 +30,8 @@ class StaffPromotionNew extends React.Component {
       selectedDesignation: "",
       staff: [],
       designations: [],
+      staffList: [],
+      fetchingMore: false,
       loading: true
     };
 
@@ -37,9 +39,9 @@ class StaffPromotionNew extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
+    window.addEventListener("scroll", this.handleScroll);
     if (this.state.staff.length == "0") {
-      this.makeRemoteCall();
+      this.makeRemoteCall(null, 20);
     } else {
       //let's strip what we want from the
       //the state instead of a round trip back
@@ -52,8 +54,11 @@ class StaffPromotionNew extends React.Component {
       selectedDesignation,
       (err, res) => {
         if (!err) {
+          //we are going to save a subset
+          //of 30 in the staffList array
           this.setState({
             staff: res[0],
+            staffList: res[0].slice(0, 20),
             designations: res[1],
             loading: false
           });
@@ -79,6 +84,7 @@ class StaffPromotionNew extends React.Component {
         if (!err) {
           this.setState({
             staff: res[0],
+            staffList: res[0].slice(0, 20),
             designations: res[1],
             loading: false,
             selectedDesignation: designation
@@ -134,9 +140,40 @@ class StaffPromotionNew extends React.Component {
     );
   }
 
+  fetchMoreData() {
+    const { staff, staffList } = this.state;
+    const dataSize = staffList.length;
+    if (staffList.length <= staff.length) {
+      this.setState({ fetchingMore: true });
+      const moreData = staff.slice(dataSize, dataSize + 30);
+
+      this.setState({
+        staffList: [...this.state.staffList, ...moreData],
+        fetchingMore: false
+      });
+      console.log(this.state.staffList);
+    }
+  }
+
+  handleScroll() {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+      document.documentElement.offsetHeight
+    ) {
+      return;
+    }
+    console.log("scrolling");
+    this.fetchMoreData();
+  }
+
   render() {
-    const { selectedDesignation, designations, loading, staff } = this.state;
-    console.log(staff);
+    const {
+      selectedDesignation,
+      designations,
+      loading,
+      staff,
+      staffList
+    } = this.state;
     return (
       <StaffPromotionNewStyles>
         <Row>
@@ -164,12 +201,12 @@ class StaffPromotionNew extends React.Component {
             <br />
             <br />
             {selectedDesignation ? (
-              <p className="lead text-center text-danger">
-                Viewing {selectedDesignation} cadre list
+              <p className="lead text-center text-info">
+                Viewing {selectedDesignation} cadre list due for promotion
               </p>
             ) : (
-              <p className="lead text-center text-danger">
-                Viewing initial list for promotion
+              <p className="lead text-center text-info">
+                Viewing abridged list of staff members due for promotion
               </p>
             )}
 
@@ -194,19 +231,31 @@ class StaffPromotionNew extends React.Component {
           <Col md={12}>
             {!loading ? (
               <div>
-                {staff && staff.length ? (
+                {staffList && staffList.length ? (
                   <div>
-                    {staff.map(({ _id, data }, index) => {
+                    {staffList.map(({ _id, data }, index) => {
                       return (
                         <div className="promoTableDiv" key={index}>
                           <ShowPromotionTable
                             _id={_id}
                             data={data}
                             modalDetails={this.updatePromotionModal}
+                            loadMore={this.state.fetchingMore}
                           />
                         </div>
                       );
                     })}
+                    {staffList.length < staff.length ? (
+                      <p>
+                        <Label bsStyle="default">More data</Label>
+                      </p>
+                    ) : (
+                      <p>
+                        {" "}
+                        <Label bsStyle="default">Data loading finished</Label>
+                      </p>
+                    )}
+
                     <Button
                       bsStyle="success"
                       bsSize="small"
