@@ -1084,7 +1084,18 @@ table {
   }
   .table-bordered{
       font-size: 14px;
-      
+  }
+
+  @page {
+    margin-top: 2cm;
+    margin-bottom: 2cm;
+    margin-left: 2cm;
+    margin-right: 2cm;
+    }
+
+  
+  .table tr td, .table tr th {
+    page-break-inside: avoid
   }
 
 `}
@@ -1102,7 +1113,7 @@ table {
       <div className="row">
         <div className="col-xs-12">
           <p className="text-center lead">{heading}</p>
-          <table className="table responsive table-bordered Table">
+          <table className="table table-responsive table-condensed table-bordered Table">
             <thead>
               <tr>
                 <th>S/N</th>

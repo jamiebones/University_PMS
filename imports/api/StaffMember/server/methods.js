@@ -402,6 +402,7 @@ Meteor.methods({
       "VICE CHANCELLOR",
       "PROFESSOR",
       "PROFESSOR (DEAN)",
+      "PROFESSOR (CO-ORDINATOR)",
       "REGISTRAR",
       "DIRECTOR",
       "DIRECTOR, HEALTH SERVICES",

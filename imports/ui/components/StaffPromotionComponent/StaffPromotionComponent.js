@@ -166,6 +166,9 @@ class StaffPromotionComponent extends React.Component {
         );
         this.setState({ submitted: !this.state.submitted });
         this.props.onHide();
+        //we call the method that selects those due for
+        //promotion again here using the props makeRemoteCall
+        this.props.makeRemoteCall(this.props.selectedDesignation);
       } else {
         this.setState({ submitted: !this.state.submitted });
         Bert.alert(`There was an error: ${err}`, "danger");

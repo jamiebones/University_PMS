@@ -45,7 +45,10 @@ Meteor.methods({
     try {
       if (status === "3" || status === "5") {
         //posting proposal was rejected by the director
-        postedStaff.postingProposed = true;
+        postedStaff.postingProposed = false;
+        //remove the posting object from the posting array
+        //it was not successful
+        postedStaff.postings = newpostingArray;
       } else if (status === "4") {
         //this is where i have to get an
         //save this in a cron table
@@ -106,15 +109,20 @@ Meteor.methods({
           postingStatus: "1"
         };
 
+        postedStaff.postingProposed = true;
+
         //if the posting is been done by register just approved it
+        //no need for confirmation
         if (GetDetailsBasedOnRole("Registrar", "Personnel")) {
           postingObj.postingStatus = "4";
           newPosting.status = "4";
+          postedStaff.postingProposed = false;
+          //fix staff new unit
+          postedStaff.currentPosting = postingObj.unitName;
         }
         let posting = new Postings(postingObj);
 
         postedStaff.postings = [...postedStaff.postings, posting];
-        postedStaff.postingProposed = true;
         newPosting.save();
         postedStaff.save();
       } catch (error) {

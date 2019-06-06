@@ -27,6 +27,7 @@ class StaffProposePosting extends React.Component {
 
   render() {
     const { staffMember } = this.props;
+    console.log(staffMember);
     return (
       <StaffProposePostingStyles>
         <Row>
@@ -173,7 +174,7 @@ class StaffProposePosting extends React.Component {
                                     }
                                   }}
                                 >
-                                  Propose Posting
+                                  Proposed Posting
                                 </Link>
                               ) : null}
                             </p>

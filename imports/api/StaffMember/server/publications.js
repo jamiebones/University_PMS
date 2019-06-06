@@ -107,6 +107,8 @@ Meteor.publish(
     check(staffId, Match.OneOf(String, null, undefined));
     let todayDate = moment(new Date()).toISOString();
 
+    console.log(staffId);
+
     let query = {
       staffId: "",
       designation: "",

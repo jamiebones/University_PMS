@@ -1075,6 +1075,18 @@ table {
     margin: 0 auto;
   }
 
+  @page {
+    margin-top: 2cm;
+    margin-bottom: 2cm;
+    margin-left: 2cm;
+    margin-right: 2cm;
+    }
+
+  
+  .table tr td, .table tr th {
+    page-break-inside: avoid
+  }
+
 `}
   >
     <div className="container-fluid">
@@ -1090,7 +1102,7 @@ table {
       <div className="row">
         <div className="col-xs-12">
           <p className="text-center lead">List of Relief Postings</p>
-          <table className="table responsive striped">
+          <table className="table table-responsive table-condensed table-bordered">
             <thead>
               <tr>
                 <th>S/N</th>

@@ -24,6 +24,7 @@ class OverStayedStaff extends React.Component {
   componentDidMount() {
     Meteor.call("getOverStayedStaff", (err, res) => {
       if (!err) {
+        console.log(res);
         this.setState({ staff: res, loading: false });
       }
     });
@@ -93,7 +94,7 @@ class OverStayedStaff extends React.Component {
                                     state: {
                                       staffId: _id,
                                       biodata: data[0].biodata,
-                                      postings: postings,
+                                      postings: [postings],
                                       designation: data[0].designation,
                                       salaryStructure: data[0].salaryStructure,
                                       currentPosting: data[0].currentPosting

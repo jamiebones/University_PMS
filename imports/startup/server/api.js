@@ -24,6 +24,7 @@ import "../../api/UniversityCadre/methods";
 
 import "../../api/ActivityLog/server/publications";
 import "../../api/ActivityLog/methods";
+import "../../api/ActivityLog/server/methods";
 
 import "../../api/Documents/server/publications";
 import "../../api/Documents/methods";

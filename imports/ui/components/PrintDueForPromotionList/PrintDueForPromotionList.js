@@ -1091,12 +1091,17 @@ table {
     margin-right: 2cm;
     }
 
-    table {
-        page-break-inside: avoid;
+  
+  table .staffList tr td, table .staffList tr th {
+    page-break-inside: avoid
   }
 
   .heading{
       font-size: 24px;
+  }
+
+  span{
+    margin:1px;
   }
 
 `}
@@ -1120,16 +1125,16 @@ table {
             return (
               <div key={index + 50000}>
                 <p>{_id.toUpperCase()}</p>
-                <table className="table table-responsive table-condensed table-bordered">
+                <table className="table staffList table-responsive table-condensed table-bordered">
                   <thead>
                     <tr>
-                      <th>S/N</th>
-                      <th>Staff Details</th>
-                      <th>Designation</th>
-                      <th>Department</th>
-                      <th>Salary Structure</th>
-                      <th>Qualifications</th>
-                      <th>Last Promotion Year</th>
+                      <th style={{ width: 2 + "%" }}>S/N</th>
+                      <th style={{ width: 20 + "%" }}>Staff Details</th>
+                      <th style={{ width: 20 + "%" }}>Designation</th>
+                      <th style={{ width: 20 + "%" }}>Department</th>
+                      <th style={{ width: 15 + "%" }}>Salary Structure</th>
+                      <th style={{ width: 20 + "%" }}>Qualifications</th>
+                      <th style={{ width: 3 + "%" }}>Last Promotion Year</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1180,15 +1185,12 @@ table {
                                       <span>
                                         {cert} : {date}
                                       </span>
-                                      <br />
                                     </p>
                                   );
                                 })}
                               </td>
                               <td>
-                                <p>
-                                  {dateOfLastPromotion}: {yearsSincePromotion}
-                                </p>
+                                <p>{dateOfLastPromotion}</p>
                               </td>
                             </tr>
                           );

@@ -15,7 +15,6 @@ import StaffDetailsPage from "../../pages/StaffDetailsPage/StaffDetailsPage";
 import AddCadrePage from "../../pages/AddCadres/AddCadres";
 import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
 import PensionDashboard from "../../pages/PensionDashboard/PensionDashboard";
-import StaffPromotion from "../../pages/StaffPromotion/StaffPromotion";
 import StaffPromotionNew from "../../pages/StaffPromotionNew/StaffPromotionNew";
 import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 import StaffNominalRoll from "../../pages/StaffNominalRoll/StaffNominalRoll";
@@ -27,10 +26,11 @@ import Profile from "../../pages/Profile/Profile";
 import AdminUploadStaffData from "../../pages/AdminUploadStaffData/AdminUploadStaffData";
 import AnnualSalaryIncrement from "../../pages/AnnualSalaryIncrement/AnnualSalaryIncrement";
 import PromotionList from "../../pages/PromotionList/PromotionList";
-import VTable from "../../pages/VTable/VTable";
 import StaffReliefPosting from "../../pages/StaffReliefPosting/StaffReliefPosting";
 import WithdrawPromotion from "../../components/WithdrawPromotionForm/WithdrawPromotionForm";
 import ApproveWithdrawPromotion from "../../pages/ApproveWithdrawPromotion/ApproveWithdrawPromotion";
+import ActivityLog from "../../pages/ActivityLogs/ActivityLogs";
+
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
     <Row>
@@ -78,6 +78,17 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/account_status`}
               component={UserStatus}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["super-admin"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/logs`}
+              component={ActivityLog}
               pathAfterFailure="/logout"
               {...rest}
             />
@@ -156,7 +167,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               userId={userId}
               exact
               path={`${match.path}/due_for_promotion`}
-              component={StaffPromotion}
+              component={StaffPromotionNew}
               pathAfterFailure="/logout"
               {...rest}
             />

@@ -31,6 +31,7 @@ class PromotionList extends React.Component {
       loading: true,
       promotion: [],
       promotedStaff: [],
+      selectedStaf: [],
       numSelected: 0
     };
     autoBind(this);
@@ -63,6 +64,7 @@ class PromotionList extends React.Component {
   }
 
   clickCheck(e, index) {
+    debugger;
     const checked = e.target.checked;
     let { promotedStaff } = this.state;
     const selectedStaff = promotedStaff[index];
@@ -94,9 +96,7 @@ class PromotionList extends React.Component {
     if (confirmPlease) {
       //we are good
       const { promotedStaff } = this.state;
-      const selectedList = promotedStaff.filter(
-        staff => (staff.clicked = true)
-      );
+      const selectedList = promotedStaff.filter(staff => staff.clicked == true);
       const printPromotion = {
         staff: selectedList,
         heading: promptReply

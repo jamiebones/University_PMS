@@ -149,7 +149,10 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
 
   if (staffIdReactive.get() !== "") {
-    query.staffId = staffIdReactive.get().toUpperCase();
+    query.staffId = staffIdReactive
+      .get()
+      .trim()
+      .toUpperCase();
     query.staffType = "2";
     delete query.designation;
   }
@@ -161,7 +164,6 @@ export default (StaffPostingPageContainer = withTracker(props => {
   }
   if (subscription && subscription.ready()) {
     staffArray = StaffMembers.find(query).fetch();
-    console.log(staffArray);
     const today = moment(new Date()).toISOString();
     reliefArray = StaffReliefPostings.find({
       status: "approved",

@@ -376,7 +376,7 @@ class StaffProposePostingPage extends React.Component {
 
 let selectedDeptReactiveVar = new ReactiveVar("");
 
-export default (StaffProposePostingPageContainer = withTracker(() => {
+export default (StaffProposePostingPageContainer = withTracker(props => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -392,7 +392,7 @@ export default (StaffProposePostingPageContainer = withTracker(() => {
 
   return {
     loading: subscription && !subscription.ready(),
-    //staff: StaffMembers.find(staffId).fetch(),
+    // staff: console.log(StaffMembers.find(props.location.state.staffId).fetch()),
     staffInUnit: StaffMembers.find(query).fetch(),
     department: UniversityUnits.find().fetch(),
     selectedDeptReactiveVar

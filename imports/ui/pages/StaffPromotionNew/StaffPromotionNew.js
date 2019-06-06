@@ -46,22 +46,26 @@ class StaffPromotionNew extends React.Component {
     }
   }
 
-  makeRemoteCall() {
-    Meteor.call("staffmembers.getStaffDueForPromotion", (err, res) => {
-      if (!err) {
-        this.setState({
-          staff: res[0],
-          designations: res[1],
-          loading: false
-        });
-      } else {
-        this.setState({
-          staff: [],
-          designation: [],
-          loading: false
-        });
+  makeRemoteCall(selectedDesignation) {
+    Meteor.call(
+      "staffmembers.getStaffDueForPromotion",
+      selectedDesignation,
+      (err, res) => {
+        if (!err) {
+          this.setState({
+            staff: res[0],
+            designations: res[1],
+            loading: false
+          });
+        } else {
+          this.setState({
+            staff: [],
+            designation: [],
+            loading: false
+          });
+        }
       }
-    });
+    );
   }
 
   onChange(e) {
@@ -182,6 +186,7 @@ class StaffPromotionNew extends React.Component {
               designations={designations}
               certificate={this.state.certificate}
               makeRemoteCall={this.makeRemoteCall}
+              selectedDesignation={this.state.selectedDesignation}
             />
           </Col>
         </Row>
@@ -193,11 +198,10 @@ class StaffPromotionNew extends React.Component {
                   <div>
                     {staff.map(({ _id, data }, index) => {
                       return (
-                        <div className="promoTableDiv">
+                        <div className="promoTableDiv" key={index}>
                           <ShowPromotionTable
                             _id={_id}
                             data={data}
-                            key={index}
                             modalDetails={this.updatePromotionModal}
                           />
                         </div>
