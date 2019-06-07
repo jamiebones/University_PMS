@@ -129,9 +129,12 @@ class StaffNominalRoll extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    this.props.selectedDeptReactiveVar.set("");
+  }
+
   onChange(name) {
     this.setState({ selectedDept: name });
-    console.log(name);
     this.props.selectedDeptReactiveVar.set(name);
   }
 

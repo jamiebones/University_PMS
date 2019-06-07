@@ -42,6 +42,10 @@ class StaffPostingApproval extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    this.props.postingDateReactive.set("");
+  }
+
   onChange(e) {
     if (e.target.value === "0") return;
     this.setState({ resumedDate: e.target.value });

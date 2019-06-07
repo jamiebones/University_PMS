@@ -16,7 +16,10 @@ import {
   FindTimeDifference,
   FindPostingSuccessful,
   FindDeptPostingProposedTo,
-  FilterSuccesfulPosting
+  FilterSuccesfulPosting,
+  SortPostingDuration,
+  GetRealTimeStatus,
+  CheckForNegativeDate
 } from "../../../modules/utilities";
 import DatePicker from "react-datepicker";
 if (Meteor.isClient) import "react-datepicker/dist/react-datepicker.css";
@@ -93,6 +96,10 @@ class StaffProposePostingPage extends React.Component {
   onChange(name) {
     this.setState({ selectedDept: name });
     this.props.selectedDeptReactiveVar.set(name);
+  }
+
+  componentDidMount() {
+    this.props.selectedDeptReactiveVar.set("");
   }
 
   proposePosting() {
@@ -218,6 +225,31 @@ class StaffProposePostingPage extends React.Component {
                     moment().format("MMMM DD YYYY")
                   )}
               </p>
+
+              <p>Former department:</p>
+              <div className="formerDept">
+                {postings && postings.length ? (
+                  SortPostingDuration(postings).map(
+                    ({ unit, duration }, index) => {
+                      return (
+                        <p key={index}>
+                          {unit} :{" "}
+                          {CheckForNegativeDate(duration) ? (
+                            <span className="text-danger">
+                              Posting was reversed
+                            </span>
+                          ) : (
+                            <span className="text-success">{duration}</span>
+                          )}
+                          <br />
+                        </p>
+                      );
+                    }
+                  )
+                ) : (
+                  <p className="text-danger">No former department</p>
+                )}
+              </div>
 
               <FormGroup>
                 <Downshift

@@ -18,11 +18,11 @@ class DashBoard extends React.Component {
       <DashBoardStyles>
         <Row>
           <Col md={6}>
-            <OverStayedStaff />
+            <OverStayedStaff {...this.props} />
           </Col>
 
           <Col md={6}>
-            <ApprovedReliefPosting />
+            <ApprovedReliefPosting {...this.props} />
           </Col>
         </Row>
       </DashBoardStyles>

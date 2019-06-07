@@ -46,6 +46,11 @@ class SearchStaffRecordsPage extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    this.props.staffIdReactive.set("");
+    this.props.designationReactive.set("");
+  }
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
     this.props.staffIdReactive.set(e.target.value);

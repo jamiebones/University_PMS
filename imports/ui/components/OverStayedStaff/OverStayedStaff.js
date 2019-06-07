@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Row, Table, Label, Alert } from "react-bootstrap";
+import { Col, Row, Table, Label, Alert, Button } from "react-bootstrap";
 import autoBind from "react-autobind";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
@@ -26,6 +26,28 @@ class OverStayedStaff extends React.Component {
       if (!err) {
         console.log(res);
         this.setState({ staff: res, loading: false });
+      }
+    });
+  }
+
+  proposePostingLinkClick(staffId) {
+    const staffIdNumber = staffId.toUpperCase();
+    Meteor.call("staffmembers.getStaffById", staffIdNumber, (err, user) => {
+      if (!err) {
+        const userData = {
+          staffId: staffIdNumber,
+          biodata: user.biodata,
+          postings: user.postings,
+          designation: user.designation,
+          salaryStructure: user.salaryStructure,
+          currentPosting: user.currentPosting
+        };
+        this.props.history.push({
+          pathname: "/auth/propose_posting",
+          state: userData
+        });
+      } else {
+        console.log(`Error: ${err}`);
       }
     });
   }
@@ -88,21 +110,15 @@ class OverStayedStaff extends React.Component {
 
                             <td>
                               <p>
-                                <Link
-                                  to={{
-                                    pathname: "/auth/propose_posting",
-                                    state: {
-                                      staffId: _id,
-                                      biodata: data[0].biodata,
-                                      postings: [postings],
-                                      designation: data[0].designation,
-                                      salaryStructure: data[0].salaryStructure,
-                                      currentPosting: data[0].currentPosting
-                                    }
-                                  }}
+                                <Button
+                                  bsSize="xsmall"
+                                  bsStyle="default"
+                                  onClick={() =>
+                                    this.proposePostingLinkClick(_id)
+                                  }
                                 >
                                   Propose Posting
-                                </Link>
+                                </Button>
                               </p>
                             </td>
                           </tr>

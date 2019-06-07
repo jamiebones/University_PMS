@@ -136,7 +136,7 @@ class ApproveCancelReliefPosting extends React.Component {
                                 <ButtonToolbar>
                                   <ButtonGroup bsSize="xsmall">
                                     {GetDetailsBasedOnRole(
-                                      ["Director", "Registrar", "super-admin"],
+                                      ["Director", "Registrar"],
                                       "Personnel"
                                     ) ? (
                                       <Button

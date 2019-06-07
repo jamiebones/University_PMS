@@ -142,7 +142,6 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
                 "ASE",
                 "Director",
                 "JSE",
-                "super-admin",
                 "Registrar"
               ]}
               group="Personnel"
@@ -167,24 +166,6 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               userId={userId}
               exact
               path={`${match.path}/due_for_promotion`}
-              component={StaffPromotionNew}
-              pathAfterFailure="/logout"
-              {...rest}
-            />
-
-            <Authorized
-              allowedRoles={[
-                "SATS",
-                "Records",
-                "ASE",
-                "Director",
-                "JSE",
-                "Registrar"
-              ]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/due_for_promotion_new`}
               component={StaffPromotionNew}
               pathAfterFailure="/logout"
               {...rest}
@@ -329,7 +310,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE", "Registrar"]}
+              allowedRoles={["SATS", "Director", "JSE", "Registrar"]}
               group="Personnel"
               userId={userId}
               exact
@@ -344,7 +325,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             {/* sats|| || jse|| links end  */}
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE", "Director"]}
+              allowedRoles={["SATS", "ASE", "JSE", "Director"]}
               group="Personnel"
               userId={userId}
               exact

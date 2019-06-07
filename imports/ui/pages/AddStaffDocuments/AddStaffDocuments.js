@@ -38,6 +38,10 @@ class AddStaffDocuments extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    this.props.staffIdReactive.set("");
+  }
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }

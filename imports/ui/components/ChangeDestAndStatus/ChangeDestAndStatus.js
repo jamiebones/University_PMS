@@ -19,6 +19,10 @@ class ChangeDestAndStatus extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    this.props.selectedDeptReactiveVar.set("");
+  }
+
   saveChanges() {
     const staffObject = {
       sex: this.state.sex,

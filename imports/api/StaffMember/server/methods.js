@@ -437,5 +437,10 @@ Meteor.methods({
       .catch(e => {
         console.log(e);
       });
+  },
+  "staffmembers.getStaffById": function StaffMembersFunction(staffId) {
+    check(staffId, String);
+    const user = StaffMembers.findOne({ staffId: staffId });
+    return user;
   }
 });

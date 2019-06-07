@@ -27,7 +27,6 @@ class StaffProposePosting extends React.Component {
 
   render() {
     const { staffMember } = this.props;
-    console.log(staffMember);
     return (
       <StaffProposePostingStyles>
         <Row>

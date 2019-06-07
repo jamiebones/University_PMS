@@ -67,15 +67,16 @@ export const SortPostingDuration = pArray => {
     let arr = pArray.sort((a, b) => {
       return a.serial - b.serial;
     });
-    arr.pop();
+
+    let newArr = arr.slice(0, arr.length - 1);
     let postingArray = [];
-    for (let i = 0; i < arr.length; i++) {
-      const posting = arr[i];
+    for (let i = 0; i < newArr.length; i++) {
+      const posting = newArr[i];
       if (posting.postingStatus == "4") {
         const startDate = posting.postingDate;
         let endDate = moment(new Date()).toISOString();
-        if (i + 1 !== arr.length) {
-          endDate = arr[i + 1].postingDate;
+        if (i + 1 !== newArr.length) {
+          endDate = newArr[i + 1].postingDate;
         }
         const duration = FindTimeDifference(startDate, endDate);
         const obj = {
@@ -86,15 +87,14 @@ export const SortPostingDuration = pArray => {
       }
       continue;
     }
-    return postingArray;
+    console.log(postingArray.reverse());
+    return postingArray.reverse();
   }
   return [];
 };
 
-export const FindTimeDifference = (
-  startTime = moment().format("MMMM DD YYYY"),
-  endTime = moment().format("MMMM DD YYYY")
-) => {
+export const FindTimeDifference = (startTime, endTime) => {
+  debugger;
   let start = moment(endTime);
   let end = moment(startTime);
   //Difference in number of days
