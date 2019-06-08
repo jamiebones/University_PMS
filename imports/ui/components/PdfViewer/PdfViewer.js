@@ -65,54 +65,58 @@ class MyPdfViewer extends React.Component {
   };
 
   increment() {
-    this.setState({ documentNum: this.state.documentNum + 1, pageNumber: 1 });
+    const { documentNum, documents } = this.state;
+    if (documentNum == documents.length - 1) {
+      this.setState({ documentNum: 0 });
+      return;
+    }
+    this.setState({ documentNum: this.state.documentNum + 1 });
   }
 
   decrement() {
-    this.setState({ documentNum: this.state.documentNum - 1, pageNumber: 1 });
+    const { documentNum, documents } = this.state;
+    if (documentNum == 0) {
+      this.setState({ documentNum: documents.length - 1 });
+      return;
+    }
+    this.setState({ documentNum: this.state.documentNum - 1 });
   }
 
   handlePrevious() {
+    const { pageNumber, numPages } = this.state;
+    if (pageNumber == 1) {
+      this.setState({ pageNumber: numPages });
+      return;
+    }
     this.setState({ pageNumber: this.state.pageNumber - 1 });
   }
 
   handleNext() {
+    const { pageNumber, numPages } = this.state;
+    if (pageNumber === numPages) {
+      this.setState({ pageNumber: 1 });
+      return;
+    }
     this.setState({ pageNumber: this.state.pageNumber + 1 });
   }
 
   renderPagination = (page, pages) => {
     let previousButton = (
-      <li className="previous" onClick={this.handlePrevious}>
+      <li className="previous" onClick={() => this.handlePrevious()}>
         <a href="#">
           <i className="fa fa-arrow-left" /> Previous
         </a>
       </li>
     );
-    if (page === 1) {
-      previousButton = (
-        <li className="previous disabled">
-          <a href="#">
-            <i className="fa fa-arrow-left" /> Previous
-          </a>
-        </li>
-      );
-    }
+
     let nextButton = (
-      <li className="next" onClick={this.handleNext}>
+      <li className="next" onClick={() => this.handleNext()}>
         <a href="#">
           Next <i className="fa fa-arrow-right" />
         </a>
       </li>
     );
-    if (page === pages) {
-      nextButton = (
-        <li className="next disabled">
-          <a href="#">
-            Next <i className="fa fa-arrow-right" />
-          </a>
-        </li>
-      );
-    }
+
     return (
       <nav>
         <ul className="pager">
@@ -135,7 +139,7 @@ class MyPdfViewer extends React.Component {
         {!loading ? (
           <MyPdfViewerStyles>
             <Row className="divViewer">
-              <Col md={8} mdOffset={2}>
+              <Col md={10} mdOffset={1}>
                 {documents.length > 0 ? (
                   <div>
                     <p className="lead">
@@ -149,6 +153,14 @@ class MyPdfViewer extends React.Component {
                     <p>
                       Page {pageNumber} of {numPages}
                     </p>
+
+                    <Button
+                      bsSize="xsmall"
+                      bsStyle="info"
+                      onClick={() => this.ScrollToBottom()}
+                    >
+                      Scroll down
+                    </Button>
 
                     <Document
                       file={documents[documentNum]}
@@ -166,7 +178,7 @@ class MyPdfViewer extends React.Component {
                           bsStyle="info"
                           bsSize="small"
                           onClick={this.decrement}
-                          disabled={documentNum == 0}
+                          disabled={documents.length === 1}
                         >
                           prev document
                         </Button>
@@ -174,7 +186,7 @@ class MyPdfViewer extends React.Component {
                           bsStyle="success"
                           bsSize="small"
                           onClick={this.increment}
-                          disabled={documentNum == documents.length - 1}
+                          disabled={documents.length === 1}
                         >
                           next document
                         </Button>

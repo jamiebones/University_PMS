@@ -63,7 +63,7 @@ const Documents = new FilesCollection({
             "meta.serial": { $exists: true, $ne: null }
           }).fetch();
 
-          console.log(documents);
+          //console.log(documents);
           if (_.isEmpty(documents)) {
             //new serial
             file.meta.serial = 1;
@@ -73,10 +73,11 @@ const Documents = new FilesCollection({
             file.meta.serial = maxSerial + 1;
           }
 
-          console.dir(file);
+          //console.dir(file);
           WriteToDocument(file)
-            .then(() => {
+            .then(pdf => {
               //save here
+              console.log(pdf);
               this.update(file._id, { $set: { meta: file.meta } });
             })
             .catch(err => {

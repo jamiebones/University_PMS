@@ -7,6 +7,7 @@ import hummus from "hummus";
 export default (WriteToDocument = file => {
   return new Promise((resolve, reject) => {
     try {
+      debugger;
       const logo = "../web.browser/app/image/pdflogo.png";
       const addedDate = moment().format("MMMM DD, YYYY");
       const pdfFont = "assets/app/pdfFont/couri.ttf";
@@ -17,7 +18,7 @@ export default (WriteToDocument = file => {
       console.log(modifiedPath);
       const pdfWriter = hummus.createWriterToModify(file.path, {
         modifiedFilePath: modifiedPath,
-        log: "assets/app/temp/pdfLog.txt"
+        log: "assets/app/pdfLog.txt"
       });
       const pdfReader = hummus.createReader(file.path);
       for (let i = 0; i < pdfReader.getPagesCount(); ++i) {
@@ -51,7 +52,7 @@ export default (WriteToDocument = file => {
         pageModifier
           .startContext()
           .getContext()
-          .drawImage(30, 5, logo);
+          .drawImage(20, 5, logo);
         pageModifier.endContext().writePage();
       }
       pdfWriter.end();
