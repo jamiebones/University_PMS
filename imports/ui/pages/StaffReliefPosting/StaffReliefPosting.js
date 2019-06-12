@@ -43,7 +43,6 @@ class StaffReliefPosting extends React.Component {
   componentDidMount() {
     this.props.staffIdReactive.set("");
     this.props.designationReactive.set("");
-    this.props.staffReactive.set({});
   }
 
   onChange(e) {

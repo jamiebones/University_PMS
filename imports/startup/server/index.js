@@ -4,3 +4,4 @@ import "./accounts";
 import "./api";
 import "./fixtures";
 import "./ssr";
+import "./webapp";

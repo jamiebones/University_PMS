@@ -12,7 +12,6 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
 import { Bert } from "meteor/themeteorchef:bert";
-import AccountPageFooter from "../../components/AccountPageFooter/AccountPageFooter";
 import validate from "../../../modules/validate";
 
 class Login extends React.Component {
@@ -129,11 +128,6 @@ class Login extends React.Component {
               >
                 {this.state.submitted ? "Please wait....." : "Log In"}
               </Button>
-              <AccountPageFooter>
-                <p>
-                  {"Don't have an account?"} <Link to="/signup">Sign Up</Link>.
-                </p>
-              </AccountPageFooter>
             </form>
           </Col>
         </Row>

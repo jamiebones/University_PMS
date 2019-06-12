@@ -71,13 +71,16 @@ class AddStaffDocuments extends React.Component {
         const file = filesArr[i];
 
         let self = this;
-
+        //type here means the reference type
+        //1 = individual
+        //2 = generic
         if (file) {
           let uploadInstance = Documents.insert(
             {
               file: file,
               meta: {
-                staffId: this.state.staffId.toUpperCase()
+                staffId: this.state.staffId.toUpperCase(),
+                type: "1"
               },
               streams: "dynamic",
               chunkSize: "dynamic",

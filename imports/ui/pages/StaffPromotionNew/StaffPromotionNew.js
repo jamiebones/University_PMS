@@ -48,6 +48,10 @@ class StaffPromotionNew extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
   makeRemoteCall(selectedDesignation) {
     Meteor.call(
       "staffmembers.getStaffDueForPromotion",
@@ -162,7 +166,6 @@ class StaffPromotionNew extends React.Component {
     ) {
       return;
     }
-    console.log("scrolling");
     this.fetchMoreData();
   }
 

@@ -28,6 +28,7 @@ import "../../api/ActivityLog/server/methods";
 
 import "../../api/Documents/server/publications";
 import "../../api/Documents/methods";
+import "../../api/Documents/server/methods";
 
 import "../../api/SalaryYear/server/publications";
 import "../../api/SalaryYear/methods";
@@ -43,5 +44,9 @@ import "../../api/StaffReliefPosting/methods";
 import "../../api/WithdrawPromotion/server/publications";
 import "../../api/WithdrawPromotion/server/methods";
 import "../../api/WithdrawPromotion/methods";
+
+import "../../api/RefTable/server/publications";
+import "../../api/RefTable/server/methods";
+import "../../api/RefTable/methods";
 
 import "../../api/Utility/server/methods";

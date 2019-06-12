@@ -17,7 +17,6 @@ import NormalRoute from "../../components/NormalRoute/NormalRoute";
 import Index from "../../pages/Index/Index";
 import Footer from "../../components/Footer/Footer";
 import getUserName from "../../../modules/get-user-name";
-import Signup from "../../pages/Signup/Signup";
 import Logout from "../../pages/Logout/Logout";
 import Login from "../../pages/Login/Login";
 import RecoverPassword from "../../pages/RecoverPassword/RecoverPassword";
@@ -114,7 +113,6 @@ class App extends React.Component {
               )}
             />
 
-            <Public path="/signup" component={Signup} {...props} {...state} />
             <Public path="/login" component={Login} {...props} {...state} />
             <Route
               exact

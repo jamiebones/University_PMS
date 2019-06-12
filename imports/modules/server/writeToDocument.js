@@ -7,7 +7,6 @@ import hummus from "hummus";
 export default (WriteToDocument = file => {
   return new Promise((resolve, reject) => {
     try {
-      debugger;
       const logo = "../web.browser/app/image/pdflogo.png";
       const addedDate = moment().format("MMMM DD, YYYY");
       const pdfFont = "assets/app/pdfFont/couri.ttf";
@@ -28,17 +27,12 @@ export default (WriteToDocument = file => {
         pageModifier
           .startContext()
           .getContext()
-          .writeText(
-            `Ref : ${file.meta.staffId}/${file.meta.serial}`,
-            10,
-            dimensions[3] - 20,
-            {
-              font: pdfWriter.getFontForFile(pdfFont),
-              size: fontSize,
-              colorspace: "gray",
-              color: 0x00
-            }
-          );
+          .writeText(`Ref : ${file.meta.reference}`, 10, dimensions[3] - 20, {
+            font: pdfWriter.getFontForFile(pdfFont),
+            size: fontSize,
+            colorspace: "gray",
+            color: 0x00
+          });
 
         pageModifier
           .startContext()

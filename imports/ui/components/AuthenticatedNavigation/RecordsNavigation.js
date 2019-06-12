@@ -19,6 +19,18 @@ const DirectorNavigation = ({ history }) => (
 
     <Nav>
       <LinkContainer
+        to="/auth/search_documents"
+        exact
+        onClick={() => history.push("/auth/search_documents")}
+      >
+        <NavItem eventKey={2} href="#">
+          Search Documents
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+
+    <Nav>
+      <LinkContainer
         to="/auth/nominal_roll"
         exact
         onClick={() => history.push("/auth/nominal_roll")}

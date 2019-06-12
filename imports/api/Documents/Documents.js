@@ -3,6 +3,7 @@ import { FilesCollection } from "meteor/ostrio:files";
 if (Meteor.isServer) {
   import WriteToDocument from "../../modules/server/writeToDocument";
 }
+//import { RefTable } from "../RefTable/RefTableClass";
 import { _ } from "meteor/underscore";
 
 const FindMax = (arr, key) => {
@@ -20,8 +21,7 @@ const FindMax = (arr, key) => {
 };
 
 const Documents = new FilesCollection({
-  storagePath:
-    "/home/jamiebones/Meteor_Projects/University_Personel_Mgt_System/data",
+  storagePath: "/home/jamiebones/PMS_DATA",
   downloadRoute: "/files/documents",
   collectionName: "Documents",
   permissions: 0o755,
@@ -57,27 +57,50 @@ const Documents = new FilesCollection({
             this.remove(file._id);
           }
 
-          //find the max serial here
-          const documents = this.find({
-            "meta.staffId": file.meta.staffId,
-            "meta.serial": { $exists: true, $ne: null }
-          }).fetch();
-
-          //console.log(documents);
-          if (_.isEmpty(documents)) {
-            //new serial
-            file.meta.serial = 1;
-          } else {
+          //check here if we have personal document upload
+          //when the file.meta.type == 1
+          if (file.meta.type === "1") {
             //find the max serial here
-            let maxSerial = FindMax(documents, "meta");
-            file.meta.serial = maxSerial + 1;
+            const documents = this.find({
+              "meta.staffId": file.meta.staffId,
+              "meta.serial": { $exists: true, $ne: null }
+            }).fetch();
+            let reference = "";
+            if (_.isEmpty(documents)) {
+              //new serial
+              file.meta.serial = 1;
+              reference = `${file.meta.staffId}/1`;
+              file.meta.reference = reference;
+            } else {
+              //find the max serial here
+              let maxSerial = FindMax(documents, "meta");
+              file.meta.serial = maxSerial + 1;
+              reference = `${file.meta.staffId}/${maxSerial + 1}`;
+              file.meta.reference = reference;
+            }
+          } else if (file.meta.type === "2") {
+            //we have personnel documents uploaded here
+            const documents = this.find({
+              "meta.reference": file.meta.reference,
+              "meta.serial": { $exists: true, $ne: null }
+            }).fetch();
+            let reference = "";
+            if (_.isEmpty(documents)) {
+              //new serial
+              file.meta.serial = 1;
+              reference = `${file.meta.reference}/1`;
+              file.meta.reference = reference;
+            } else {
+              //find the max serial here
+              let maxSerial = FindMax(documents, "meta");
+              file.meta.serial = maxSerial + 1;
+              reference = `${file.meta.reference}/${maxSerial + 1}`;
+              file.meta.reference = reference;
+            }
           }
-
           //console.dir(file);
           WriteToDocument(file)
             .then(pdf => {
-              //save here
-              console.log(pdf);
               this.update(file._id, { $set: { meta: file.meta } });
             })
             .catch(err => {
