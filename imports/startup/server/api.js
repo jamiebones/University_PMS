@@ -45,6 +45,10 @@ import "../../api/WithdrawPromotion/server/publications";
 import "../../api/WithdrawPromotion/server/methods";
 import "../../api/WithdrawPromotion/methods";
 
+import "../../api/SalaryScale/server/publications";
+import "../../api/SalaryScale/server/methods";
+import "../../api/SalaryScale/methods";
+
 import "../../api/RefTable/server/publications";
 import "../../api/RefTable/server/methods";
 import "../../api/RefTable/methods";

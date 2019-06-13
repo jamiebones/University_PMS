@@ -138,6 +138,8 @@ Meteor.methods({
 
   "staffmembers.getstaffRetirement": function StaffMemberMethod() {
     const pipeline = [
+      { $match: { officialRemark: "active" } },
+
       {
         $project: {
           _id: 1,
