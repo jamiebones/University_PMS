@@ -18,7 +18,7 @@ SalaryScales.deny({
 const Scale = Class.create({
   name: "Scale",
   fields: {
-    step: Number,
+    step: String,
     amount: String
   }
 });
@@ -28,7 +28,7 @@ const SalaryScale = Class.create({
   collection: SalaryScales,
   fields: {
     scale: [Scale],
-    scaleNumber: Number
+    salaryType: String
   }
 });
 

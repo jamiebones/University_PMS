@@ -31,6 +31,7 @@ import WithdrawPromotion from "../../components/WithdrawPromotionForm/WithdrawPr
 import ApproveWithdrawPromotion from "../../pages/ApproveWithdrawPromotion/ApproveWithdrawPromotion";
 import ActivityLog from "../../pages/ActivityLogs/ActivityLogs";
 import SearchDocument from "../../pages/SearchDocuments/SearchDocuments";
+import AddSalaryStep from "../../pages/AddSalaryStep/AddSalaryStep";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -403,6 +404,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/add_cadre`}
               component={AddCadrePage}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_salary_step`}
+              component={AddSalaryStep}
               pathAfterFailure="/logout"
               {...rest}
             />

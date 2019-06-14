@@ -27,7 +27,8 @@ class SalaryStepComponent extends React.Component {
       //set the props here
       this.props.setStepAndAmount({
         step: this.state.step,
-        amount: this.state.amount
+        amount: this.state.amount,
+        index: this.props.index
       });
     });
   }
@@ -37,7 +38,8 @@ class SalaryStepComponent extends React.Component {
       //set the props here
       this.props.setStepAndAmount({
         step: this.state.step,
-        amount: this.state.amount
+        amount: this.state.amount,
+        index: this.props.index
       });
     });
   }
@@ -49,7 +51,7 @@ class SalaryStepComponent extends React.Component {
     return (
       <SalaryStepComponentStyles>
         <Row>
-          <Col md={4}>
+          <Col md={2}>
             <FormGroup>
               <ControlLabel>Step:</ControlLabel>
               <ReactInput
@@ -63,13 +65,13 @@ class SalaryStepComponent extends React.Component {
             </FormGroup>
           </Col>
 
-          <Col md={6}>
+          <Col md={4}>
             <FormGroup>
               <ControlLabel>Amount:</ControlLabel>
               <CurrencyInput
                 value={this.state.amount}
                 onChangeEvent={this.handleChange}
-                precision="3"
+                precision="2"
                 prefix="#"
                 className="form-control"
               />
