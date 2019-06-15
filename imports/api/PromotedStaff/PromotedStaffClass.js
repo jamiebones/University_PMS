@@ -29,8 +29,13 @@ const PromotedStaff = Class.create({
     newSalaryStructure: String,
     oldPromotionDate: String,
     promotionYear: String,
-    savedDate: String
+    savedDate: String,
+    promotionSalary: {
+      type: Object
+    }
   }
 });
+
+//promotionSalary object contains fields {yearlySalary:"",yearlySalaryRange: ""}
 
 export { PromotedStaff, PromotedStaffs };

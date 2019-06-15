@@ -160,6 +160,7 @@ class PromotionList extends React.Component {
                           <th>Name</th>
                           <th>Previous/Current Designation</th>
                           <th>Previous/Current Salary</th>
+                          <th>Salary</th>
                           <th>Previous Promotion Year</th>
                           <th>Promotion Year</th>
                           <th>
@@ -183,7 +184,8 @@ class PromotionList extends React.Component {
                               newSalaryStructure,
                               oldPromotionDate,
                               promotionYear,
-                              clicked
+                              clicked,
+                              promotionSalary
                             },
                             index
                           ) => {
@@ -206,6 +208,24 @@ class PromotionList extends React.Component {
                                 <td>
                                   <p>
                                     {oldSalaryStructure} to {newSalaryStructure}
+                                  </p>
+                                </td>
+
+                                <td>
+                                  <p>
+                                    <span>
+                                      {promotionSalary &&
+                                        `Annual Salary: ${
+                                          promotionSalary.yearlySalary
+                                        }`}
+                                    </span>
+                                    <br />
+                                    <span>
+                                      {promotionSalary &&
+                                        `Salary Range : ${
+                                          promotionSalary.yearlySalaryRange
+                                        }`}
+                                    </span>
                                   </p>
                                 </td>
 

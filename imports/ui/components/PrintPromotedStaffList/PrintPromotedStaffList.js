@@ -1120,6 +1120,7 @@ table {
                 <th>Name</th>
                 <th>Previous/Current Designation</th>
                 <th>Previous/Current Salary</th>
+                <th>Salary</th>
                 <th>Previous Promotion Year</th>
                 <th>Promotion Year</th>
               </tr>
@@ -1136,7 +1137,8 @@ table {
                       oldSalaryStructure,
                       newSalaryStructure,
                       oldPromotionDate,
-                      promotionYear
+                      promotionYear,
+                      promotionSalary
                     },
                     index
                   ) => {
@@ -1157,6 +1159,24 @@ table {
                         <td>
                           <p>
                             {oldSalaryStructure} to {newSalaryStructure}
+                          </p>
+                        </td>
+
+                        <td>
+                          <p>
+                            <span>
+                              {promotionSalary &&
+                                `Annual Salary: ${
+                                  promotionSalary.yearlySalary
+                                }`}
+                            </span>
+                            <br />
+                            <span>
+                              {promotionSalary &&
+                                `Salary Range : ${
+                                  promotionSalary.yearlySalaryRange
+                                }`}
+                            </span>
                           </p>
                         </td>
 

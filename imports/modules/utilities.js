@@ -18,6 +18,20 @@ export const FindMax = (arr, key) => {
   return 0;
 };
 
+export const FindMin = (arr, key) => {
+  if (arr.length) {
+    let lowest = 1;
+    for (let i = 0; i < arr.length; i++) {
+      let currentItem = arr[i][key];
+      if (currentItem < lowest) {
+        lowest = currentItem;
+      }
+    }
+    return lowest;
+  }
+  return 1;
+};
+
 export const FilterSuccesfulPosting = arr => {
   if (arr.length) {
     let filteredArray = arr.filter(posting => {

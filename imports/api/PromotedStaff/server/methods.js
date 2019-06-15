@@ -69,7 +69,8 @@ Meteor.methods({
           newSalaryStructure: "$newSalaryStructure",
           oldPromotionDate: "$oldPromotionDate",
           promotionYear: "$promotionYear",
-          savedDate: "$savedDate"
+          savedDate: "$savedDate",
+          promotionSalary: "$promotionSalary"
         }
       },
       {

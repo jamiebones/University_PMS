@@ -43,6 +43,9 @@ const StyledAddSalaryStep = styled.div`
     .btnDiv {
       margin-top: 20px;
     }
+    .lead {
+      font-size: 16px;
+    }
   }
 `;
 
