@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { PromotedStaffs } from "../PromotedStaffClass";
 import PrintPromotedStaffList from "../../../modules/server/printpromotedstafflist";
+import PrintPromotionLetter from "../../../modules/server/printpromotionletter";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import moment from "moment";
 
@@ -88,6 +89,16 @@ Meteor.methods({
   ) {
     check(promotedObject, Object);
     return PrintPromotedStaffList(promotedObject)
+      .then(pdf => {
+        return pdf;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  },
+  "promotedstaff.printpromotionletter": function PromotedStaffMethod(options) {
+    check(options, Object);
+    return PrintPromotionLetter(options)
       .then(pdf => {
         return pdf;
       })

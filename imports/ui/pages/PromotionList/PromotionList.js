@@ -32,7 +32,9 @@ class PromotionList extends React.Component {
       promotion: [],
       promotedStaff: [],
       selectedStaf: [],
-      numSelected: 0
+      numSelected: 0,
+      registrarName: "",
+      councilDate: ""
     };
     autoBind(this);
   }
@@ -63,8 +65,83 @@ class PromotionList extends React.Component {
     });
   }
 
-  clickCheck(e, index) {
+  printPromotionLetter(
+    event,
+    {
+      staffId,
+      staffName,
+      oldDesignation,
+      newDesignation,
+      oldSalaryStructure,
+      newSalaryStructure,
+      oldPromotionDate,
+      promotionYear,
+      promotionSalary
+    }
+  ) {
     debugger;
+    let councilDate = "";
+    let registrarName = "";
+    if (this.state.councilDate === "") {
+      //ask them to input the date for the meeting
+      councilDate = prompt(
+        "please enter the council date that approve the meeting. Example format of date: Thursday, November 10, 2016"
+      );
+      if (councilDate) {
+        this.setState({ councilDate: councilDate });
+      }
+    }
+
+    if (this.state.registrarName === "") {
+      //ask them to input the date for the meeting
+      registrarName = prompt(
+        "please enter the Registrar name: Example Aniediabasi Udofia"
+      );
+      if (registrarName) {
+        this.setState({ registrarName: registrarName });
+      }
+    }
+    const promotedStaffDetails = {
+      staffId,
+      staffName,
+      oldDesignation,
+      newDesignation,
+      oldSalaryStructure,
+      newSalaryStructure,
+      oldPromotionDate,
+      promotionYear,
+      promotionSalary,
+      councilDate: this.state.councilDate
+        ? this.state.councilDate
+        : councilDate,
+      registrarName: this.state.registrarName
+        ? this.state.registrarName
+        : registrarName
+    };
+    console.log(promotedStaffDetails);
+    event.preventDefault();
+    const { target } = event;
+    target.innerHTML = "<em>Downloading...</em>";
+    target.setAttribute("disabled", "disabled");
+    Meteor.call(
+      "promotedstaff.printpromotionletter",
+      promotedStaffDetails,
+      (err, res) => {
+        if (!err) {
+          const blob = base64ToBlob(res);
+          fileSaver.saveAs(blob, "promotion_letter.pdf");
+          target.innerText = "Print letter";
+          target.removeAttribute("disabled");
+        } else {
+          target.innerText = "Print letter";
+          target.removeAttribute("disabled");
+          console.log(err);
+        }
+      }
+    );
+  }
+
+  clickCheck(e, index) {
     const checked = e.target.checked;
     let { promotedStaff } = this.state;
     const selectedStaff = promotedStaff[index];
@@ -235,6 +312,26 @@ class PromotionList extends React.Component {
 
                                 <td>
                                   <p>{promotionYear}</p>
+                                  {promotionSalary && (
+                                    <Button
+                                      bsSize="xsmall"
+                                      onClick={e =>
+                                        this.printPromotionLetter(e, {
+                                          staffId,
+                                          staffName,
+                                          oldDesignation,
+                                          newDesignation,
+                                          oldSalaryStructure,
+                                          newSalaryStructure,
+                                          oldPromotionDate,
+                                          promotionYear,
+                                          promotionSalary
+                                        })
+                                      }
+                                    >
+                                      Print letter
+                                    </Button>
+                                  )}
                                 </td>
 
                                 <td>
