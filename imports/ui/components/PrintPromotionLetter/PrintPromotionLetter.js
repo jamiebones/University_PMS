@@ -6,7 +6,7 @@ import InlineCss from "react-inline-css";
 import moment from "moment";
 import { capAllFirstLetter } from "../../../modules/utilities";
 
-const PrintPromotionLetter = ({ staff, options }) => (
+const PrintPromotionLetter = ({ staff, options, reference }) => (
   <InlineCss
     stylesheet={`
 
@@ -836,7 +836,7 @@ html{
       <div className="row">
         <div className="col-xs-12">
           <p className="referenceP">
-            reference id
+            {reference}
             <span className="pull-right">
               {moment(new Date()).format("MMMM DD YYYY")}
             </span>

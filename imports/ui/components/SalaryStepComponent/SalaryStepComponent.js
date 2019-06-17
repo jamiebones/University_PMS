@@ -51,7 +51,7 @@ class SalaryStepComponent extends React.Component {
     return (
       <SalaryStepComponentStyles>
         <Row>
-          <Col md={2}>
+          <Col md={4}>
             <FormGroup>
               <ControlLabel>Step:</ControlLabel>
               <ReactInput
@@ -65,7 +65,7 @@ class SalaryStepComponent extends React.Component {
             </FormGroup>
           </Col>
 
-          <Col md={4}>
+          <Col md={8}>
             <FormGroup>
               <ControlLabel>Amount:</ControlLabel>
               <CurrencyInput

@@ -35,5 +35,40 @@ Meteor.methods({
       salaryType: salaryType
     });
     return newsalaryScale.save();
+  },
+  "salaryscale.addnewstep": function SalaryScalemethod(newStep) {
+    check(newStep, Object);
+    const { salaryType, step, amount } = newStep;
+    const findScale = SalaryScale.findOne({ salaryType: salaryType });
+    if (!_.isEmpty(findScale)) {
+      const scale = findScale.scale;
+      const newScale = new Scale({
+        amount,
+        step
+      });
+      scale.push(newScale);
+      return findScale.save();
+    }
+  },
+  "salaryscale.editstep": function SalaryScalemethod(editStep) {
+    check(editStep, Object);
+    const { step, amount, stepEdited } = editStep;
+    const findScale = SalaryScale.findOne({
+      salaryType: stepEdited.salaryType
+    });
+    if (!_.isEmpty(findScale)) {
+      const scale = findScale.scale;
+      const newScale = new Scale({
+        amount,
+        step
+      });
+      //filter out the old step
+      let remainScale = scale.filter(e => {
+        return e.step != stepEdited.step;
+      });
+      remainScale.push(newScale);
+      findScale.scale = remainScale;
+      return findScale.save();
+    }
   }
 });

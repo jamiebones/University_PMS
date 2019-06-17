@@ -3,7 +3,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
-const DirectorNavigation = ({ history }) => (
+const RecordsNavigation = ({ history }) => (
   <div>
     <Nav>
       <LinkContainer
@@ -64,7 +64,28 @@ const DirectorNavigation = ({ history }) => (
         </NavItem>
       </LinkContainer>
     </Nav>
+    <Nav>
+      <NavDropdown eventKey="4" title="Salary Structure" id="nav-structure">
+        <React.Fragment>
+          <LinkContainer
+            to="/auth/add_salary_step"
+            exact
+            onClick={() => history.push("/auth/add_salary_step")}
+          >
+            <MenuItem eventKey="4.2">Add Salary Step</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/edit_salary_step"
+            exact
+            onClick={() => history.push("/auth/edit_salary_step")}
+          >
+            <MenuItem eventKey="4.3">Edit Salary Step</MenuItem>
+          </LinkContainer>
+        </React.Fragment>
+      </NavDropdown>
+    </Nav>
   </div>
 );
 
-export default withRouter(DirectorNavigation);
+export default withRouter(RecordsNavigation);

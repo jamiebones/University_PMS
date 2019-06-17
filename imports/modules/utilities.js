@@ -495,3 +495,10 @@ export const StaffEmploymentType = staff => {
     return staff;
   }
 };
+
+export const RemoveStupidNairaSign = amount => {
+  if (amount) {
+    const removeSign = amount.replace("#", "");
+    return removeSign;
+  }
+};
