@@ -502,3 +502,13 @@ export const RemoveStupidNairaSign = amount => {
     return removeSign;
   }
 };
+
+export const SplitFacultDept = faculty => {
+  if (faculty) {
+    const split = faculty.split("/");
+    return {
+      faculty: split[0],
+      dept: split[1]
+    };
+  }
+};

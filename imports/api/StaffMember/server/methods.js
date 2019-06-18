@@ -444,5 +444,50 @@ Meteor.methods({
     check(staffId, String);
     const user = StaffMembers.findOne({ staffId: staffId });
     return user;
+  },
+  "staffmembers.groupStaffBySalaryScale": function StaffMembersmethod() {
+    let query = {};
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+      query.staffType = "2";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+      query.staffType = "2";
+    }
+
+    if (GetDetailsBasedOnRole("ASE", "Personnel")) {
+      query.staffType = "1";
+      delete query.staffClass;
+    }
+
+    const pipeline = [
+      { $match: query },
+      {
+        $group: {
+          _id: "$salaryStructure"
+        }
+      }
+    ];
+    const salaryGroup = StaffMembers.aggregate(pipeline);
+    const stripSlash = salaryGroup.map(group => {
+      return group._id.split("/")[0].trim();
+    });
+    const uniqueGroup = _.uniq(stripSlash);
+    const filterGroup = uniqueGroup.filter(group => {
+      return !group.includes("null") && !group.includes("Consolidated");
+    });
+
+    return filterGroup;
+  },
+  "staffmembers.getStaffBySalaryScale": function StaffMembersmethod(scale) {
+    check(scale, String);
+    const salaryScale = new RegExp(`^${scale} \/`);
+    const staff = StaffMembers.find(
+      { salaryStructure: salaryScale },
+      { sort: { designation: 1 } }
+    ).fetch();
+    return staff;
   }
 });

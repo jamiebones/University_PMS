@@ -6,15 +6,25 @@ import { withRouter } from "react-router-dom";
 const ASENavigation = ({ history }) => (
   <div>
     <Nav>
-      <LinkContainer
-        to="/auth/records/search"
-        exact
-        onClick={() => history.push("/auth/records/search")}
-      >
-        <NavItem eventKey={2} href="#">
-          Search Records
-        </NavItem>
-      </LinkContainer>
+      <NavDropdown eventKey="8" title="Search" id="nav-search">
+        <React.Fragment>
+          <LinkContainer
+            to="/auth/records/search"
+            exact
+            onClick={() => history.push("/auth/records/search")}
+          >
+            <MenuItem eventKey="8.1">Search Records</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/view_staff_by_salary_scale"
+            exact
+            onClick={() => history.push("/auth/view_staff_by_salary_scale")}
+          >
+            <MenuItem eventKey="8.3">Search By Salary Scale</MenuItem>
+          </LinkContainer>
+        </React.Fragment>
+      </NavDropdown>
     </Nav>
 
     <Nav>

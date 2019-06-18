@@ -33,6 +33,7 @@ import ActivityLog from "../../pages/ActivityLogs/ActivityLogs";
 import SearchDocument from "../../pages/SearchDocuments/SearchDocuments";
 import AddSalaryStep from "../../pages/AddSalaryStep/AddSalaryStep";
 import EditSalaryStructure from "../../pages/EditSalaryStructure/EditSalaryStructure";
+import StaffSalaryStructure from "../../pages/StaffBySalaryStructure/StaffBySalaryStructure";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -443,6 +444,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/edit_salary_step`}
               component={EditSalaryStructure}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/view_staff_by_salary_scale`}
+              component={StaffSalaryStructure}
               pathAfterFailure="/logout"
               {...rest}
             />
