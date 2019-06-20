@@ -49,6 +49,10 @@ import "../../api/SalaryScale/server/publications";
 import "../../api/SalaryScale/server/methods";
 import "../../api/SalaryScale/methods";
 
+import "../../api/Cadre/server/publications";
+import "../../api/Cadre/server/methods";
+import "../../api/Cadre/methods";
+
 import "../../api/RefTable/server/publications";
 import "../../api/RefTable/server/methods";
 import "../../api/RefTable/methods";

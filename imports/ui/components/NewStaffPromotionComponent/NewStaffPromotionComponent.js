@@ -60,31 +60,30 @@ class StaffPromotionComponent extends React.Component {
         //find the next rank the person is moving to
         const cadreArray = NonTeachingCadresAndProgression();
         const nextRank = FindNextRank(cadreArray, props.staffdesignation);
-        if (nextRank) {
-          let { cadre, scale } = nextRank;
-          const newStep = NonTeachingPromotionPlacement(step);
-          //get the level
 
-          return {
-            proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-            newDesignation: cadre || "not defined"
-            // editing: cadre == null ? true : false
-          };
-        }
+        const { cadre, scale } = nextRank;
+
+        const newStep = NonTeachingPromotionPlacement(step);
+
+        //get the level
+
+        return {
+          proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
+          newDesignation: cadre || "not defined",
+          editing: cadre == null ? true : false
+        };
       } else {
         //here is academic staff
         const cadreArray = TeachingCadresProgression();
         const nextRank = FindNextRank(cadreArray, props.staffdesignation);
-        if (nextRank) {
-          const { cadre, scale } = nextRank;
-          const newStep = step - 2;
-          //get the level
-          return {
-            proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-            newDesignation: cadre || "not defined"
-            // editing: cadre == null ? true : false
-          };
-        }
+        const { cadre, scale } = nextRank;
+        const newStep = step - 2;
+        //get the level
+        return {
+          proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
+          newDesignation: cadre || "not defined",
+          editing: cadre == null ? true : false
+        };
       }
     }
 
@@ -96,7 +95,7 @@ class StaffPromotionComponent extends React.Component {
   }
 
   setSelectedDesignation(designation) {
-    this.setState({ newDesignation: designation });
+    this.setState({ newDesignation: designation, editing: true });
   }
 
   saveChanges() {

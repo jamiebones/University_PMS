@@ -8,6 +8,7 @@ import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import { CalculateDueForRetirement } from "../../../modules/utilitiesComputation";
 import PrintStaffDueForPromotion from "../../../modules/server/printdueforpromotionlist";
 import moment from "moment";
+import { SortArray } from "../../../modules/utilities";
 
 Meteor.methods({
   getRecords: function StaffMembersmethod() {
@@ -479,7 +480,7 @@ Meteor.methods({
       return !group.includes("null") && !group.includes("Consolidated");
     });
 
-    return filterGroup;
+    return SortArray(filterGroup);
   },
   "staffmembers.getStaffBySalaryScale": function StaffMembersmethod(scale) {
     check(scale, String);

@@ -116,10 +116,10 @@ Meteor.methods({
 
                 break;
               case 15:
-                const salaryStructure = rowArray[k];
-                const GL = rowArray[16];
-                const step = rowArray[17];
-                staff.salaryStructure = `${salaryStructure} ${GL} / ${step} `;
+                const salaryStructure = rowArray[k] && rowArray[k].trim();
+                const GL = rowArray[16] && rowArray[16].trim();
+                const step = rowArray[17] && rowArray[17].trim();
+                staff.salaryStructure = `${salaryStructure} ${GL}/${step}`;
                 if (
                   salaryStructure &&
                   salaryStructure.toLowerCase().trim() == "conuass"
@@ -179,9 +179,7 @@ Meteor.methods({
                     }
                   }
                 }
-
                 break;
-
               case 18:
                 const remark = rowArray[18];
                 staff.officialRemark = remark;
@@ -303,7 +301,6 @@ Meteor.methods({
     newPromotion.serial = maxIndex;
 
     //let us find the salary range here biko
-    debugger;
     //we are going to split the new salary structure here
     const salaryStep = newSalaryStructure.trim();
     //split the salarystep by space

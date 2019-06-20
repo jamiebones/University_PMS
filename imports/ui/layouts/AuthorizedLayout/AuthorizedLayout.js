@@ -12,7 +12,6 @@ import DashBoard from "../../pages/DashBoard/DashBoard";
 import NotFound from "../../pages/NotFound/NotFound";
 import SearchStaffRecords from "../../pages/SearchStaffRecords/SearchStaffRecords";
 import StaffDetailsPage from "../../pages/StaffDetailsPage/StaffDetailsPage";
-import AddCadrePage from "../../pages/AddCadres/AddCadres";
 import StaffProposePostingPage from "../../pages/StaffProposePostingPage/StaffProposePostingPage";
 import PensionDashboard from "../../pages/PensionDashboard/PensionDashboard";
 import StaffPromotionNew from "../../pages/StaffPromotionNew/StaffPromotionNew";
@@ -34,6 +33,7 @@ import SearchDocument from "../../pages/SearchDocuments/SearchDocuments";
 import AddSalaryStep from "../../pages/AddSalaryStep/AddSalaryStep";
 import EditSalaryStructure from "../../pages/EditSalaryStructure/EditSalaryStructure";
 import StaffSalaryStructure from "../../pages/StaffBySalaryStructure/StaffBySalaryStructure";
+import AddNewCadre from "../../pages/AddNewCadre/AddNewCadre";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -400,17 +400,6 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "ASE", "JSE", "super-admin"]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/add_cadre`}
-              component={AddCadrePage}
-              pathAfterFailure="/logout"
-              {...rest}
-            />
-
-            <Authorized
               allowedRoles={[
                 "SATS",
                 "Records",
@@ -463,6 +452,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/view_staff_by_salary_scale`}
               component={StaffSalaryStructure}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_cadre`}
+              component={AddNewCadre}
               pathAfterFailure="/logout"
               {...rest}
             />
