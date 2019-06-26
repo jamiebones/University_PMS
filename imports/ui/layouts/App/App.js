@@ -186,8 +186,6 @@ const mapDispatchToProps = dispatch => ({
   handleOnLogout: data => dispatch(onLogout(data))
 });
 
-//export default compose(connect(mapStateToProps, mapDispatchToProps))(App);
-
 export default compose(
   connect(
     mapStateToProps,

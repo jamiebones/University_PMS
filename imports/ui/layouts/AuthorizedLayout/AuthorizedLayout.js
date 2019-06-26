@@ -34,6 +34,7 @@ import AddSalaryStep from "../../pages/AddSalaryStep/AddSalaryStep";
 import EditSalaryStructure from "../../pages/EditSalaryStructure/EditSalaryStructure";
 import StaffSalaryStructure from "../../pages/StaffBySalaryStructure/StaffBySalaryStructure";
 import AddNewCadre from "../../pages/AddNewCadre/AddNewCadre";
+import NewPensionDashboard from "../../pages/NewPensionDashboard/NewPensionDashboard";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -372,7 +373,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               userId={userId}
               exact
               path={`${match.path}/dashboard/pensions/home`}
-              component={PensionDashboard}
+              component={NewPensionDashboard}
               pathAfterFailure="/logout"
               {...rest}
             />

@@ -8,7 +8,11 @@ import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
 import { base64ToBlob } from "../../../modules/base64-to-blob.js";
 import fileSaver from "file-saver";
+import { withTracker } from "meteor/react-meteor-data";
 import ShowPromotionTable from "../../components/ShowPromotionTable/ShowPromotionTable";
+import { SalaryScales } from "../../../api/SalaryScale/SalaryScaleClass";
+import { Cadres } from "../../../api/Cadre/CadreClass";
+import { ReturnArrayOfDesignation } from "../../../modules/utilities";
 
 const StaffPromotionNewStyles = styled.div`
   .promoTableDiv {
@@ -31,6 +35,8 @@ class StaffPromotionNew extends React.Component {
       staff: [],
       designations: [],
       staffList: [],
+      cadres: [],
+      salaryScale: [],
       fetchingMore: false,
       loading: true
     };
@@ -155,7 +161,6 @@ class StaffPromotionNew extends React.Component {
         staffList: [...this.state.staffList, ...moreData],
         fetchingMore: false
       });
-      console.log(this.state.staffList);
     }
   }
 
@@ -177,6 +182,10 @@ class StaffPromotionNew extends React.Component {
       staff,
       staffList
     } = this.state;
+    const staffDesignations = ReturnArrayOfDesignation(
+      this.props.cadres || []
+    )();
+    console.log(staffDesignations);
     return (
       <StaffPromotionNewStyles>
         <Row>
@@ -227,6 +236,9 @@ class StaffPromotionNew extends React.Component {
               certificate={this.state.certificate}
               makeRemoteCall={this.makeRemoteCall}
               selectedDesignation={this.state.selectedDesignation}
+              cadres={this.props.cadres}
+              staffCadres={staffDesignations}
+              salaryScale={this.props.salaryScale}
             />
           </Col>
         </Row>
@@ -290,4 +302,15 @@ class StaffPromotionNew extends React.Component {
   }
 }
 
-export default StaffPromotionNew;
+export default (StaffProposePostingPageContainer = withTracker(props => {
+  let subscription;
+  if (Meteor.isClient) {
+    subscription = Meteor.subscribe("cadres.getcadresandSalaryScale");
+  }
+
+  return {
+    loading: subscription && !subscription.ready(),
+    cadres: Cadres.find().fetch(),
+    salaryScale: SalaryScales.find().fetch()
+  };
+})(StaffPromotionNew));

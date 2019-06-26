@@ -525,3 +525,16 @@ export const SortArray = array => {
   });
   return array;
 };
+
+export const ReturnArrayOfDesignation = array => {
+  return function() {
+    let newArray = [];
+    array.map(obj => {
+      newArray = [...obj.cadreRank, ...newArray];
+    });
+    const sortArray = newArray.sort((a, b) => {
+      return a.rank - b.rank;
+    });
+    return sortArray;
+  };
+};

@@ -27,6 +27,12 @@ const AddNewCadreStyles = styled.div`
     margin-bottom: 5px;
     cursor: pointer;
   }
+  .toolbar {
+    margin-top: 30px;
+  }
+  .selected {
+    background: green;
+  }
 `;
 
 class AddNewCadre extends React.Component {
@@ -90,7 +96,7 @@ class AddNewCadre extends React.Component {
   }
 
   onChange(e) {
-    this.setState({ cadreName: e.target.value.trim().toUpperCase() });
+    this.setState({ cadreName: e.target.value.toUpperCase() });
   }
 
   addRankComponent() {
@@ -124,6 +130,14 @@ class AddNewCadre extends React.Component {
   }
 
   cadreSelected(e, { cadre, cadreRank, _id }) {
+    //lets clear the state first
+    this.setState({
+      cadreName: "",
+      cadreComponent: [],
+      startEdit: false,
+      cadre: "",
+      cadreId: ""
+    });
     let arrayObject = [];
     cadreRank.map((e, index) => {
       const obj = {
@@ -158,7 +172,7 @@ class AddNewCadre extends React.Component {
     return (
       <AddNewCadreStyles>
         <Row>
-          <Col md={6}>
+          <Col md={6} mdOffset={1}>
             <FormGroup>
               <ControlLabel>
                 <span className="text-danger">*</span>Cadre Name:
@@ -223,31 +237,38 @@ class AddNewCadre extends React.Component {
                     )}
                   </ButtonGroup>
                 </ButtonToolbar>
-                <HelpBlock>
-                  <h5>
-                    <b>Save the changes made by clicking the button below</b>
-                  </h5>
-                </HelpBlock>
 
-                <ButtonToolbar>
-                  <ButtonGroup>
-                    <Button
-                      onClick={this.saveCadreInformation}
-                      disabled={submitted}
-                    >
-                      {submitted ? "Please wait......" : "Save Changes"}
-                    </Button>
+                <div className="toolbar">
+                  <HelpBlock>
+                    <h5>
+                      <b>
+                        Save the changes made by clicking the button below or
+                        start afresh by clicking start new
+                      </b>
+                    </h5>
+                  </HelpBlock>
 
-                    <Button onClick={this.startNewEntry} bsStyle="danger">
-                      Start New
-                    </Button>
-                  </ButtonGroup>
-                </ButtonToolbar>
+                  <ButtonToolbar>
+                    <ButtonGroup>
+                      <Button
+                        onClick={this.saveCadreInformation}
+                        disabled={submitted}
+                        bsStyle="info"
+                      >
+                        {submitted ? "Please wait......" : "Save Changes"}
+                      </Button>
+
+                      <Button onClick={this.startNewEntry} bsStyle="danger">
+                        Start New
+                      </Button>
+                    </ButtonGroup>
+                  </ButtonToolbar>
+                </div>
               </div>
             ) : null}
           </Col>
 
-          <Col md={3} mdOffset={2}>
+          <Col md={3} mdOffset={1}>
             {!loading ? (
               <div>
                 {cadres.length ? (

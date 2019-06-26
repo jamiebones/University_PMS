@@ -46,7 +46,7 @@ class AddCadreComponent extends React.Component {
 
   onRankChange(e) {
     const value = e.target.value;
-    this.setState({ rank: value.trim().toUpperCase(), editing: true }, () => {
+    this.setState({ rank: value.toUpperCase(), editing: true }, () => {
       this.props.setLevelAndRank({
         level: this.state.level,
         rank: this.state.rank,

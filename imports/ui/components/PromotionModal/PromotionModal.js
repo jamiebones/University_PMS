@@ -2,8 +2,8 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import autoBind from "react-autobind";
-import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
-
+//import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
+import NewStaffPromotionComponentNew from "../../components/NewStaffPromotionComponent/NewStaffPromotionComponent";
 const PromotionModalStyle = styled.div``;
 
 class PromotionModal extends React.Component {
@@ -26,7 +26,7 @@ class PromotionModal extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <StaffPromotionComponent {...this.props} />
+            <NewStaffPromotionComponentNew {...this.props} />
           </Modal.Body>
           <Modal.Footer />
         </Modal>

@@ -6,9 +6,8 @@ import { Designation } from "../../api/Designation/DesignationClass";
 import { UniversityUnit } from "../../api/UniversityUnit/UniversityUnitClass";
 import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
 import { PromotedStaff as PromotedStaffClass } from "../../api/PromotedStaff/PromotedStaffClass";
-import { SalaryScale } from "../../api/SalaryScale/SalaryScaleClass";
 import { _ } from "meteor/underscore";
-import { FindMax, FindMin } from "../../modules/utilities";
+import { FindMax } from "../../modules/utilities";
 import moment from "moment";
 
 Meteor.methods({
@@ -285,7 +284,8 @@ Meteor.methods({
       newSalaryStructure,
       oldPromotionDate,
       promotionYear,
-      user
+      user,
+      newSalary
     } = promotionObject;
     const promotedStaff = StaffMember.findOne({ staffId: staffId });
     promotedStaff.designation = newDesignation;
@@ -299,53 +299,6 @@ Meteor.methods({
     newPromotion.salaryStructure = newSalaryStructure;
     newPromotion.promotionYear = promotionYear;
     newPromotion.serial = maxIndex;
-
-    //let us find the salary range here biko
-    //we are going to split the new salary structure here
-    const salaryStep = newSalaryStructure.trim();
-    //split the salarystep by space
-    const salaryArray = salaryStep && salaryStep.split("/");
-    //split the first part to extract the type
-    const newSalaryScale = salaryArray[0].trim();
-
-    const salaryScaleRange = SalaryScale.findOne({
-      salaryType: newSalaryScale
-    });
-
-    let salaryObject = {};
-
-    if (!_.isEmpty(salaryScaleRange)) {
-      //lets get the annual amount here and the range of salary here
-      const step = salaryArray[1].trim();
-      //get the salary for that step
-      const annualScale = salaryScaleRange.scale.find(salary => {
-        return salary.step == step;
-      });
-
-      const annualSalary = annualScale.amount;
-      //find the salaryscale range
-      const scaleArray = salaryScaleRange.scale;
-      const maxAnnualScale = FindMax(salaryScaleRange.scale, "step");
-      const minAnnualScale = FindMin(salaryScaleRange.scale, "step");
-
-      //get the scale range
-      const scaleStart = scaleArray.find(salary => {
-        return salary.step == minAnnualScale;
-      });
-
-      const scaleEnd = scaleArray.find(salary => {
-        return salary.step == maxAnnualScale;
-      });
-
-      salaryObject.yearlySalary = annualSalary;
-      salaryObject.yearlySalaryRange = `${scaleStart.amount} - ${
-        scaleEnd.amount
-      }`;
-    } else {
-      //we have not entered it yet
-      salaryObject.yearlySalary = "#0000.000";
-      salaryObject.yearlySalaryRange = "#0000.00 - 0000.00";
-    }
 
     if (oldSalaryStructure.toUpperCase().includes("CONTISS")) {
       //lets split and show if na 5 moving to senior
@@ -379,7 +332,7 @@ Meteor.methods({
       promotionYear,
       newSalaryStructure,
       savedDate: moment(new Date()).toISOString(),
-      promotionSalary: salaryObject
+      promotionSalary: newSalary
     });
 
     newPromotedStaff.save();

@@ -3,9 +3,14 @@ import { check, Match } from "meteor/check";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
+import { SalaryScales } from "../../../api/SalaryScale/SalaryScaleClass";
+import { Cadres } from "../../../api/Cadre/CadreClass";
 import { _ } from "meteor/underscore";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
-import { CalculateDueForRetirement } from "../../../modules/utilitiesComputation";
+import {
+  CalculateDueForRetirement,
+  CalculateStaffDueForRetirementNew
+} from "../../../modules/utilitiesComputation";
 import PrintStaffDueForPromotion from "../../../modules/server/printdueforpromotionlist";
 import moment from "moment";
 import { SortArray } from "../../../modules/utilities";
@@ -137,9 +142,11 @@ Meteor.methods({
     return StaffMembers.find().fetch();
   },
 
-  "staffmembers.getstaffRetirement": function StaffMemberMethod() {
+  "staffmembers.getstaffRetirement": function StaffMemberMethod(year) {
+    check(year, Number);
+    const searchYear = 58 - year;
     const pipeline = [
-      { $match: { officialRemark: "active" } },
+      // { $match: { officialRemark: "active" } },
 
       {
         $project: {
@@ -160,11 +167,11 @@ Meteor.methods({
           }
         }
       },
-      { $match: { age: { $gte: 60 } } }
+      { $match: { age: { $gte: searchYear } } }
     ];
 
     const staff = StaffMembers.aggregate(pipeline);
-    const result = CalculateDueForRetirement(staff);
+    const result = CalculateStaffDueForRetirementNew(staff, year);
     console.log(result.length);
     return result;
   },

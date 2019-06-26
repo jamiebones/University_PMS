@@ -19,14 +19,8 @@ import {
   parseDigit,
   ReactInput
 } from "input-format";
-
-import {
-  NonTeachingPromotionPlacement,
-  FindNextRank
-} from "../../../modules/utilitiesComputation";
-import { NonTeachingCadresAndProgression } from "../../../modules/cadresprogression";
-import { TeachingCadresProgression } from "../../../modules/cadreprogressionacademic";
 import DroplistComponent from "../../components/DroplistComponent/DroplistComponent";
+import { Promotion } from "../../../modules/classes/promotion";
 
 const StaffPromotionComponentStyle = styled.div``;
 
@@ -39,55 +33,34 @@ class StaffPromotionComponent extends React.Component {
       proposedSalaryStructure: "",
       submitted: false,
       selectedDesignation: "",
-      editing: false
+      editing: false,
+      newSalary: ""
     };
     autoBind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.editing == false) {
-      //lets try to get the proposed salary step
-      const salaryStep = props && props.salaryStructure.trim();
-      //split the salarystep by space
-      const salaryArray = salaryStep && salaryStep.split("/");
-      //split the first part to extract the type
-      const scaleArray = salaryArray[0].split(" ");
-      const scaleType = scaleArray[0];
-
-      const step = parseInt(salaryArray[salaryArray.length - 1]);
-      if (scaleType.toUpperCase() == "CONTISS") {
-        //non academic staff found here
-        //find the next rank the person is moving to
-        const cadreArray = NonTeachingCadresAndProgression();
-        const nextRank = FindNextRank(cadreArray, props.staffdesignation);
-
-        const { cadre, scale } = nextRank;
-
-        const newStep = NonTeachingPromotionPlacement(step);
-
-        //get the level
-
-        return {
-          proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-          newDesignation: cadre || "not defined",
-          editing: cadre == null ? true : false
-        };
-      } else {
-        //here is academic staff
-        const cadreArray = TeachingCadresProgression();
-        const nextRank = FindNextRank(cadreArray, props.staffdesignation);
-        const { cadre, scale } = nextRank;
-        const newStep = step - 2;
-        //get the level
-        return {
-          proposedSalaryStructure: `${scaleType} ${scale} / ${newStep}`,
-          newDesignation: cadre || "not defined",
-          editing: cadre == null ? true : false
-        };
-      }
+      const promotionObject = {
+        biodata: props.biodata,
+        staffId: props.staffId,
+        lastPromotionDate: props.dateOfLastPromotion,
+        salaryStructure: props.salaryStructure,
+        designation: props.staffdesignation
+      };
+      const staffPromotion = new Promotion(promotionObject);
+      const nextRank = staffPromotion.getNextRank(props.cadres);
+      const newSalary = staffPromotion.getSalaryRange(props.salaryScale);
+      const { newCadre, newStep, newSalaryScale } = nextRank;
+      return {
+        proposedSalaryStructure: newSalaryScale ? newSalaryScale : "",
+        newDesignation: (newCadre && newCadre.rank) || "not defined",
+        editing: newCadre && newCadre.rank == null ? true : false,
+        newSalary: newSalary
+      };
     }
 
-    return null;
+    return {};
   }
 
   onPromotinYearChange(value) {
@@ -103,7 +76,8 @@ class StaffPromotionComponent extends React.Component {
       newDesignation,
       proposedSalaryStructure,
       submitted,
-      promotionYear
+      promotionYear,
+      newSalary
     } = this.state;
 
     const {
@@ -134,7 +108,8 @@ class StaffPromotionComponent extends React.Component {
       newSalaryStructure: proposedSalaryStructure,
       oldPromotionDate: dateOfLastPromotion,
       promotionYear: promotionYear,
-      user
+      user,
+      newSalary
     };
 
     const confirmSubmit = confirm(
@@ -186,8 +161,9 @@ class StaffPromotionComponent extends React.Component {
       salaryStructure,
       dateOfLastPromotion,
       staffdesignation,
-      designations
+      staffCadres
     } = this.props;
+    const { newDesignation, proposedSalaryStructure, newSalary } = this.state;
 
     const TEMPLATE2 = "xxxx";
     const parse2 = templateParser(TEMPLATE2, parseDigit);
@@ -217,51 +193,55 @@ class StaffPromotionComponent extends React.Component {
               />
             </FormGroup>
 
-            {this.state.newDesignation == "not defined" ? (
+            {newDesignation == "not defined" && (
               <div>
                 <DroplistComponent
-                  data={designations}
+                  data={staffCadres}
                   field="rank"
                   label="Designation after promotion"
                   placeholder="Search designation......"
                   setValue={this.setSelectedDesignation}
                 />
-
-                <FormGroup>
-                  <ControlLabel>Salary structure after promotion:</ControlLabel>
-                  <input
-                    type="text"
-                    value={this.state.proposedSalaryStructure}
-                    className="form-control"
-                    onChange={this.proposedSalary}
-                  />
-                </FormGroup>
               </div>
-            ) : null}
+            )}
 
-            {this.state.newDesignation !== "not defined" ? (
+            {newDesignation !== "not defined" && (
               <div>
                 <FormGroup>
                   <ControlLabel>Designation after promotion:</ControlLabel>
                   <input
                     type="text"
                     disabled
-                    value={this.state.newDesignation}
-                    className="form-control"
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <ControlLabel>Salary structure after promotion:</ControlLabel>
-                  <input
-                    type="text"
-                    disabled
-                    value={this.state.proposedSalaryStructure}
+                    value={newDesignation}
                     className="form-control"
                   />
                 </FormGroup>
               </div>
-            ) : null}
+            )}
+
+            <FormGroup>
+              <ControlLabel>Salary structure after promotion:</ControlLabel>
+              <input
+                type="text"
+                value={proposedSalaryStructure}
+                className="form-control"
+                onChange={this.proposedSalary}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <p>
+                Annual Salary :{" "}
+                <span>
+                  <b>{newSalary && newSalary.yearlySalary}</b>
+                </span>
+                <br />
+                Salary Range :
+                <span>
+                  <b>{newSalary && newSalary.yearlySalaryRange}</b>
+                </span>
+              </p>
+            </FormGroup>
 
             <FormGroup>
               <ControlLabel>Date of Last Promotion:</ControlLabel>

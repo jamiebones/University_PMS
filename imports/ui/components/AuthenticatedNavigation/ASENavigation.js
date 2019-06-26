@@ -28,6 +28,36 @@ const ASENavigation = ({ history }) => (
     </Nav>
 
     <Nav>
+      <NavDropdown eventKey="9" title="Set Up" id="nav-setup">
+        <React.Fragment>
+          <LinkContainer
+            to="/auth/add_salary_step"
+            exact
+            onClick={() => history.push("/auth/add_salary_step")}
+          >
+            <MenuItem eventKey="9.1">Add Salary Step</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/edit_salary_step"
+            exact
+            onClick={() => history.push("/auth/edit_salary_step")}
+          >
+            <MenuItem eventKey="9.2">Edit Salary Step</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/add_cadre"
+            exact
+            onClick={() => history.push("/auth/add_cadre")}
+          >
+            <MenuItem eventKey="9.3">Add Cadre</MenuItem>
+          </LinkContainer>
+        </React.Fragment>
+      </NavDropdown>
+    </Nav>
+
+    <Nav>
       <LinkContainer
         to="/auth/nominal_roll"
         exact

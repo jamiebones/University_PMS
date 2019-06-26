@@ -361,27 +361,35 @@ export const CalculateDueForRetirement = staffArray => {
   return computedArray;
 };
 
-const __RemoveDash = (months, days) => {
+const __RemoveDash = (year, months, days) => {
+  let y = year.toString().replace("-", "");
   let m = months.toString().replace("-", "");
   let d = days.toString().replace("-", "");
-  if (m.trim() == "0" && d.trim() == "0") {
+  if (y.trim() == "0" && m.trim() == "0" && d.trim() == "0") {
     return "Retiring today";
   } else {
+    y = y != "0" ? `${y} year(s)` : "";
     m = m != "0" ? `${m} month(s)` : "";
     d = d != "0" ? `${d} day(s)` : "";
-    return `Retired ${m} ${d} ago`;
+    return `Retired ${y} ${m} ${d} ago`;
   }
 };
 
-const __filterMinus = (months, days) => {
-  if (days.toString().includes("-") || months.toString().includes("-")) {
+const __filterMinus = (years, months, days) => {
+  if (
+    years.toString().includes("-") ||
+    days.toString().includes("-") ||
+    months.toString().includes("-")
+  ) {
     return __RemoveDash(months, days);
   } else {
+    let y = years;
     let m = months;
     let d = days;
+    y = y != "0" ? `${y} year(s)` : "";
     m = m != "0" ? `${m} month(s)` : "";
     d = d != "0" ? `${d} day(s)` : "";
-    return `Retiring in ${m} ${d}`;
+    return `Retiring in ${y} ${m} ${d}`;
   }
 };
 
@@ -396,3 +404,93 @@ export const GetDateInYearsMonthDay = passedDate => {
   days = days ? `${days} days` : "";
   return `${years} ${months} ${days}`;
 };
+
+export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
+  let computedArray = [];
+  console.time();
+  const todayDate = moment(new Date());
+  //get the salary type
+  //loop through
+  const staffScheduleToRetire = staffArray.filter(staff => {
+    const staffSalary = staff.salaryStructure;
+    const age = moment(staff.dob);
+    const diffAge = moment.duration(todayDate.diff(age));
+    let staffAge = Math.round(todayDate.diff(age, "days") / 365);
+    if (staffSalary && staffSalary.toUpperCase().includes("CONTISS")) {
+      const yearsLeft = 65 - parseInt(staffAge);
+      if (yearsLeft == years) {
+        console.log(Math.round(todayDate.diff(age, "days") / 365));
+        staff.retirementType = "CONTISS";
+        return staff;
+      }
+    } else if (staffSalary && staffSalary.toUpperCase().includes("CONMESS")) {
+      const yearsLeft = 60 - parseInt(staffAge);
+      if (yearsLeft == years) {
+        staff.retirementType = "CONMESS";
+        return staff;
+      }
+    } else if (staffSalary && staffSalary.toUpperCase().includes("CONUASS")) {
+      const yearsLeft = 70 - parseInt(staffAge);
+      if (yearsLeft == years) {
+        staff.retirementType = "CONUASS";
+        return staff;
+      }
+    }
+  });
+
+  for (let i = 0; i < staffScheduleToRetire.length; i++) {
+    const staff = staffScheduleToRetire[i];
+    const age = moment(staff.dob);
+    const diffAge = moment.duration(todayDate.diff(age));
+    let staffAge = diffAge.years();
+    let bday = age.date();
+    let bMonth = age.month() + 1;
+    let bYear = new Date().getFullYear();
+    let staffRetirementBday = moment(`${bMonth}/${bday}/${bYear + years}`);
+
+    let yearDiff = moment.duration(staffRetirementBday.diff(todayDate));
+
+    const diffBMonth = yearDiff.months();
+    const diffBDay = yearDiff.days();
+    const diffYear = yearDiff.years();
+    const timeLeft = __filterMinus(diffYear, diffBMonth, diffBDay);
+    //console.log(timeLeft);
+
+    staff.timeLeft = timeLeft;
+    if (staff.retirementType == "CONTISS") {
+      //academic staff
+      staff.yearsToretirement = 65 - staffAge;
+      computedArray.push(staff);
+    } else if (staff.retirementType == "CONMESS") {
+      //non teaching staff
+      staff.yearsToretirement = 60 - staffAge;
+      computedArray.push(staff);
+    } else if (staff.retirementType == "CONUASS") {
+      staff.yearsToretirement = 70 - staffAge;
+      computedArray.push(staff);
+    }
+  }
+
+  console.timeEnd();
+  return computedArray;
+};
+
+function FilterByTimeLeft(timeLeft, timeRange) {
+  let timeString = timeLeft && timeLeft.toString();
+  if (timeString && timeString.includes("-")) {
+    //person already retired
+    const remain = timeString.replace("-", "");
+    if (parseInt(remain) <= timeRange) {
+      return `${true}: Retired`;
+    } else {
+      return false;
+    }
+  } else {
+    //person yet to retire
+    if (parseInt(timeString) <= timeRange) {
+      return `${true} : Retiring`;
+    } else {
+      return false;
+    }
+  }
+}
