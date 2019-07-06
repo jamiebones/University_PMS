@@ -414,12 +414,12 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
   const staffScheduleToRetire = staffArray.filter(staff => {
     const staffSalary = staff.salaryStructure;
     const age = moment(staff.dob);
-    const diffAge = moment.duration(todayDate.diff(age));
+    //const diffAge = moment.duration(todayDate.diff(age));
     let staffAge = Math.round(todayDate.diff(age, "days") / 365);
     if (staffSalary && staffSalary.toUpperCase().includes("CONTISS")) {
       const yearsLeft = 65 - parseInt(staffAge);
       if (yearsLeft == years) {
-        console.log(Math.round(todayDate.diff(age, "days") / 365));
+        //console.log(Math.round(todayDate.diff(age, "days") / 365));
         staff.retirementType = "CONTISS";
         return staff;
       }

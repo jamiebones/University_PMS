@@ -35,6 +35,7 @@ import EditSalaryStructure from "../../pages/EditSalaryStructure/EditSalaryStruc
 import StaffSalaryStructure from "../../pages/StaffBySalaryStructure/StaffBySalaryStructure";
 import AddNewCadre from "../../pages/AddNewCadre/AddNewCadre";
 import NewPensionDashboard from "../../pages/NewPensionDashboard/NewPensionDashboard";
+import AddNewStaff from "../../pages/AddNewStaffData/AddNewStaffData";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -362,6 +363,17 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               path={`${match.path}/add_staff_documents`}
               pathAfterFailure="/logout"
               component={AddStaffDocuments}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["Records"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_staff_data`}
+              pathAfterFailure="/logout"
+              component={AddNewStaff}
               {...rest}
             />
 

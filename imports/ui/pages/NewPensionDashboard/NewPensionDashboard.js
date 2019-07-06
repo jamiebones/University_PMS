@@ -38,13 +38,24 @@ const splitFac = faculty => {
 
 const NewPensionDashboardStyles = styled.div`
   .pensionTable tr th {
-    color: deepskyblue;
-    background-color: #c0c0c0;
+    color: #fdfdfd;
+    background-color: #9a7070;
+  }
+
+  .pensionTable tr td:last-child {
+    background-color: #196f79;
+    color: #fff;
   }
 
   .Table {
     width: 100%;
     margin-top: 15px;
+  }
+  .retired {
+    font-size: 13px;
+  }
+  .retiring {
+    font-size: 13px;
   }
 `;
 
@@ -54,7 +65,8 @@ class NewPensionDashboard extends React.Component {
     this.state = {
       loading: false,
       staff: [],
-      years: ""
+      years: "",
+      viewingYears: ""
     };
     autoBind(this);
   }
@@ -69,7 +81,12 @@ class NewPensionDashboard extends React.Component {
     const selectedYear = parseInt(years);
     Meteor.call("staffmembers.getstaffRetirement", selectedYear, (err, res) => {
       if (!err) {
-        this.setState({ staff: res, loading: false, years: "" });
+        this.setState({
+          staff: res,
+          loading: false,
+          years: "",
+          viewingYears: selectedYear
+        });
       } else {
         this.setState({ loading: false });
         Bert.alert(`Error: ${err}`, "danger");
@@ -81,14 +98,14 @@ class NewPensionDashboard extends React.Component {
     const TEMPLATE = "xx";
     const parse = templateParser(TEMPLATE, parseDigit);
     const format = templateFormatter(TEMPLATE);
-    const { staff, loading, submitted, years } = this.state;
+    const { staff, loading, submitted, viewingYears, years } = this.state;
 
     return (
       <NewPensionDashboardStyles>
         <Row>
           <Col md={12}>
             <Row>
-              <Col md={2}>
+              <Col md={3}>
                 <FormGroup>
                   <ControlLabel>Year(s) to retirement:</ControlLabel>
                   <ReactInput
@@ -122,11 +139,20 @@ class NewPensionDashboard extends React.Component {
               <div>
                 {staff.length ? (
                   <div>
-                    <p className="lead text-center">
-                      List of staff retiring in {years} year(s) time
+                    <p className="lead text-center text-info">
+                      List of staff retiring in {viewingYears} year(s) time
+                      <span className="pull-right text-info">
+                        Total : {staff.length}
+                      </span>
                     </p>
 
-                    <Table responsive striped bordered condensed>
+                    <Table
+                      responsive
+                      striped
+                      bordered
+                      condensed
+                      className="pensionTable"
+                    >
                       <thead>
                         <tr>
                           <th>S/N</th>
@@ -191,15 +217,9 @@ class NewPensionDashboard extends React.Component {
 
                                 <td>
                                   {timeLeft.includes("Retired") ? (
-                                    <p>
-                                      <Label bsStyle="success">
-                                        {timeLeft}
-                                      </Label>
-                                    </p>
+                                    <p className="retired">{timeLeft}</p>
                                   ) : (
-                                    <p>
-                                      <Label bsStyle="info">{timeLeft}</Label>
-                                    </p>
+                                    <p className="retiring">{timeLeft}</p>
                                   )}
                                 </td>
                               </tr>

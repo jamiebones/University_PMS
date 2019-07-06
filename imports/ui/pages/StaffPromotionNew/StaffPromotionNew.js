@@ -185,7 +185,7 @@ class StaffPromotionNew extends React.Component {
     const staffDesignations = ReturnArrayOfDesignation(
       this.props.cadres || []
     )();
-    console.log(staffDesignations);
+
     return (
       <StaffPromotionNewStyles>
         <Row>

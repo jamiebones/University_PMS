@@ -538,3 +538,17 @@ export const ReturnArrayOfDesignation = array => {
     return sortArray;
   };
 };
+
+export const AddSlashToPhoneNumber = phoneNumber => {
+  let number = "";
+  for (let i = 0; i < phoneNumber.length; i++) {
+    if (i === 3) {
+      number += `-${phoneNumber[i]}`;
+    } else if (i === 7) {
+      number += `-${phoneNumber[i]}`;
+    } else {
+      number += phoneNumber[i];
+    }
+  }
+  return number;
+};
