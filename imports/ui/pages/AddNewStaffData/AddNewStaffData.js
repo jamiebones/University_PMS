@@ -1,18 +1,11 @@
 import React, { Component } from "react";
-import {
-  Row,
-  Col,
-  FormGroup,
-  ControlLabel,
-  Button,
-  Alert,
-  ButtonToolbar,
-  ButtonGroup,
-  InputGroup
-} from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Tabs from "react-responsive-tabs";
 import StaffBiodata from "../../components/BiodataComponent/BiodataComponent";
 import StaffOfficialComponent from "../../components/StaffOfficialComponent/StaffOfficialComponent";
+import AddStaffCertificate from "../../components/AddStaffCertificate/AddStaffCertificate";
+import PreviewStaffData from "../../components/PreviewStaffData/PreviewStaffData";
+
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
 }
@@ -26,7 +19,8 @@ class AddNewStaffData extends Component {
     this.state = {
       staff: {
         biodata: {},
-        official: {}
+        official: {},
+        qualifications: {}
       },
       selectedTab: "biodata"
     };
@@ -39,6 +33,7 @@ class AddNewStaffData extends Component {
     if (!_.isEmpty(staff)) {
       this.setState({ staff });
     }
+    //store.set("staff", "");
   }
 
   updateStaffData({ staffDataKey, staffKey, staffValue }, selectedTab) {
@@ -49,6 +44,16 @@ class AddNewStaffData extends Component {
       store.set("staff", editedStaff);
     });
     console.log(this.state);
+  }
+  clearData() {
+    this.setState({
+      staff: {
+        biodata: {},
+        official: {},
+        qualifications: {}
+      }
+    });
+    store.set("staff", "");
   }
   render() {
     const StaffData = [
@@ -69,6 +74,27 @@ class AddNewStaffData extends Component {
           <StaffOfficialComponent
             staffData={this.updateStaffData}
             staff={this.state.staff}
+          />
+        )
+      },
+      {
+        title: "Educational Qualifications",
+        key: "qualifications",
+        getContent: () => (
+          <AddStaffCertificate
+            staffData={this.updateStaffData}
+            staff={this.state.staff}
+          />
+        )
+      },
+      {
+        title: "Preview Entered Data",
+        key: "previewData",
+        getContent: () => (
+          <PreviewStaffData
+            staffData={this.updateStaffData}
+            staff={this.state.staff}
+            clearData={this.clearData}
           />
         )
       }

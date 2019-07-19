@@ -120,25 +120,29 @@ class StaffOfficialComponent extends React.Component {
   }
 
   handleStepChange(value) {
-    this.props.staffData(
-      {
-        staffDataKey: "official",
-        staffKey: "step",
-        staffValue: value
-      },
-      "official"
-    );
+    this.setState({ stepState: value }, () => {
+      this.props.staffData(
+        {
+          staffDataKey: "official",
+          staffKey: "step",
+          staffValue: value
+        },
+        "official"
+      );
+    });
   }
 
   handleSalaryLevelChange(value) {
-    this.props.staffData(
-      {
-        staffDataKey: "official",
-        staffKey: "salaryLevel",
-        staffValue: value
-      },
-      "official"
-    );
+    this.setState({ salaryLevelState: value }, () => {
+      this.props.staffData(
+        {
+          staffDataKey: "official",
+          staffKey: "salaryLevel",
+          staffValue: value
+        },
+        "official"
+      );
+    });
   }
 
   render() {
@@ -165,7 +169,7 @@ class StaffOfficialComponent extends React.Component {
       }
     } = this.props;
 
-    const { designations } = this.state;
+    const { designations, salaryLevelState, stepState } = this.state;
 
     return (
       <StaffOfficialComponentStyles>
@@ -326,7 +330,7 @@ class StaffOfficialComponent extends React.Component {
                       <ControlLabel>Level</ControlLabel>
 
                       <ReactInput
-                        value={salaryLevel || ""}
+                        value={salaryLevel}
                         onChange={value => this.handleSalaryLevelChange(value)}
                         className="form-control"
                         parse={parse}
@@ -341,7 +345,7 @@ class StaffOfficialComponent extends React.Component {
                       <ControlLabel>Step</ControlLabel>
 
                       <ReactInput
-                        value={step || ""}
+                        value={step}
                         onChange={value => this.handleStepChange(value)}
                         className="form-control"
                         parse={parse}

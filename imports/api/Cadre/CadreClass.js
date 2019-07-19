@@ -20,6 +20,7 @@ const Cadre = Class.create({
   collection: Cadres,
   fields: {
     cadre: String,
+    cadreType: String,
     cadreRank: {
       type: [Object]
     }

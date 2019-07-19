@@ -34,6 +34,18 @@ const RecordsNavigation = ({ history }) => (
         </React.Fragment>
       </NavDropdown>
     </Nav>
+
+    <Nav>
+      <LinkContainer
+        to="/auth/add_staff_data"
+        exact
+        onClick={() => history.push("/auth/add_staff_data")}
+      >
+        <NavItem eventKey={13} href="#">
+          Add New Staff
+        </NavItem>
+      </LinkContainer>
+    </Nav>
     <Nav>
       <LinkContainer
         to="/auth/nominal_roll"

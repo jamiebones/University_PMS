@@ -119,7 +119,7 @@ class StaffQualification extends React.Component {
                 </FormGroup>
 
                 <FormGroup>
-                  <ControlLabel>Promotion year:</ControlLabel>
+                  <ControlLabel>Year obtained:</ControlLabel>
                   <ReactInput
                     value={this.state.certYear}
                     onChange={value => this.onCertYearChange(value)}

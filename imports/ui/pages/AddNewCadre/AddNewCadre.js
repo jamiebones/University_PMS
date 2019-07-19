@@ -19,6 +19,7 @@ import { _ } from "meteor/underscore";
 import { Cadres } from "../../../api/Cadre/CadreClass";
 import autoBind from "react-autobind";
 import AddCadreComponent from "../../components/AddCadreComponent/AddCadreComponent";
+import { SortArrayOfObjects } from "../../../modules/utilities";
 
 const AddNewCadreStyles = styled.div`
   .cadre {
@@ -43,33 +44,65 @@ class AddNewCadre extends React.Component {
       cadreComponent: [],
       startEdit: false,
       cadre: "",
-      cadreId: ""
+      cadreId: "",
+      staffType: "0",
+      cadreType: ""
     };
     autoBind(this);
   }
 
   saveCadreInformation() {
-    const { cadreName, cadreComponent, startEdit, cadreId } = this.state;
+    const {
+      cadreName,
+      cadreComponent,
+      startEdit,
+      cadreId,
+      staffType
+    } = this.state;
     let cadreRankArray = [];
     cadreComponent.map(comp => {
       const obj = {};
       obj.rank = comp.rank;
       obj.level = comp.level;
-      cadreRankArray.push(obj);
+      if (comp.rank !== "" || comp.level !== "") {
+        cadreRankArray.push(obj);
+      }
     });
+
+    //
+    if (cadreRankArray.length == "0") {
+      Bert.alert("Please add a rank in the selected cadre", "danger");
+      return;
+    }
+
+    if (staffType == "0") {
+      Bert.alert("Please select staff type", "danger");
+      return;
+    }
+
+    if (cadreName == "") {
+      Bert.alert("Please enter cadre name", "danger");
+      return;
+    }
+
     const cadre = cadreName;
+    const cadreType = staffType;
+    const sortedArray = SortArrayOfObjects(cadreRankArray, "level");
+    console.log(sortedArray);
     this.setState({ submitted: !this.state.submitted });
     Meteor.call(
       "cadre.savenewCadre",
-      cadreRankArray,
+      sortedArray,
       cadre,
       startEdit,
       cadreId,
+      cadreType,
       err => {
         if (err) {
           this.setState({
             submitted: !this.state.submitted,
             cadreName: "",
+            staffType: "",
             cadreComponent: [],
             cadre: ""
           });
@@ -89,14 +122,27 @@ class AddNewCadre extends React.Component {
       rank: "",
       level: ""
     };
+    const { cadreComponent, cadre } = this.state;
+
+    if (cadre !== "" && cadreComponent[0].rank !== "") {
+      return;
+    }
+
     this.setState({
       cadre: this.state.cadreName,
+      cadreType: this.state.staffType,
       cadreComponent: [cadreObject]
     });
   }
 
   onChange(e) {
     this.setState({ cadreName: e.target.value.toUpperCase() });
+  }
+
+  onStaffTypeChange(e) {
+    e.preventDefault();
+    if (e.target.value === "0") return;
+    this.setState({ staffType: e.target.value });
   }
 
   addRankComponent() {
@@ -129,14 +175,15 @@ class AddNewCadre extends React.Component {
     this.setState({ cadreComponent: stateCadreRank });
   }
 
-  cadreSelected(e, { cadre, cadreRank, _id }) {
+  cadreSelected(e, { cadre, cadreRank, _id, cadreType }) {
     //lets clear the state first
     this.setState({
       cadreName: "",
       cadreComponent: [],
       startEdit: false,
       cadre: "",
-      cadreId: ""
+      cadreId: "",
+      staffType: "0"
     });
     let arrayObject = [];
     cadreRank.map((e, index) => {
@@ -152,7 +199,8 @@ class AddNewCadre extends React.Component {
       cadre: cadre,
       cadreComponent: arrayObject,
       startEdit: true,
-      cadreId: _id
+      cadreId: _id,
+      staffType: cadreType || "0"
     });
   }
 
@@ -160,6 +208,7 @@ class AddNewCadre extends React.Component {
     this.setState({
       cadreName: "",
       cadreComponent: [],
+      staffType: "0",
       startEdit: false,
       cadre: "",
       cadreId: ""
@@ -186,9 +235,28 @@ class AddNewCadre extends React.Component {
               />
             </FormGroup>
 
+            <FormGroup>
+              <ControlLabel>
+                <span className="text-danger">*</span>Staff Type:
+              </ControlLabel>
+
+              <select
+                value={this.state.staffType}
+                onChange={this.onStaffTypeChange}
+                className="form-control"
+              >
+                <option value="0">select staff type</option>
+                <option value="Senior Staff">Senior Staff</option>
+                <option value="Junior Staff">Junior Staff</option>
+              </select>
+            </FormGroup>
+
             <HelpBlock>
               <h5>
-                <b>Enter the cadre name and click on the save button</b>
+                <b>
+                  Enter the cadre name and select the staff type click on the
+                  save button
+                </b>
               </h5>
             </HelpBlock>
 
@@ -198,9 +266,14 @@ class AddNewCadre extends React.Component {
               </Button>
             </FormGroup>
 
-            {this.state.cadre ? (
+            {this.state.cadre && this.state.staffType !== "0" ? (
               <div>
-                <p>{this.state.cadre}</p>
+                <div className="text-center">
+                  <p>Cadre : {this.state.cadre}</p>
+
+                  <p>Staff Type : {this.state.staffType.toUpperCase()}</p>
+                </div>
+
                 {cadreComponent.length &&
                   cadreComponent.map(({ rank, level }, index) => {
                     return (
@@ -214,29 +287,32 @@ class AddNewCadre extends React.Component {
                     );
                   })}
 
-                <ButtonToolbar>
-                  <ButtonGroup>
-                    <Button
-                      onClick={this.addRankComponent}
-                      bsSize="small"
-                      bsStyle="info"
-                    >
-                      Add more rank
-                    </Button>
-
-                    {cadreComponent.length > 0 && (
-                      <Button
-                        onClick={e =>
-                          this.removeRankComponent(e, cadreComponent.length - 1)
-                        }
-                        bsSize="small"
-                        bsStyle="danger"
-                      >
-                        Remove rank
+                <div className="pull-right">
+                  <ButtonToolbar>
+                    <ButtonGroup>
+                      <Button onClick={this.addRankComponent} bsSize="small">
+                        Add more rank
                       </Button>
-                    )}
-                  </ButtonGroup>
-                </ButtonToolbar>
+
+                      {cadreComponent.length > 0 && (
+                        <Button
+                          onClick={e =>
+                            this.removeRankComponent(
+                              e,
+                              cadreComponent.length - 1
+                            )
+                          }
+                          bsSize="small"
+                        >
+                          Remove rank
+                        </Button>
+                      )}
+                    </ButtonGroup>
+                  </ButtonToolbar>
+                </div>
+
+                <br />
+                <br />
 
                 <div className="toolbar">
                   <HelpBlock>
@@ -272,13 +348,18 @@ class AddNewCadre extends React.Component {
             {!loading ? (
               <div>
                 {cadres.length ? (
-                  cadres.map(({ cadre, cadreRank, _id }, index) => {
+                  cadres.map(({ cadre, cadreRank, _id, cadreType }, index) => {
                     return (
                       <div
                         key={index}
                         className="cadre"
                         onClick={e =>
-                          this.cadreSelected(e, { cadre, cadreRank, _id })
+                          this.cadreSelected(e, {
+                            cadre,
+                            cadreRank,
+                            _id,
+                            cadreType
+                          })
                         }
                       >
                         {cadre}{" "}

@@ -1,7 +1,11 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import rateLimit from "../../modules/rate-limit";
-import { StaffMember, Promotion } from "../../api/StaffMember/StaffMemberClass";
+import {
+  StaffMember,
+  Promotion,
+  StaffMembers
+} from "../../api/StaffMember/StaffMemberClass";
 import { Designation } from "../../api/Designation/DesignationClass";
 import { UniversityUnit } from "../../api/UniversityUnit/UniversityUnitClass";
 import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
@@ -270,6 +274,18 @@ Meteor.methods({
     editStaff.maritalStatus = maritalStatus;
     editStaff.biodata.title = title;
     editStaff.save();
+  },
+
+  "staffmembers.insertnewstaff": function StaffMethods(staff) {
+    check(staff, Object);
+    const { staffId } = staff;
+    //find the member
+    const existingStaff = StaffMembers.findOne({ staffId: staffId });
+    if (!_.isEmpty(existingStaff)) {
+      throw new Meteor.Error(`${staffId} already exist`);
+    }
+    //we are good
+    return StaffMembers.insert(staff);
   },
 
   "staffMembers.promoteStaff": function StaffMethods(promotionObject) {

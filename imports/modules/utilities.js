@@ -526,6 +526,19 @@ export const SortArray = array => {
   return array;
 };
 
+export const SortArrayOfObjects = (array, key) => {
+  array.sort(function(x, y) {
+    if (parseInt(x[key]) < parseInt(y[key])) {
+      return -1;
+    }
+    if (parseInt(x[key]) > parseInt(y[key])) {
+      return 1;
+    }
+    return 0;
+  });
+  return array;
+};
+
 export const ReturnArrayOfDesignation = array => {
   return function() {
     let newArray = [];
@@ -551,4 +564,35 @@ export const AddSlashToPhoneNumber = phoneNumber => {
     }
   }
   return number;
+};
+
+export const GetRealValue = key => {
+  let obj = {
+    S: "single",
+    M: "married",
+    D: "divorced",
+    W: "widow",
+    W: "widower",
+    "1": "Teaching staff",
+    "2": "Non Teaching staff",
+    active: "pensionable"
+  };
+  return obj[key] || key;
+};
+
+export const SearchArray = (element, array, key) => {
+  let len = array.length,
+    str = element.toString().toLowerCase();
+  for (let i = 0; i < len; i++) {
+    if (key) {
+      if (array[i][key].toLowerCase() == str) {
+        return i;
+      }
+    } else {
+      if (array[i].toLowerCase() == str) {
+        return i;
+      }
+    }
+  }
+  return -1;
 };
