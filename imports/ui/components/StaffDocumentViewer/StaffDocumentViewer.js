@@ -5,11 +5,11 @@ import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 //import PDF from "react-pdf-js";
 import { withTracker } from "meteor/react-meteor-data";
 import { ReplaceSlash } from "../../../modules/utilities";
-import Loading from "../../components/Loading/Loading";
+import Loading from "../Loading/Loading";
 import autoBind from "react-autobind";
 import { pdfjs } from "react-pdf";
 import styled from "styled-components";
-import PdfViewerComponent from "../../components/PdfViewerComponent/PdfViewerComponent";
+import PdfViewerComponent from "../PdfViewerComponent/PdfViewerComponent";
 if (Meteor.isClient) {
   pdfjs.GlobalWorkerOptions.workerSrc =
     "/packages/geekho_pdfjs/build/pdf.worker.js";

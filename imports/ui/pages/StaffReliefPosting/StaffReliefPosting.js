@@ -208,9 +208,6 @@ export default (StaffReliefPostingContainer = withTracker(props => {
       );
     }
   }
-
-  console.log(designationReactive.get());
-
   return {
     loading: subscription && !subscription.ready(),
     staff: staffReactive.get(),

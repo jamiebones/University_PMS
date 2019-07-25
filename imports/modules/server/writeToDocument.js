@@ -1,8 +1,5 @@
-import { Meteor } from "meteor/meteor";
 import moment from "moment";
 import hummus from "hummus";
-//const AWS = require("aws-sdk");
-//const fse = require("fs-extra");
 
 export default (WriteToDocument = file => {
   return new Promise((resolve, reject) => {
@@ -14,7 +11,6 @@ export default (WriteToDocument = file => {
       const index = file.path.lastIndexOf("/");
       const fileName = file.path.slice(index);
       const modifiedPath = file._storagePath + fileName;
-      console.log(modifiedPath);
       const pdfWriter = hummus.createWriterToModify(file.path, {
         modifiedFilePath: modifiedPath,
         log: "assets/app/pdfLog.txt"

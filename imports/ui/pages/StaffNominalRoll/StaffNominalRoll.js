@@ -120,6 +120,10 @@ const NominalRowStyles = styled.div`
     font-size: 18;
     font-style: oblique;
   }
+
+  .dropdown-item {
+    padding: 10px;
+  }
 `;
 
 class StaffNominalRoll extends React.Component {

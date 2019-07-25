@@ -68,6 +68,37 @@ const JSENavigation = ({ history }) => (
         </React.Fragment>
       </NavDropdown>
     </Nav>
+
+    <Nav>
+      <NavDropdown eventKey="9" title="Documents" id="nav-documents">
+        <React.Fragment>
+          <LinkContainer
+            to="/auth/add_staff_documents"
+            exact
+            onClick={() => history.push("/auth/add_staff_documents")}
+          >
+            <MenuItem eventKey="9.1">Add Staff Document</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/add_personnel_documents"
+            exact
+            onClick={() => history.push("/auth/add_personnel_documents")}
+          >
+            <MenuItem eventKey="9.2">SATS Documents</MenuItem>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/auth/view_dhr_documents"
+            exact
+            onClick={() => history.push("/auth/view_dhr_documents")}
+          >
+            <MenuItem eventKey="9.2">View Documents</MenuItem>
+          </LinkContainer>
+        </React.Fragment>
+      </NavDropdown>
+    </Nav>
+
     <Nav>
       <NavDropdown eventKey="4" title="Postings" id="nav-posting">
         <React.Fragment>

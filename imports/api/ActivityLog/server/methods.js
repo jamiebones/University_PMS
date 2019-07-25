@@ -25,7 +25,7 @@ Meteor.methods({
     return [
       ActivityLogs.find(
         { type: type },
-        { sort: { activityTime: 1 }, skip: skipDoc, limit: limitDoc }
+        { sort: { activityTime: -1 }, skip: skipDoc, limit: limitDoc }
       ).fetch(),
       ActivityLogs.find({ type: type }).count()
     ];

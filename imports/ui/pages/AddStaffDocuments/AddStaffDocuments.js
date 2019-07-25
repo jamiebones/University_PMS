@@ -1,17 +1,15 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import Loading from "../../components/Loading/Loading";
 import { Alert, Button, Col, Row } from "react-bootstrap";
 import { ReactiveVar } from "meteor/reactive-var";
 import { withTracker } from "meteor/react-meteor-data";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import Documents from "../../../api/Documents/Documents";
 import TextField from "../../components/Common/TextFieldGroup";
-import { Bert } from "meteor/themeteorchef:bert";
 import styled from "styled-components";
 import { _ } from "meteor/underscore";
 import { StaffType } from "../../../modules/utilities";
 import autoBind from "react-autobind";
+import AddDocument from "../../components/AddDocument/AddDocument";
 
 const StyledAddDocuments = styled.div`
   .alertDiv {
@@ -29,11 +27,7 @@ class AddStaffDocuments extends React.Component {
     this.state = {
       staffId: "",
       staff: {},
-      documents: [],
-      uploading: [],
-      progress: 0,
-      fileStatus: "",
-      inProgress: false
+      meta: {}
     };
     autoBind(this);
   }
@@ -61,112 +55,9 @@ class AddStaffDocuments extends React.Component {
     this.props.staffIdReactive.set(staffId);
   }
 
-  uploadIt(e) {
-    e.preventDefault();
-    if (e.target.files) {
-      let files = e.target.files;
-      let filesArr = Array.from(files);
-      let count = null;
-      for (let i = 0; i < filesArr.length; i++) {
-        const file = filesArr[i];
-
-        let self = this;
-        //type here means the reference type
-        //1 = individual
-        //2 = generic
-        if (file) {
-          let uploadInstance = Documents.insert(
-            {
-              file: file,
-              meta: {
-                staffId: this.state.staffId.toUpperCase(),
-                type: "1"
-              },
-              streams: "dynamic",
-              chunkSize: "dynamic",
-              allowWebWorkers: true // If you see issues with uploads, change this to false
-            },
-            false
-          );
-
-          self.setState({
-            uploading: uploadInstance, // Keep track of this instance to use below
-            inProgress: true // Show the progress bar now
-          });
-
-          // These are the event functions, don't need most of them, it shows where we are in the process
-          uploadInstance.on("start", function() {
-            console.log("Starting");
-            self.setState({ fileStatus: `uploading ${file.name}` });
-          });
-
-          uploadInstance.on("end", function(error, fileObj) {
-            self.setState({ fileStatus: `Finished uploading ${fileObj.name}` });
-          });
-
-          uploadInstance.on("uploaded", function(error, fileObj) {
-            console.log("uploaded: ", fileObj);
-            count += 1;
-            if (count == filesArr.length) {
-              self.refs["fileinput"].value = "";
-              Bert.alert(`${count} file(s) uploaded successfully`, "success");
-            }
-
-            self.setState({
-              uploading: [],
-              progress: 0,
-              inProgress: false,
-              fileStatus: ""
-            });
-          });
-
-          uploadInstance.on("error", function(error, fileObj) {
-            console.log("Error during upload: " + error);
-          });
-
-          uploadInstance.on("progress", function(progress, fileObj) {
-            console.log("Upload Percentage: " + progress);
-            // Update our progress bar
-            self.setState({
-              progress: progress
-            });
-          });
-
-          uploadInstance.start(); // Must manually start the upload
-        }
-      }
-    }
-  }
-
-  showUploads() {
-    if (!_.isEmpty(this.state.uploading)) {
-      return (
-        <div>
-          {this.state.uploading.file.name}
-
-          <div className="progress progress-bar-default">
-            <div
-              style={{ width: this.state.progress + "%" }}
-              aria-valuemax="100"
-              aria-valuemin="0"
-              aria-valuenow={this.state.progress || 0}
-              role="progressbar"
-              className="progress-bar"
-            >
-              <span className="sr-only">
-                {this.state.progress}% Complete (success)
-              </span>
-              <span>{this.state.progress}%</span>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  }
-
   render() {
     const { staff } = this.props;
+    const { staffId } = this.state;
     return (
       <StyledAddDocuments>
         <Row>
@@ -191,7 +82,7 @@ class AddStaffDocuments extends React.Component {
 
         <Row>
           <Col mdOffset={2} md={5}>
-            {!_.isEmpty(staff) && this.state.staffId ? (
+            {!_.isEmpty(staff) && staffId ? (
               <div className="alertDiv">
                 <Alert bsStyle="info">
                   <p>
@@ -205,23 +96,19 @@ class AddStaffDocuments extends React.Component {
                   <p>Staff Type: {staff && StaffType(staff.staffType)}</p>
                 </Alert>
 
-                <input
-                  type="file"
-                  id="fileinput"
-                  disabled={this.state.inProgress}
-                  multiple
-                  ref="fileinput"
-                  onChange={this.uploadIt}
+                <AddDocument
+                  meta={{
+                    staffId: staffId,
+                    type: "1",
+                    userId: Meteor.userId()
+                  }}
                 />
-                <br />
-                <br />
               </div>
             ) : (
               <div>
                 <p>No details</p>
               </div>
             )}
-            {this.showUploads()}
           </Col>
         </Row>
       </StyledAddDocuments>

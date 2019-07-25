@@ -18,7 +18,7 @@ import StaffPromotionNew from "../../pages/StaffPromotionNew/StaffPromotionNew";
 import HomePageDashboard from "../../pages/HomePageDashboard/HomePageDashboard";
 import StaffNominalRoll from "../../pages/StaffNominalRoll/StaffNominalRoll";
 import StaffPostingStats from "../../pages/StaffPostingStats/StaffPostingStats";
-import ViewStaffDocuments from "../../components/PdfViewer/PdfViewer";
+import ViewStaffDocuments from "../../components/StaffDocumentViewer/StaffDocumentViewer";
 import AdminAccountPage from "../../pages/AdminAccountPage/AdminAccountPage";
 import UserStatus from "../../pages/UserStatus/UserStatus";
 import Profile from "../../pages/Profile/Profile";
@@ -36,6 +36,8 @@ import StaffSalaryStructure from "../../pages/StaffBySalaryStructure/StaffBySala
 import AddNewCadre from "../../pages/AddNewCadre/AddNewCadre";
 import NewPensionDashboard from "../../pages/NewPensionDashboard/NewPensionDashboard";
 import AddNewStaff from "../../pages/AddNewStaffData/AddNewStaffData";
+import AddPersonnelDocuments from "../../pages/AddPersonnelDocuments/AddPersonnelDocuments";
+import ViewPersonnelDocuments from "../../pages/ViewPersonnelDocuments/ViewPersonnelDocuments";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -327,6 +329,39 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
+              allowedRoles={["SATS", "Records", "JSE"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_staff_documents`}
+              pathAfterFailure="/logout"
+              component={AddStaffDocuments}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "JSE"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/view_dhr_documents`}
+              pathAfterFailure="/logout"
+              component={ViewPersonnelDocuments}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "JSE"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/add_personnel_documents`}
+              pathAfterFailure="/logout"
+              component={AddPersonnelDocuments}
+              {...rest}
+            />
+
+            <Authorized
               allowedRoles={["SATS", "Director", "JSE", "Registrar"]}
               group="Personnel"
               userId={userId}
@@ -355,16 +390,6 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             {/* sats|| || jse|| links  */}
 
             {/* records links start  */}
-            <Authorized
-              allowedRoles={["Records"]}
-              group="Personnel"
-              userId={userId}
-              exact
-              path={`${match.path}/add_staff_documents`}
-              pathAfterFailure="/logout"
-              component={AddStaffDocuments}
-              {...rest}
-            />
 
             <Authorized
               allowedRoles={["Records"]}

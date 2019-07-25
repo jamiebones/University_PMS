@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
+import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
 if (Meteor.isServer) {
   import WriteToDocument from "../../modules/server/writeToDocument";
 }
@@ -59,32 +60,39 @@ const Documents = new FilesCollection({
 
           //check here if we have personal document upload
           //when the file.meta.type == 1
+          const userId = file.meta.userId;
+          delete file.meta.userId;
           if (file.meta.type === "1") {
+            console.log(file.meta);
+            const staffId = file.meta.staffId.toUpperCase();
             //find the max serial here
             const documents = this.find({
-              "meta.staffId": file.meta.staffId,
+              "meta.staffId": staffId,
               "meta.serial": { $exists: true, $ne: null }
             }).fetch();
             let reference = "";
             if (_.isEmpty(documents)) {
               //new serial
               file.meta.serial = 1;
-              reference = `${file.meta.staffId}/1`;
+              file.meta.staffId = staffId;
+              reference = `${staffId}/1`;
               file.meta.reference = reference;
             } else {
               //find the max serial here
               let maxSerial = FindMax(documents, "meta");
               file.meta.serial = maxSerial + 1;
-              reference = `${file.meta.staffId}/${maxSerial + 1}`;
+              file.meta.staffId = staffId;
+              reference = `${staffId}/${maxSerial + 1}`;
               file.meta.reference = reference;
             }
           } else if (file.meta.type === "2") {
             //we have personnel documents uploaded here
             const documents = this.find({
-              "meta.reference": file.meta.reference,
+              "meta.unit": file.meta.unit,
               "meta.serial": { $exists: true, $ne: null }
             }).fetch();
             let reference = "";
+            console.log(documents);
             if (_.isEmpty(documents)) {
               //new serial
               file.meta.serial = 1;
@@ -101,6 +109,19 @@ const Documents = new FilesCollection({
           //console.dir(file);
           WriteToDocument(file)
             .then(pdf => {
+              //this is where we write the person that uploaded the file
+              const newActivity = new ActivityLog();
+              newActivity.username = userId;
+              const user = Meteor.users.findOne(userId);
+              newActivity.name = `${user.profile.name.first} ${
+                user.profile.name.last
+              }`;
+              newActivity.activityTime = new Date().toISOString();
+              newActivity.actionTaken = `Added documents with reference  ${
+                file.meta.reference
+              } `;
+              newActivity.type = "Document added";
+              newActivity.save();
               this.update(file._id, { $set: { meta: file.meta } });
             })
             .catch(err => {
