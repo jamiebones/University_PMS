@@ -11,7 +11,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Roles } from "meteor/alanning:roles";
 import Navigation from "../../components/Navigation/Navigation";
-//import Authenticated from '../../components/Authenticated/Authenticated';
 import Public from "../../components/Public/Public";
 import NormalRoute from "../../components/NormalRoute/NormalRoute";
 import Index from "../../pages/Index/Index";
@@ -24,11 +23,8 @@ import ResetPassword from "../../pages/ResetPassword/ResetPassword";
 import AuthorizedLayout from "../../layouts/AuthorizedLayout/AuthorizedLayout";
 import { onLogin, onLogout } from "../../../modules/redux/actions";
 import withTrackerSSR from "../../../modules/with-tracker-ssr";
-
 import NotFound from "../../pages/NotFound/NotFound";
-if (Meteor.isClient) {
-  import "./App.scss";
-}
+
 
 const StyledApp = styled.div`
   visibility: ${props =>

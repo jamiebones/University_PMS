@@ -1,18 +1,18 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable comma-dangle */
+/* eslint-disable quotes */
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
-import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
-import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
-import { Designations } from "../../../api/Designation/DesignationClass";
-import { SalaryScales } from "../../../api/SalaryScale/SalaryScaleClass";
-import { Cadres } from "../../../api/Cadre/CadreClass";
 import { _ } from "meteor/underscore";
-import { GetDetailsBasedOnRole } from "../../../modules/utilities";
-import {
-  CalculateDueForRetirement,
-  CalculateStaffDueForRetirementNew
-} from "../../../modules/utilitiesComputation";
-import PrintStaffDueForPromotion from "../../../modules/server/printdueforpromotionlist";
 import moment from "moment";
+import { StaffMembers } from "../StaffMemberClass";
+import { StaffReliefPostings } from "../../StaffReliefPosting/StaffReliefPostingClass";
+import { Designations } from "../../Designation/DesignationClass";
+// eslint-disable-next-line import/no-duplicates
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import { CalculateStaffDueForRetirementNew } from "../../../modules/utilitiesComputation";
+import PrintStaffDueForPromotion from "../../../modules/server/printdueforpromotionlist";
+// eslint-disable-next-line import/no-duplicates
 import { SortArray } from "../../../modules/utilities";
 
 Meteor.methods({
@@ -30,7 +30,6 @@ Meteor.methods({
     return result;
   },
   getNominalRoll: function StaffMembersmethod() {
-    console.time();
     const pipeline = [
       {
         $project: {
@@ -51,24 +50,26 @@ Meteor.methods({
     ];
     const result = StaffMembers.aggregate(pipeline);
 
-    let arrayTop = [];
-    let finalArray = [];
+    const arrayTop = [];
+    const finalArray = [];
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < result.length; i++) {
       const current = result[i];
-      if (current._id == "OFFICE OF THE VICE-CHANCELLOR") {
+      const currentId = current._id;
+      if (currentId === "OFFICE OF THE VICE-CHANCELLOR") {
         arrayTop[0] = result[i];
       } else if (
-        current._id == "OFFICE OF THE DEPUTY VICE-CHANCELLOR (ACADEMIC)"
+        currentId === "OFFICE OF THE DEPUTY VICE-CHANCELLOR (ACADEMIC)"
       ) {
         arrayTop[1] = result[i];
       } else if (
-        current._id == "OFFICE OF THE DEPUTY VICE-CHANCELLOR (ADMINISTRATION)"
+        currentId === "OFFICE OF THE DEPUTY VICE-CHANCELLOR (ADMINISTRATION)"
       ) {
         arrayTop[2] = result[i];
-      } else if (current._id == "OFFICE OF THE VICE-CHANCELLOR") {
+      } else if (currentId === "OFFICE OF THE VICE-CHANCELLOR") {
         arrayTop[3] = result[i];
-      } else if (current._id == "OFFICE OF THE REGISTRAR") {
+      } else if (currentId === "OFFICE OF THE REGISTRAR") {
         arrayTop[4] = result[i];
       } else {
         finalArray.push(result[i]);
@@ -491,9 +492,8 @@ Meteor.methods({
   },
   "staffmembers.getStaffBySalaryScale": function StaffMembersmethod(scale) {
     check(scale, String);
-    const salaryScale = new RegExp(`^${scale} \/`);
     const staff = StaffMembers.find(
-      { salaryStructure: salaryScale },
+      { salaryStructure: { $regex: scale } },
       { sort: { designation: 1 } }
     ).fetch();
     return staff;

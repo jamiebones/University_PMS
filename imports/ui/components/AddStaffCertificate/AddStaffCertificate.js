@@ -51,6 +51,7 @@ class StaffQualification extends React.Component {
 
   saveCertificate() {
     const { cert, certYear } = this.state;
+    // eslint-disable-next-line react/destructuring-assignment
     const { certificates } = this.props.staff.qualifications;
     if (!cert && !certYear) return;
     const newCert = {
@@ -58,6 +59,7 @@ class StaffQualification extends React.Component {
       date: certYear
     };
 
+    // eslint-disable-next-line react/destructuring-assignment
     this.props.staffData(
       {
         staffDataKey: "qualifications",
@@ -70,11 +72,12 @@ class StaffQualification extends React.Component {
   }
 
   removeCertificate(e, index) {
+    // eslint-disable-next-line react/destructuring-assignment
     const { certificates } = this.props.staff.qualifications;
     const certificatesArray = certificates || [];
-    const remainCertificates = certificatesArray.filter(e => {
-      return e !== certificatesArray[index];
-    });
+    const remainCertificates = certificatesArray.filter(
+      e => e !== certificatesArray[index]
+    );
 
     this.props.staffData(
       {
@@ -101,16 +104,16 @@ class StaffQualification extends React.Component {
           <Col md={4}>
             <div className="certForm">
               {certificates &&
-                certificates.map(({ cert, date }, index) => {
-                  return (
-                    <p
-                      key={index}
-                      onClick={e => this.removeCertificate(e, index)}
-                    >
-                      {cert} : <span>{date}</span>
-                    </p>
-                  );
-                })}
+                certificates.map(({ cert, date }, index) => (
+                  // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+                  // eslint-disable-next-line react/jsx-indent
+                  <p
+                    key={index}
+                    onClick={e => this.removeCertificate(e, index)}
+                  >
+                    {cert} : <span>{date}</span>
+                  </p>
+                ))}
               <FormGroup>
                 <ControlLabel>Certificate</ControlLabel>
                 <input
