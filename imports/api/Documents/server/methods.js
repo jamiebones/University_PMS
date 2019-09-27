@@ -30,6 +30,7 @@ Meteor.methods({
       let link = Documents.findOne({ _id: aFile._id }).link();
       documentArray.push(link);
     });
+    console.log(documentArray);
     return documentArray;
   }
 });

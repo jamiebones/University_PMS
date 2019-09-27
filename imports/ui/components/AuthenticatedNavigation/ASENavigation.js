@@ -73,7 +73,7 @@ const ASENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/add_personnel_documents")}
           >
-            <MenuItem eventKey="9.2">SATS Documents</MenuItem>
+            <MenuItem eventKey="9.2">ASE Documents</MenuItem>
           </LinkContainer>
 
           <LinkContainer

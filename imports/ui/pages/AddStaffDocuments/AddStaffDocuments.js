@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React from "react";
 import { Meteor } from "meteor/meteor";
 import { Alert, Button, Col, Row } from "react-bootstrap";
@@ -12,11 +13,16 @@ import autoBind from "react-autobind";
 import AddDocument from "../../components/AddDocument/AddDocument";
 
 const StyledAddDocuments = styled.div`
+  margin-top: 50px;
   .alertDiv {
     margin-top: 20px;
     p {
       font-style: italic;
       color: #000;
+      span {
+        letter-spacing: 2px;
+        margin-left: 5px;
+      }
     }
   }
 `;
@@ -61,7 +67,7 @@ class AddStaffDocuments extends React.Component {
     return (
       <StyledAddDocuments>
         <Row>
-          <Col md={4} mdOffset={2}>
+          <Col md={4} mdOffset={4}>
             <TextField
               placeholder="Staff personal number"
               name="staffId"
@@ -81,19 +87,29 @@ class AddStaffDocuments extends React.Component {
         </Row>
 
         <Row>
-          <Col mdOffset={2} md={5}>
+          <Col mdOffset={4} md={4}>
             {!_.isEmpty(staff) && staffId ? (
               <div className="alertDiv">
                 <Alert bsStyle="info">
                   <p>
-                    Name: {staff.biodata.firstName} {staff.biodata.middleName}{" "}
-                    &nbsp;
-                    {staff.biodata.surname}
+                    Name:{" "}
+                    <span>
+                      {staff.biodata.firstName} {staff.biodata.middleName}{" "}
+                      &nbsp;
+                      {staff.biodata.surname}
+                    </span>
                   </p>
 
-                  <p>Designation: {staff && staff.designation}</p>
-                  <p>Salary Scale: {staff && staff.salaryStructure}</p>
-                  <p>Staff Type: {staff && StaffType(staff.staffType)}</p>
+                  <p>
+                    Designation: <span>{staff && staff.designation}</span>
+                  </p>
+                  <p>
+                    Salary Scale: <span>{staff && staff.salaryStructure}</span>
+                  </p>
+                  <p>
+                    Staff Type:{" "}
+                    <span>{staff && StaffType(staff.staffType)}</span>
+                  </p>
                 </Alert>
 
                 <AddDocument
@@ -118,7 +134,7 @@ class AddStaffDocuments extends React.Component {
 
 let staffIdReactive = new ReactiveVar("");
 
-export default (AddStaffDocumentContainer = withTracker(({}) => {
+export default AddStaffDocumentContainer = withTracker(({}) => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -136,4 +152,4 @@ export default (AddStaffDocumentContainer = withTracker(({}) => {
     staff: StaffMembers.findOne(query),
     staffIdReactive
   };
-})(AddStaffDocuments));
+})(AddStaffDocuments);

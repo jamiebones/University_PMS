@@ -124,6 +124,9 @@ const NominalRowStyles = styled.div`
   .dropdown-item {
     padding: 10px;
   }
+  .form-control {
+    height: 50px;
+  }
 `;
 
 class StaffNominalRoll extends React.Component {
@@ -289,7 +292,7 @@ class StaffNominalRoll extends React.Component {
 
 let selectedDeptReactiveVar = new ReactiveVar("");
 
-export default (StaffNominalRoll = withTracker(() => {
+export default StaffNominalRoll = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -309,4 +312,4 @@ export default (StaffNominalRoll = withTracker(() => {
     department: UniversityUnits.find({}, { sort: { name: 1 } }).fetch(),
     selectedDeptReactiveVar
   };
-})(StaffNominalRoll));
+})(StaffNominalRoll);

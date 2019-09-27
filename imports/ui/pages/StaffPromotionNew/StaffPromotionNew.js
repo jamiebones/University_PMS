@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React from "react";
 import styled from "styled-components";
 import { Col, Row, Button, Alert, Label } from "react-bootstrap";
@@ -200,9 +201,9 @@ class StaffPromotionNew extends React.Component {
                   <option value="0">select a designation</option>
                   <option value="all">All Eligible For Promotion</option>
                   {designations &&
-                    designations.map(({ rank }) => {
+                    designations.map(({ rank }, index) => {
                       return (
-                        <option key={rank} value={rank}>
+                        <option key={index} value={rank}>
                           {rank}
                         </option>
                       );
@@ -302,7 +303,7 @@ class StaffPromotionNew extends React.Component {
   }
 }
 
-export default (StaffProposePostingPageContainer = withTracker(props => {
+export default StaffProposePostingPageContainer = withTracker(props => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe("cadres.getcadresandSalaryScale");
@@ -313,4 +314,4 @@ export default (StaffProposePostingPageContainer = withTracker(props => {
     cadres: Cadres.find().fetch(),
     salaryScale: SalaryScales.find().fetch()
   };
-})(StaffPromotionNew));
+})(StaffPromotionNew);

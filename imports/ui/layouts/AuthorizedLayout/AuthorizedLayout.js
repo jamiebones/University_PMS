@@ -329,7 +329,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE"]}
+              allowedRoles={["SATS", "Records", "JSE", "ASE"]}
               group="Personnel"
               userId={userId}
               exact
@@ -340,7 +340,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE"]}
+              allowedRoles={["SATS", "Records", "JSE", "ASE", "Director"]}
               group="Personnel"
               userId={userId}
               exact
@@ -351,7 +351,7 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
             />
 
             <Authorized
-              allowedRoles={["SATS", "Records", "JSE"]}
+              allowedRoles={["SATS", "Records", "JSE", "ASE"]}
               group="Personnel"
               userId={userId}
               exact

@@ -1,9 +1,11 @@
+/*eslint-disable*/
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { StaffMembers } from "../StaffMemberClass";
 import { Designations } from "../../../api/Designation/DesignationClass";
 import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
+import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import Documents from "../../../api/Documents/Documents";
 import moment from "moment";
 
@@ -14,6 +16,20 @@ Meteor.publish(
     let query = {
       staffId: staffId.toUpperCase()
     };
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      query.staffClass = "Senior Staff";
+      query.staffType = "2";
+    }
+
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      query.staffClass = "Junior Staff";
+      query.staffType = "2";
+    }
+
+    if (GetDetailsBasedOnRole("ASE", "Personnel")) {
+      query.staffType = "1";
+    }
+
     return StaffMembers.find(query);
   }
 );
