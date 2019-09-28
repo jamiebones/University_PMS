@@ -38,9 +38,9 @@ const AuthenticatedNavigation = ({ history, unReadCount }) => (
 
     <Nav>
       <LinkContainer
-        to="/auth/profile"
+        to="/auth/notifications"
         exact
-        onClick={() => history.push("/auth/profile")}
+        onClick={() => history.push("/auth/notifications")}
       >
         <NavItem eventKey={5} href="#">
           <FaBell /> <span className="text-danger">{unReadCount}</span>

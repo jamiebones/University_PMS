@@ -159,47 +159,57 @@ class StaffProposePosting extends React.Component {
 
                           <td>
                             <p>
-                              {!postingProposed && !reliefDuty ? (
-                                <Link
-                                  to={{
-                                    pathname: "/auth/propose_posting",
-                                    state: {
-                                      staffId: staffId,
-                                      biodata: biodata,
-                                      postings: postings,
-                                      designation: designation,
-                                      salaryStructure: salaryStructure,
-                                      currentPosting: currentPosting
-                                    }
-                                  }}
-                                >
-                                  Proposed Posting
-                                </Link>
-                              ) : null}
+                              {postings && postings.length > 0 ? (
+                                <div>
+                                  {!postingProposed && !reliefDuty ? (
+                                    <Link
+                                      to={{
+                                        pathname: "/auth/propose_posting",
+                                        state: {
+                                          staffId: staffId,
+                                          biodata: biodata,
+                                          postings: postings,
+                                          designation: designation,
+                                          salaryStructure: salaryStructure,
+                                          currentPosting: currentPosting
+                                        }
+                                      }}
+                                    >
+                                      Proposed Posting
+                                    </Link>
+                                  ) : null}
+
+                                  {reliefDuty && (
+                                    <p>
+                                      <span>
+                                        On Relief Duty at:{" "}
+                                        {reliefDuty.reliefDepartment}
+                                      </span>
+                                      <br />
+                                      <span>
+                                        Start Date:{" "}
+                                        {moment(reliefDuty.reliefStart).format(
+                                          "DD MMMM YYYY"
+                                        )}
+                                      </span>
+                                      <br />
+                                      <span>
+                                        End Date:{" "}
+                                        {moment(reliefDuty.reliefEnd).format(
+                                          "DD MMMM YYYY"
+                                        )}
+                                      </span>
+                                      <br />
+                                    </p>
+                                  )}
+                                </div>
+                              ) : (
+                                <p className="text-info">
+                                  Please set the number of years spent in
+                                  current department.
+                                </p>
+                              )}
                             </p>
-                            {reliefDuty && (
-                              <p>
-                                <span>
-                                  On Relief Duty at:{" "}
-                                  {reliefDuty.reliefDepartment}
-                                </span>
-                                <br />
-                                <span>
-                                  Start Date:{" "}
-                                  {moment(reliefDuty.reliefStart).format(
-                                    "DD MMMM YYYY"
-                                  )}
-                                </span>
-                                <br />
-                                <span>
-                                  End Date:{" "}
-                                  {moment(reliefDuty.reliefEnd).format(
-                                    "DD MMMM YYYY"
-                                  )}
-                                </span>
-                                <br />
-                              </p>
-                            )}
                           </td>
                         </tr>
                       );

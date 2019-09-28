@@ -38,6 +38,7 @@ import NewPensionDashboard from "../../pages/NewPensionDashboard/NewPensionDashb
 import AddNewStaff from "../../pages/AddNewStaffData/AddNewStaffData";
 import AddPersonnelDocuments from "../../pages/AddPersonnelDocuments/AddPersonnelDocuments";
 import ViewPersonnelDocuments from "../../pages/ViewPersonnelDocuments/ViewPersonnelDocuments";
+import NotificationPage from "../../components/Notification/Notification";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -120,6 +121,25 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               exact
               path={`${match.path}/promotion_list`}
               component={PromotionList}
+              pathAfterFailure="/logout"
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={[
+                "SATS",
+                "Records",
+                "ASE",
+                "Director",
+                "JSE",
+                "super-admin",
+                "Registrar"
+              ]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/notifications`}
+              component={NotificationPage}
               pathAfterFailure="/logout"
               {...rest}
             />
