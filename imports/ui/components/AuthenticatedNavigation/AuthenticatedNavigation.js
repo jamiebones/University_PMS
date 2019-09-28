@@ -10,8 +10,9 @@ import SatsNavigation from "./SatsNavigation";
 import JSENavigation from "./JSENavigation";
 import ASENavigation from "./ASENavigation";
 import AdminNavigation from "./AdminNavigation";
+import { FaBell } from "react-icons/fa";
 
-const AuthenticatedNavigation = ({ history }) => (
+const AuthenticatedNavigation = ({ history, unReadCount }) => (
   <div>
     {GetDetailsBasedOnRole(["super-admin"], "Personnel") ? (
       <AdminNavigation />
@@ -42,8 +43,18 @@ const AuthenticatedNavigation = ({ history }) => (
         onClick={() => history.push("/auth/profile")}
       >
         <NavItem eventKey={5} href="#">
-          Profile
+          <FaBell /> <span className="text-danger">{unReadCount}</span>
         </NavItem>
+      </LinkContainer>
+    </Nav>
+
+    <Nav>
+      <LinkContainer
+        to="/auth/profile"
+        exact
+        onClick={() => history.push("/auth/profile")}
+      >
+        <NavItem eventKey={5} href="#"></NavItem>
       </LinkContainer>
     </Nav>
 

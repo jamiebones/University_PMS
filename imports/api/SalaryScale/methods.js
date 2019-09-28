@@ -34,6 +34,7 @@ Meteor.methods({
       scale: salaryScaleArray,
       salaryType: salaryType
     });
+
     return newsalaryScale.save();
   },
   "salaryscale.addnewstep": function SalaryScalemethod(newStep) {

@@ -23,8 +23,8 @@ import ResetPassword from "../../pages/ResetPassword/ResetPassword";
 import AuthorizedLayout from "../../layouts/AuthorizedLayout/AuthorizedLayout";
 import { onLogin, onLogout } from "../../../modules/redux/actions";
 import withTrackerSSR from "../../../modules/with-tracker-ssr";
+import { Notifications } from "../../../api/Notification/NotificationClass";
 import NotFound from "../../pages/NotFound/NotFound";
-
 
 const StyledApp = styled.div`
   visibility: ${props =>
@@ -191,7 +191,8 @@ export default compose(
     const loggingIn = Meteor.loggingIn();
     const user = Meteor.user();
     const userId = Meteor.userId();
-    const loading = !Roles.subscription.ready();
+    const notify = Meteor.subscribe("notification.getUnreadNotification");
+    const loading = !Roles.subscription.ready() && !notify.ready();
     const name =
       user &&
       user.profile &&
@@ -207,7 +208,10 @@ export default compose(
       groups: Roles.getGroupsForUser(userId),
       roles: Roles.getRolesForUser(userId),
       userId,
-      emailAddress
+      emailAddress,
+      unReadCount:
+        notify.ready() &&
+        Notifications.find({ for: userId, read: false }).count()
     };
   })
 )(App);

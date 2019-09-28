@@ -57,4 +57,7 @@ import "../../api/RefTable/server/publications";
 import "../../api/RefTable/server/methods";
 import "../../api/RefTable/methods";
 
+import "../../api/Notification/server/publications";
+import "../../api/Notification/methods";
+
 import "../../api/Utility/server/methods";
