@@ -116,7 +116,7 @@ class StaffReliefModal extends React.Component {
                 <FormGroup>
                   <ControlLabel>Relief Start Date</ControlLabel>
                   <DatePicker
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="DD/MM/YYYY"
                     selected={this.state.startDate}
                     onChange={this.handleStartDateChange}
                     minDate={new Date()}
@@ -128,7 +128,7 @@ class StaffReliefModal extends React.Component {
                 <FormGroup>
                   <ControlLabel>Relief End Date</ControlLabel>
                   <DatePicker
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="DD/MM/YYYY"
                     selected={this.state.endDate}
                     onChange={this.handleEndDateChange}
                     minDate={new Date()}

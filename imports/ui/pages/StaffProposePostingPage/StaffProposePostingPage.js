@@ -326,6 +326,7 @@ class StaffProposePostingPage extends React.Component {
               <FormGroup>
                 <p>Resumption Date:</p>
                 <DatePicker
+                   dateFormat="DD/MM/YYYY"
                   selected={this.state.startDate}
                   onChange={this.handleChange}
                   minDate={new Date()}

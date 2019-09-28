@@ -182,7 +182,7 @@ class StaffOfficialComponent extends React.Component {
                     <FormGroup>
                       <ControlLabel>Date of first appointment</ControlLabel>
                       <DatePicker
-                         dateFormat="dd/MM/yyyy"
+                        dateFormat="DD/MM/YYYY"
                         selected={
                           (dateOfFirstAppointment &&
                             moment(dateOfFirstAppointment)) ||
@@ -201,7 +201,7 @@ class StaffOfficialComponent extends React.Component {
                         Date of appointment in the University
                       </ControlLabel>
                       <DatePicker
-                       dateFormat="dd/MM/yyyy"
+                        dateFormat="DD/MM/YYYY"
                         selected={
                           (dateOfUniversityAppointment &&
                             moment(dateOfUniversityAppointment)) ||
@@ -368,7 +368,7 @@ class StaffOfficialComponent extends React.Component {
   }
 }
 
-export default (StaffOfficialComponentContainer = withTracker(() => {
+export default StaffOfficialComponentContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe("cadres.getcadresandUniversityUnit");
@@ -379,4 +379,4 @@ export default (StaffOfficialComponentContainer = withTracker(() => {
     cadres: Cadres.find().fetch(),
     universityUnits: UniversityUnits.find().fetch()
   };
-})(StaffOfficialComponent));
+})(StaffOfficialComponent);

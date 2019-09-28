@@ -158,7 +158,7 @@ class StaffBio extends React.Component {
               <FormGroup>
                 <ControlLabel>Date of Birth</ControlLabel>
                 <DatePicker
-                   dateFormat="dd/MM/yyyy"
+                  dateFormat="DD/MM/YYYY"
                   selected={this.state.dob}
                   onChange={this.onChange}
                   disabled
@@ -336,7 +336,7 @@ class StaffBio extends React.Component {
   }
 }
 
-export default (StaffBioContainer = withTracker(() => {
+export default StaffBioContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe("nigeriastates.getallStates");
@@ -347,4 +347,4 @@ export default (StaffBioContainer = withTracker(() => {
     //staff: StaffMembers.find(staffId).fetch(),
     states: NigeriaStates.find({}).fetch()
   };
-})(StaffBio));
+})(StaffBio);

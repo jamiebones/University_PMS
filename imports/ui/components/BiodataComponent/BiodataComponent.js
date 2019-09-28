@@ -331,7 +331,7 @@ class BiodataComponent extends React.Component {
             <FormGroup>
               <ControlLabel>Date of Birth</ControlLabel>
               <DatePicker
-                dateFormat="dd/MM/yyyy"
+                dateFormat="DD/MM/YYYY"
                 selected={(dob && moment(dob)) || this.state.dob}
                 onChange={this.handleDobChange}
                 className="form-control"

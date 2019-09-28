@@ -89,7 +89,7 @@ class PostingDate extends React.Component {
                 <FormGroup>
                   <ControlLabel>Posting date</ControlLabel>
                   <DatePicker
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="DD/MM/YYYY"
                     selected={this.state.postingDate}
                     onChange={this.dateChange}
                     className="form-control"
