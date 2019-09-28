@@ -42,9 +42,7 @@ class PostingDate extends React.Component {
     const staff = this.props.staff;
     const name =
       staff &&
-      `${staff.biodata.firstName}${staff.biodata.middleName} ${
-        staff.biodata.surname
-      }`;
+      `${staff.biodata.firstName}${staff.biodata.middleName} ${staff.biodata.surname}`;
 
     const postingObj = {
       staffId: staff.staffId,
@@ -91,6 +89,7 @@ class PostingDate extends React.Component {
                 <FormGroup>
                   <ControlLabel>Posting date</ControlLabel>
                   <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={this.state.postingDate}
                     onChange={this.dateChange}
                     className="form-control"

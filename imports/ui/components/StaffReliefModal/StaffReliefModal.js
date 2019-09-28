@@ -44,13 +44,9 @@ class StaffReliefModal extends React.Component {
       reliever_staffId: reliefStaff.staffId,
       reliever_designation: reliefStaff.designation,
       reliever_department: reliefStaff.currentPosting,
-      reliever_staffName: `${reliefStaff.biodata.firstName} ${
-        reliefStaff.biodata.middleName
-      } ${reliefStaff.biodata.surname}`,
+      reliever_staffName: `${reliefStaff.biodata.firstName} ${reliefStaff.biodata.middleName} ${reliefStaff.biodata.surname}`,
       staff_relivedStaffId: otherStaff.staffId,
-      staff_relivedName: `${otherStaff.biodata.firstName} ${
-        otherStaff.biodata.middleName
-      } ${otherStaff.biodata.surname}`,
+      staff_relivedName: `${otherStaff.biodata.firstName} ${otherStaff.biodata.middleName} ${otherStaff.biodata.surname}`,
       staff_relivedDesignation: otherStaff.designation,
       staff_relivedDepartment: otherStaff.currentPosting,
       reliefStart: moment(this.state.startDate).toISOString(),
@@ -120,6 +116,7 @@ class StaffReliefModal extends React.Component {
                 <FormGroup>
                   <ControlLabel>Relief Start Date</ControlLabel>
                   <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={this.state.startDate}
                     onChange={this.handleStartDateChange}
                     minDate={new Date()}
@@ -131,6 +128,7 @@ class StaffReliefModal extends React.Component {
                 <FormGroup>
                   <ControlLabel>Relief End Date</ControlLabel>
                   <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={this.state.endDate}
                     onChange={this.handleEndDateChange}
                     minDate={new Date()}

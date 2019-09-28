@@ -158,6 +158,7 @@ class StaffBio extends React.Component {
               <FormGroup>
                 <ControlLabel>Date of Birth</ControlLabel>
                 <DatePicker
+                   dateFormat="dd/MM/yyyy"
                   selected={this.state.dob}
                   onChange={this.onChange}
                   disabled

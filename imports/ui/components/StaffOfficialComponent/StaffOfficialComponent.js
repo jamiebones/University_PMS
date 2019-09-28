@@ -182,6 +182,7 @@ class StaffOfficialComponent extends React.Component {
                     <FormGroup>
                       <ControlLabel>Date of first appointment</ControlLabel>
                       <DatePicker
+                         dateFormat="dd/MM/yyyy"
                         selected={
                           (dateOfFirstAppointment &&
                             moment(dateOfFirstAppointment)) ||
@@ -200,6 +201,7 @@ class StaffOfficialComponent extends React.Component {
                         Date of appointment in the University
                       </ControlLabel>
                       <DatePicker
+                       dateFormat="dd/MM/yyyy"
                         selected={
                           (dateOfUniversityAppointment &&
                             moment(dateOfUniversityAppointment)) ||

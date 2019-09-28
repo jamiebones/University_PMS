@@ -331,6 +331,7 @@ class BiodataComponent extends React.Component {
             <FormGroup>
               <ControlLabel>Date of Birth</ControlLabel>
               <DatePicker
+                dateFormat="dd/MM/yyyy"
                 selected={(dob && moment(dob)) || this.state.dob}
                 onChange={this.handleDobChange}
                 className="form-control"
@@ -360,7 +361,7 @@ class BiodataComponent extends React.Component {
   }
 }
 
-export default (BiodataComponentContainer = withTracker(() => {
+export default BiodataComponentContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe("nigeriastates.getallStates");
@@ -371,4 +372,4 @@ export default (BiodataComponentContainer = withTracker(() => {
     //staff: StaffMembers.find(staffId).fetch(),
     states: NigeriaStates.find({}).fetch()
   };
-})(BiodataComponent));
+})(BiodataComponent);

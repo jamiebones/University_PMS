@@ -8,6 +8,7 @@ import {
 } from "../../api/StaffPosting/StaffPostingClass";
 import { _ } from "meteor/underscore";
 import { FindMax, GetDetailsBasedOnRole } from "../../modules/utilities";
+import Notify from "../../modules/server/classes/notification";
 import moment from "moment";
 
 Meteor.methods({
@@ -120,11 +121,44 @@ Meteor.methods({
           //fix staff new unit
           postedStaff.currentPosting = postingObj.unitName;
         }
+
         let posting = new Postings(postingObj);
 
         postedStaff.postings = [...postedStaff.postings, posting];
         newPosting.save();
         postedStaff.save();
+        //who is carrying out the posting. find out if is a normal schedule
+        //officer or is the Director of Personnel
+        if (GetDetailsBasedOnRole("Director", "Personnel")) {
+          //postingg carried out by Director so message is for the Registrat
+          const newNotification = new Notify();
+          newNotification.sendNotification({
+            accountType: "Registrar",
+            from: "Director, Directorate of Human Resources",
+            message:
+              "Please, check the staff posting list for approval. Thank you."
+          });
+        }
+        if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+          //posting carried out by posting officer so message is for the Director
+          const newNotification = new Notify();
+          newNotification.sendNotification({
+            accountType: "Director",
+            from: "Posting Officer SATS, Directorate of Human Resources",
+            message:
+              "Please, check the staff posting list for approval. Thank you."
+          });
+        }
+        if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+          //posting carried out by posting officer so message is for the Director
+          const newNotification = new Notify();
+          newNotification.sendNotification({
+            accountType: "Director",
+            from: "Posting Officer JSE, Directorate of Human Resources",
+            message:
+              "Please, check the staff posting list for approval. Thank you."
+          });
+        }
       } catch (error) {
         throw new Meteor.Error(`There was an error: ${error}`);
       }
