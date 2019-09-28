@@ -55,7 +55,7 @@ const SatsNavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/records/search")}
           >
-            <MenuItem eventKey="8.1">Search Records</MenuItem>
+            <MenuItem eventKey="8.1">Search Staff Record</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -77,7 +77,7 @@ const SatsNavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/staff_posting")}
           >
-            <MenuItem eventKey="4.1">Staff Posting</MenuItem>
+            <MenuItem eventKey="4.1">Initiate Staff Posting</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -85,14 +85,14 @@ const SatsNavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/relief_posting")}
           >
-            <MenuItem eventKey="4.2">Relief Posting</MenuItem>
+            <MenuItem eventKey="4.2">Initiate Relief Posting</MenuItem>
           </LinkContainer>
           <LinkContainer
             to="/auth/posting_list"
             exact
             onClick={() => history.push("/auth/posting_list")}
           >
-            <MenuItem eventKey="4.3">Posting List</MenuItem>
+            <MenuItem eventKey="4.3">View Posting List</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -100,7 +100,7 @@ const SatsNavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/posting_stats")}
           >
-            <MenuItem eventKey="4.4">Posting Stats</MenuItem>
+            <MenuItem eventKey="4.4">View Posting Stats</MenuItem>
           </LinkContainer>
         </React.Fragment>
       </NavDropdown>

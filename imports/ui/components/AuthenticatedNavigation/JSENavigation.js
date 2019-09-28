@@ -85,7 +85,7 @@ const JSENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/add_personnel_documents")}
           >
-            <MenuItem eventKey="9.2">SATS Documents</MenuItem>
+            <MenuItem eventKey="9.2">JSE Documents</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -107,7 +107,7 @@ const JSENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/staff_posting")}
           >
-            <MenuItem eventKey="4.1">Staff Posting</MenuItem>
+            <MenuItem eventKey="4.1">Initiate Staff Posting</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -115,14 +115,14 @@ const JSENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/relief_posting")}
           >
-            <MenuItem eventKey="4.2">Relief Posting</MenuItem>
+            <MenuItem eventKey="4.2">Initiate Relief Posting</MenuItem>
           </LinkContainer>
           <LinkContainer
             to="/auth/posting_list"
             exact
             onClick={() => history.push("/auth/posting_list")}
           >
-            <MenuItem eventKey="4.3">Posting List</MenuItem>
+            <MenuItem eventKey="4.3">View Posting List</MenuItem>
           </LinkContainer>
 
           <LinkContainer
@@ -130,7 +130,7 @@ const JSENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/posting_stats")}
           >
-            <MenuItem eventKey="4.4">Posting Stats</MenuItem>
+            <MenuItem eventKey="4.4">View Posting Stats</MenuItem>
           </LinkContainer>
         </React.Fragment>
       </NavDropdown>

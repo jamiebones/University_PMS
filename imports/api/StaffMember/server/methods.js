@@ -292,18 +292,20 @@ Meteor.methods({
     return [sortPromotionArray, designations, sortPromotionArray.length];
   },
   "staffmembers.getNonTeachingStaffInDept": function StaffMembersFunction(
-    dept
+    dept,
+    staffClass
   ) {
     check(dept, Match.OneOf(String, null, undefined));
+    check(staffClass, Match.OneOf(String, null, undefined));
     let query = {};
     const department = dept.toUpperCase();
 
     if (GetDetailsBasedOnRole("SATS", "Personnel")) {
       query.staffClass = "Senior Staff";
-    }
-
-    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+    } else if (GetDetailsBasedOnRole("JSE", "Personnel")) {
       query.staffClass = "Junior Staff";
+    } else {
+      query.staffClass = staffClass;
     }
 
     query.staffType = "2";

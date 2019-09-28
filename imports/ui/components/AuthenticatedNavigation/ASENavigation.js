@@ -13,7 +13,7 @@ const ASENavigation = ({ history }) => (
             exact
             onClick={() => history.push("/auth/records/search")}
           >
-            <MenuItem eventKey="8.1">Search Records</MenuItem>
+            <MenuItem eventKey="8.1">Search Staff Records</MenuItem>
           </LinkContainer>
 
           <LinkContainer

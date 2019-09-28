@@ -1,6 +1,8 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { StaffReliefPosting } from "../../api/StaffReliefPosting/StaffReliefPostingClass";
+import { FindMax, GetDetailsBasedOnRole } from "../../modules/utilities";
+import Notify from "../../modules/server/classes/notification";
 
 Meteor.methods({
   "staffreliefposting.savenewRefliefPosting": function StaffPostingReliefmethod(
@@ -8,7 +10,39 @@ Meteor.methods({
   ) {
     check(reliefObject, Object);
     const reliefPosting = new StaffReliefPosting(reliefObject);
-    return reliefPosting.save();
+    //check if the Registrar is the one doing the posting
+    reliefPosting.save();
+    if (GetDetailsBasedOnRole("Director", "Personnel")) {
+      //postingg carried out by Director so message is for the Registrat
+      const newNotification = new Notify();
+      newNotification.sendNotification({
+        accountType: "Registrar",
+        from: "Director, Directorate of Human Resources",
+        message:
+          "Please, check the staff relief posting list for approval. Thank you."
+      });
+    }
+    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+      //posting carried out by posting officer so message is for the Director
+      const newNotification = new Notify();
+      newNotification.sendNotification({
+        accountType: "Director",
+        from: "Posting Officer SATS, Directorate of Human Resources",
+        message:
+          "Please, check the staff relief posting list for approval. Thank you."
+      });
+    }
+    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+      //posting carried out by posting officer so message is for the Director
+      const newNotification = new Notify();
+      newNotification.sendNotification({
+        accountType: "Director",
+        from: "Posting Officer JSE, Directorate of Human Resources",
+        message:
+          "Please, check the staff relief posting list for approval. Thank you."
+      });
+    }
+    return;
   },
   "staffreliefposting.approveorcancelposting": function StaffPostingReliefmethod(
     status,

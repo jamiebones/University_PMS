@@ -24,12 +24,13 @@ class StaffInDesignation extends React.Component {
     autoBind(this);
   }
 
-  initiatePostingAction({ currentPosting }) {
+  initiatePostingAction({ currentPosting, staffClass }) {
     const dept = currentPosting;
     this.setState({ loading: true, showModal: true });
     Meteor.call(
       "staffmembers.getNonTeachingStaffInDept",
       dept,
+      staffClass,
       (err, response) => {
         if (!err) {
           this.setState({
@@ -46,7 +47,6 @@ class StaffInDesignation extends React.Component {
   }
 
   onHide(reliefStaff, otherStaff = "close") {
-    debugger;
     if (otherStaff == "close") {
       this.setState({ showModal: false });
       return;
@@ -87,7 +87,8 @@ class StaffInDesignation extends React.Component {
                         designation,
                         salaryStructure,
                         staffId,
-                        currentPosting
+                        currentPosting,
+                        staffClass
                       },
                       index
                     ) => {
@@ -125,7 +126,10 @@ class StaffInDesignation extends React.Component {
                               bsStyle="success"
                               bsSize="small"
                               onClick={() =>
-                                this.initiatePostingAction({ currentPosting })
+                                this.initiatePostingAction({
+                                  currentPosting,
+                                  staffClass
+                                })
                               }
                             >
                               Initiate action
