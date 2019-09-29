@@ -87,22 +87,27 @@ const Documents = new FilesCollection({
             }
           } else if (file.meta.type === "2") {
             //we have personnel documents uploaded here
+            //we should have the type of document here been
+            //uploaded if it is a personnel document
             const documents = this.find({
               "meta.unit": file.meta.unit,
-              "meta.serial": { $exists: true, $ne: null }
+              "meta.serial": { $exists: true, $ne: null },
+              "meta.documentType": file.meta.documentType
             }).fetch();
             let reference = "";
             console.log(documents);
+            const docType = file.meta.documentType;
             if (_.isEmpty(documents)) {
               //new serial
+
               file.meta.serial = 1;
-              reference = `${file.meta.reference}/1`;
+              reference = `${file.meta.reference}/${docType}/1`;
               file.meta.reference = reference;
             } else {
               //find the max serial here
               let maxSerial = FindMax(documents, "meta");
               file.meta.serial = maxSerial + 1;
-              reference = `${file.meta.reference}/${maxSerial + 1}`;
+              reference = `${file.meta.reference}/${docType}/${maxSerial + 1}`;
               file.meta.reference = reference;
             }
           }
@@ -113,13 +118,9 @@ const Documents = new FilesCollection({
               const newActivity = new ActivityLog();
               newActivity.username = userId;
               const user = Meteor.users.findOne(userId);
-              newActivity.name = `${user.profile.name.first} ${
-                user.profile.name.last
-              }`;
+              newActivity.name = `${user.profile.name.first} ${user.profile.name.last}`;
               newActivity.activityTime = new Date().toISOString();
-              newActivity.actionTaken = `Added documents with reference  ${
-                file.meta.reference
-              } `;
+              newActivity.actionTaken = `Added documents with reference  ${file.meta.reference} `;
               newActivity.type = "Document added";
               newActivity.save();
               this.update(file._id, { $set: { meta: file.meta } });

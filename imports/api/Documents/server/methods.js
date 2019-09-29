@@ -18,12 +18,23 @@ Meteor.methods({
     });
     return documentArray;
   },
-  "documents.getDocByUnit": function DocumentsMethod(unit) {
-    check(unit, String);
-    const doc = Documents.find(
-      { "meta.unit": unit },
-      { sort: { serial: 1 } }
-    ).fetch();
+  "documents.getDocByUnitAndDocumentType": function DocumentsMethod(meta) {
+    check(meta, Object);
+    const { unit, documentType } = meta;
+    let doc;
+    if (documentType === "all") {
+      //show all documents in unit
+      doc = Documents.find(
+        { "meta.unit": unit },
+        { sort: { serial: 1 } }
+      ).fetch();
+    } else {
+      doc = Documents.find(
+        { "meta.unit": unit, "meta.documentType": documentType },
+        { sort: { serial: 1 } }
+      ).fetch();
+    }
+
     //spit out the link
     let documentArray = [];
     doc.map(aFile => {

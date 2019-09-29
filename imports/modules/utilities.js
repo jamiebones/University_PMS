@@ -596,3 +596,14 @@ export const SearchArray = (element, array, key) => {
   }
   return -1;
 };
+
+export const DocumentTypes = () => {
+  const documentArray = [
+    { value: "MIN", data: "Minutes" },
+    { value: "APC", data: "A&PC" },
+    { value: "RTC", data: "Report to Council" },
+    { value: "PL", data: "Promotion Letters" },
+    { value: "all", data: "All Documents" }
+  ];
+  return documentArray;
+};

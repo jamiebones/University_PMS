@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { StaffReliefPosting } from "../../api/StaffReliefPosting/StaffReliefPostingClass";
-import { FindMax, GetDetailsBasedOnRole } from "../../modules/utilities";
+import { GetDetailsBasedOnRole } from "../../modules/utilities";
 import Notify from "../../modules/server/classes/notification";
 
 Meteor.methods({
@@ -12,16 +12,6 @@ Meteor.methods({
     const reliefPosting = new StaffReliefPosting(reliefObject);
     //check if the Registrar is the one doing the posting
     reliefPosting.save();
-    if (GetDetailsBasedOnRole("Director", "Personnel")) {
-      //postingg carried out by Director so message is for the Registrat
-      const newNotification = new Notify();
-      newNotification.sendNotification({
-        accountType: "Registrar",
-        from: "Director, Directorate of Human Resources",
-        message:
-          "Please, check the staff relief posting list for approval. Thank you."
-      });
-    }
     if (GetDetailsBasedOnRole("SATS", "Personnel")) {
       //posting carried out by posting officer so message is for the Director
       const newNotification = new Notify();
