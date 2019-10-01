@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import Loading from "../../components/Loading/Loading";
 import {
@@ -10,16 +10,26 @@ import {
   Row,
   FormGroup,
   ControlLabel,
-  HelpBlock
+  HelpBlock,
+  InputGroup
 } from "react-bootstrap";
 import { withTracker } from "meteor/react-meteor-data";
 import { Bert } from "meteor/themeteorchef:bert";
 import styled from "styled-components";
 import { _ } from "meteor/underscore";
+import { Designations } from "../../../api/Designation/DesignationClass";
 import { Cadres } from "../../../api/Cadre/CadreClass";
-import autoBind from "react-autobind";
 import AddCadreComponent from "../../components/AddCadreComponent/AddCadreComponent";
 import { SortArrayOfObjects } from "../../../modules/utilities";
+import DroplistComponent from "../../components/DroplistComponent/DroplistComponent";
+import { Modal } from "react-bootstrap";
+
+import {
+  templateParser,
+  templateFormatter,
+  parseDigit,
+  ReactInput
+} from "input-format";
 
 const AddNewCadreStyles = styled.div`
   .cadre {
@@ -34,31 +44,45 @@ const AddNewCadreStyles = styled.div`
   .selected {
     background: green;
   }
-`;
-
-class AddNewCadre extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cadreName: "",
-      cadreComponent: [],
-      startEdit: false,
-      cadre: "",
-      cadreId: "",
-      staffType: "0",
-      cadreType: ""
-    };
-    autoBind(this);
+  .input-group {
+    margin-top: 24.5px;
+  }
+  .btn-xs,
+  .btn-group-xs > .btn {
+    font-size: 10px;
+    border-radius: 78px;
   }
 
-  saveCadreInformation() {
-    const {
-      cadreName,
-      cadreComponent,
-      startEdit,
-      cadreId,
-      staffType
-    } = this.state;
+  .cadreEditBlock {
+    margin-top: 40px;
+    background: #7b6a6a;
+    padding: 20px;
+    color: white;
+  }
+  
+.help-block {
+  color: #000a8e;
+`;
+
+function AddNewCadre(props) {
+  const [cadreComponent, setcadreComponent] = useState([]);
+  const [cadreName, setcadreName] = useState("");
+  const [cadre, setCadre] = useState("");
+  const [cadreId, setcadreId] = useState("");
+  const [staffType, setstaffType] = useState("0");
+  const [cadreType, setcadreType] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [startEdit, setStartEdit] = useState(false);
+  const [show, setShow] = useState(false);
+  const [designations, setDesignations] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState("");
+
+  const { loading, cadreDesignation, cadres } = props;
+  const TEMPLATE = "xx";
+  const parse = templateParser(TEMPLATE, parseDigit);
+  const format = templateFormatter(TEMPLATE);
+
+  const saveCadreInformation = () => {
     let cadreRankArray = [];
     cadreComponent.map(comp => {
       const obj = {};
@@ -86,310 +110,365 @@ class AddNewCadre extends React.Component {
     }
 
     const cadre = cadreName;
-    const cadreType = staffType;
     const sortedArray = SortArrayOfObjects(cadreRankArray, "level");
     console.log(sortedArray);
-    this.setState({ submitted: !this.state.submitted });
+    setSubmitted(submitted => !submitted);
     Meteor.call(
       "cadre.savenewCadre",
       sortedArray,
       cadre,
       startEdit,
       cadreId,
-      cadreType,
+      staffType,
       err => {
         if (err) {
-          this.setState({
-            submitted: !this.state.submitted,
-            cadreName: "",
-            staffType: "",
-            cadreComponent: [],
-            cadre: ""
-          });
+          setSubmitted(submitted => !submitted);
+          setcadreName("");
+          setstaffType("0");
+          setcadreComponent([]);
+          setCadre("");
           Bert.alert(`${err}`, "danger");
         } else {
-          this.setState({
-            submitted: !this.state.submitted
-          });
+          setSubmitted(submitted => !submitted);
           Bert.alert(`Successful.`, "success");
         }
       }
     );
-  }
+  };
 
-  saveCadreName(e) {
+  const saveCadreName = e => {
     const cadreObject = {
       rank: "",
-      level: ""
+      level: "",
+      index: ""
     };
-    const { cadreComponent, cadre } = this.state;
 
     if (cadre !== "" && cadreComponent[0].rank !== "") {
       return;
     }
+    setCadre(cadreName);
+    setcadreType(staffType);
+    setcadreComponent([cadreObject]);
+  };
 
-    this.setState({
-      cadre: this.state.cadreName,
-      cadreType: this.state.staffType,
-      cadreComponent: [cadreObject]
-    });
-  }
+  const onChange = e => {
+    debugger;
+    const value = e.target.value.toUpperCase();
+    setcadreName(value);
+  };
 
-  onChange(e) {
-    this.setState({ cadreName: e.target.value.toUpperCase() });
-  }
-
-  onStaffTypeChange(e) {
+  const onStaffTypeChange = e => {
     e.preventDefault();
     if (e.target.value === "0") return;
-    this.setState({ staffType: e.target.value });
-  }
+    setstaffType(e.target.value);
+  };
 
-  addRankComponent() {
+  const addRankComponent = () => {
     const cadreObject = {
       rank: "",
-      level: ""
+      level: "",
+      index: ""
     };
-    this.setState({
-      cadreComponent: [...this.state.cadreComponent, cadreObject]
+    setcadreComponent([...cadreComponent, cadreObject]);
+  };
+
+  const removeRankComponent = (e, componentIndex) => {
+    const remaininingComponent = cadreComponent.filter((component, index) => {
+      return index != componentIndex;
     });
-  }
+    setcadreComponent(remaininingComponent);
+  };
 
-  removeRankComponent(e, componentIndex) {
-    const remaininingComponent = this.state.cadreComponent.filter(
-      (component, index) => {
-        return index != componentIndex;
-      }
-    );
-    this.setState({ cadreComponent: remaininingComponent });
-  }
+  const changeLevel = (value, index) => {
+    //change the level of the cadrecomponent
+    const component = cadreComponent[index];
+    component.level = value;
+    cadreComponent[index] = component;
+    setcadreComponent([...cadreComponent]);
+  };
 
-  addLevelAndRankToState({ level, rank, index }) {
-    const cadreObject = {
-      rank,
-      level,
-      index
-    };
-    let stateCadreRank = this.state.cadreComponent;
-    stateCadreRank[index] = cadreObject;
-    this.setState({ cadreComponent: stateCadreRank });
-  }
-
-  cadreSelected(e, { cadre, cadreRank, _id, cadreType }) {
+  const cadreSelected = (e, { cadre, cadreRank, _id, cadreType }) => {
     //lets clear the state first
-    this.setState({
-      cadreName: "",
-      cadreComponent: [],
-      startEdit: false,
-      cadre: "",
-      cadreId: "",
-      staffType: "0"
-    });
+    setcadreName("");
+    setstaffType("0");
+    setcadreComponent([]);
+    setCadre("");
+    setcadreId("");
+    setStartEdit(false);
     let arrayObject = [];
+    let designationArray = [];
     cadreRank.map((e, index) => {
       const obj = {
         rank: e.rank,
         level: e.level,
         index
       };
+      //add designation to the designation state
+      designationArray.push(e.rank);
       arrayObject.push(obj);
     });
-    this.setState({
-      cadreName: cadre,
-      cadre: cadre,
-      cadreComponent: arrayObject,
-      startEdit: true,
-      cadreId: _id,
-      staffType: cadreType || "0"
-    });
-  }
+    //set the respective states here
+    setDesignations(designationArray);
+    setcadreName(cadre);
+    setstaffType(cadreType || "0");
+    setcadreComponent([...arrayObject]);
+    setCadre(cadre);
+    setcadreId(_id);
+    setStartEdit(true);
+  };
 
-  startNewEntry() {
-    this.setState({
-      cadreName: "",
-      cadreComponent: [],
-      staffType: "0",
-      startEdit: false,
-      cadre: "",
-      cadreId: ""
-    });
-  }
+  const startNewEntry = () => {
+    setcadreName("");
+    setstaffType("0");
+    setcadreComponent([]);
+    setCadre("");
+    setcadreId("");
+    setStartEdit(false);
+  };
 
-  render() {
-    const { cadreComponent, submitted } = this.state;
-    const { loading, cadres } = this.props;
-    return (
-      <AddNewCadreStyles>
-        <Row>
-          <Col md={6} mdOffset={1}>
-            <FormGroup>
-              <ControlLabel>
-                <span className="text-danger">*</span>Cadre Name:
-              </ControlLabel>
+  const setSelectedDesignation = designation => {
+    //get the selected index here
+    const newArray = [...designations];
+    newArray[selectedIndex] = designation;
+    //change the level of the cadrecomponent
+    const component = cadreComponent[selectedIndex];
+    component.rank = designation;
+    component.index = selectedIndex;
+    cadreComponent[selectedIndex] = component;
+    setcadreComponent([...cadreComponent]);
+    setDesignations(newArray);
+    setShow(show => !show);
+  };
 
-              <input
-                className="form-control"
-                value={this.state.cadreName}
-                name="cadreName"
-                onChange={this.onChange}
-              />
-            </FormGroup>
+  const showModal = index => {
+    setShow(show => !show);
+    setSelectedIndex(index);
+  };
 
-            <FormGroup>
-              <ControlLabel>
-                <span className="text-danger">*</span>Staff Type:
-              </ControlLabel>
+  const onHide = () => {
+    setShow(false);
+  };
 
-              <select
-                value={this.state.staffType}
-                onChange={this.onStaffTypeChange}
-                className="form-control"
-              >
-                <option value="0">select staff type</option>
-                <option value="Senior Staff">Senior Staff</option>
-                <option value="Junior Staff">Junior Staff</option>
-              </select>
-            </FormGroup>
+  return (
+    <AddNewCadreStyles>
+      <Row>
+        <Col md={6} mdOffset={1}>
+          <FormGroup>
+            <ControlLabel>
+              <span className="text-danger">*</span>Cadre Name:
+            </ControlLabel>
 
-            <HelpBlock>
-              <h5>
-                <b>
-                  Enter the cadre name and select the staff type click on the
-                  save button
-                </b>
-              </h5>
-            </HelpBlock>
+            <input
+              className="form-control"
+              value={cadreName}
+              name="cadreName"
+              onChange={onChange}
+            />
+          </FormGroup>
 
-            <FormGroup>
-              <Button bsStyle="info" onClick={this.saveCadreName}>
-                Save Cadre
-              </Button>
-            </FormGroup>
+          <FormGroup>
+            <ControlLabel>
+              <span className="text-danger">*</span>Staff Type:
+            </ControlLabel>
 
-            {this.state.cadre && this.state.staffType !== "0" ? (
-              <div>
-                <div className="text-center">
-                  <p>Cadre : {this.state.cadre}</p>
+            <select
+              value={staffType}
+              onChange={onStaffTypeChange}
+              className="form-control"
+            >
+              <option value="0">select staff type</option>
+              <option value="Senior Staff">Senior Staff</option>
+              <option value="Junior Staff">Junior Staff</option>
+            </select>
+          </FormGroup>
 
-                  <p>Staff Type : {this.state.staffType.toUpperCase()}</p>
-                </div>
+          <HelpBlock>
+            <h5>
+              <b>
+                Enter the cadre name and select the staff type click on the save
+                button
+              </b>
+            </h5>
+          </HelpBlock>
 
-                {cadreComponent.length &&
-                  cadreComponent.map(({ rank, level }, index) => {
-                    return (
-                      <AddCadreComponent
-                        key={index}
-                        index={index}
-                        rank={rank}
-                        level={level}
-                        setLevelAndRank={this.addLevelAndRankToState}
-                      />
-                    );
-                  })}
+          <FormGroup>
+            <Button bsStyle="info" onClick={saveCadreName}>
+              Save Cadre
+            </Button>
+          </FormGroup>
 
-                <div className="pull-right">
-                  <ButtonToolbar>
-                    <ButtonGroup>
-                      <Button onClick={this.addRankComponent} bsSize="small">
-                        Add more rank
-                      </Button>
+          {cadre && staffType !== "0" ? (
+            <div className="cadreEditBlock">
+              <div className="text-center">
+                <p>Cadre : {cadre}</p>
 
-                      {cadreComponent.length > 0 && (
-                        <Button
-                          onClick={e =>
-                            this.removeRankComponent(
-                              e,
-                              cadreComponent.length - 1
-                            )
-                          }
-                          bsSize="small"
-                        >
-                          Remove rank
-                        </Button>
-                      )}
-                    </ButtonGroup>
-                  </ButtonToolbar>
-                </div>
+                <p>Staff Type : {staffType.toUpperCase()}</p>
+              </div>
 
-                <br />
-                <br />
+              {cadreComponent.length &&
+                cadreComponent.map(({ rank, level }, index) => {
+                  return (
+                    <Row key={index}>
+                      <Col md={4}>
+                        <FormGroup>
+                          <ControlLabel>Level:</ControlLabel>
+                          <ReactInput
+                            value={level}
+                            onChange={value => changeLevel(value, index)}
+                            className="form-control"
+                            parse={parse}
+                            format={format}
+                            placeholder="00"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md={8}>
+                        <FormGroup>
+                          <InputGroup>
+                            <input
+                              type="text"
+                              value={designations[index] || ""}
+                              disabled
+                              className="form-control"
+                            />
+                            <InputGroup.Addon>
+                              <Button
+                                bsSize="xsmall"
+                                onClick={() => showModal(index)}
+                              >
+                                Add
+                              </Button>
+                            </InputGroup.Addon>
+                          </InputGroup>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  );
+                })}
 
-                <div className="toolbar">
-                  <HelpBlock>
-                    <h5>
-                      <b>
-                        Save the changes made by clicking the button below or
-                        start afresh by clicking start new
-                      </b>
-                    </h5>
-                  </HelpBlock>
+              <div className="pull-right">
+                <ButtonToolbar>
+                  <ButtonGroup>
+                    <Button onClick={addRankComponent} bsSize="small">
+                      Add more rank
+                    </Button>
 
-                  <ButtonToolbar>
-                    <ButtonGroup>
+                    {cadreComponent.length > 0 && (
                       <Button
-                        onClick={this.saveCadreInformation}
-                        disabled={submitted}
-                        bsStyle="info"
-                      >
-                        {submitted ? "Please wait......" : "Save Changes"}
-                      </Button>
-
-                      <Button onClick={this.startNewEntry} bsStyle="danger">
-                        Start New
-                      </Button>
-                    </ButtonGroup>
-                  </ButtonToolbar>
-                </div>
-              </div>
-            ) : null}
-          </Col>
-
-          <Col md={3} mdOffset={1}>
-            {!loading ? (
-              <div>
-                {cadres.length ? (
-                  cadres.map(({ cadre, cadreRank, _id, cadreType }, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="cadre"
                         onClick={e =>
-                          this.cadreSelected(e, {
-                            cadre,
-                            cadreRank,
-                            _id,
-                            cadreType
-                          })
+                          removeRankComponent(e, cadreComponent.length - 1)
                         }
+                        bsSize="small"
                       >
-                        {cadre}{" "}
-                        <span className="rank pull-right text-danger">
-                          <b>{cadreRank.length}</b>
-                        </span>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p>No cadre saved yet</p>
-                )}
+                        Remove rank
+                      </Button>
+                    )}
+                  </ButtonGroup>
+                </ButtonToolbar>
               </div>
-            ) : (
-              <Loading />
-            )}
-          </Col>
-        </Row>
-      </AddNewCadreStyles>
-    );
-  }
+
+              <br />
+              <br />
+
+              <div className="toolbar">
+                <HelpBlock>
+                  <h5>
+                    <b>
+                      Save the changes made by clicking the button below or
+                      start afresh by clicking start new
+                    </b>
+                  </h5>
+                </HelpBlock>
+
+                <ButtonToolbar>
+                  <ButtonGroup>
+                    <Button
+                      onClick={saveCadreInformation}
+                      disabled={submitted}
+                      bsStyle="info"
+                    >
+                      {submitted ? "Please wait......" : "Save Changes"}
+                    </Button>
+
+                    <Button onClick={startNewEntry} bsStyle="danger">
+                      Start New
+                    </Button>
+                  </ButtonGroup>
+                </ButtonToolbar>
+              </div>
+            </div>
+          ) : null}
+        </Col>
+
+        <Col md={3} mdOffset={1}>
+          {!loading ? (
+            <div>
+              {cadres.length ? (
+                cadres.map(({ cadre, cadreRank, _id, cadreType }, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="cadre"
+                      onClick={e =>
+                        cadreSelected(e, {
+                          cadre,
+                          cadreRank,
+                          _id,
+                          cadreType
+                        })
+                      }
+                    >
+                      {cadre}{" "}
+                      <span className="rank pull-right text-danger">
+                        <b>{cadreRank.length}</b>
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No cadre saved yet</p>
+              )}
+            </div>
+          ) : (
+            <Loading />
+          )}
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={6} mdOffset={3}>
+          <Modal show={show} onHide={onHide}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                <p>Select Designation</p>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <DroplistComponent
+                data={cadreDesignation}
+                field="rank"
+                label="Designation"
+                placeholder="Select Designation"
+                setValue={setSelectedDesignation}
+                /*setInputValue={setInputValueChange}*/
+              />
+            </Modal.Body>
+            <Modal.Footer />
+          </Modal>
+        </Col>
+      </Row>
+    </AddNewCadreStyles>
+  );
 }
 
-export default (AddCadreContainer = withTracker(({}) => {
+export default AddCadreContainer = withTracker(({}) => {
   let subscription;
   if (Meteor.isClient) {
-    subscription = Meteor.subscribe("cadre.getAllCadres");
+    subscription = Meteor.subscribe("designation.getAllDesignations");
   }
   return {
     loading: subscription && !subscription.ready(),
+    cadreDesignation: Designations.find({}, { sort: { rank: 1 } }).fetch(),
     cadres: Cadres.find({}, { sort: { cadre: 1 } }).fetch()
   };
-})(AddNewCadre));
+})(AddNewCadre);

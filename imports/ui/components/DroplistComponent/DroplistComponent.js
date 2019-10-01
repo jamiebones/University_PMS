@@ -3,7 +3,6 @@ import React from "react";
 import { Row, Col, FormGroup } from "react-bootstrap";
 import styled from "styled-components";
 import Downshift from "downshift";
-
 import autoBind from "react-autobind";
 
 const DroplistComponentStyles = styled.div`
@@ -129,6 +128,11 @@ export default class DroplistComponent extends React.Component {
     this.props.setValue(name);
   }
 
+  //onInputValueChange(value) {
+  //   //setInputValue is a prop that saves the downshit value typed into it.
+  //   this.props.setInputValue(value);
+  // }
+
   render() {
     const { data, field, label, placeholder } = this.props;
     return (
@@ -138,6 +142,7 @@ export default class DroplistComponent extends React.Component {
             <FormGroup>
               <Downshift
                 onChange={this.onChange}
+                /*onInputValueChange={this.onInputValueChange}*/
                 itemToString={data => (data ? `${data}` : "")}
               >
                 {({
@@ -167,7 +172,7 @@ export default class DroplistComponent extends React.Component {
 
                     {isOpen ? (
                       <div className="downshift-dropdown">
-                        {// filter the books and return items that match the inputValue
+                        {// filter the list and return items that match the inputValue
                         data &&
                           data
                             .filter(

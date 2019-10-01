@@ -54,11 +54,11 @@ const AddDocuments = () => {
             <select className="form-control" onChange={SelectDocumentType}>
               <option value="0">select document type</option>
               {DocumentTypes().map(({ value, data }) => {
-                return (
+                return value !== "all" ? (
                   <option value={value} key={value}>
                     {data}
                   </option>
-                );
+                ) : null;
               })}
             </select>
           </p>

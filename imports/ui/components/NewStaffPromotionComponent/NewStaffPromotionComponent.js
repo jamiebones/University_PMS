@@ -69,6 +69,12 @@ class StaffPromotionComponent extends React.Component {
 
   setSelectedDesignation(designation) {
     this.setState({ newDesignation: designation, editing: true });
+    console.log(designation);
+  }
+
+  setInputValueChange(value) {
+    this.setState({ newDesignation: value });
+    console.log(value);
   }
 
   saveChanges() {
@@ -99,9 +105,7 @@ class StaffPromotionComponent extends React.Component {
 
     const object = {
       staffId,
-      staffName: `${biodata.firstName} ${biodata.middleName} ${
-        biodata.surname
-      }`,
+      staffName: `${biodata.firstName} ${biodata.middleName} ${biodata.surname}`,
       oldDesignation: staffdesignation,
       newDesignation,
       oldSalaryStructure: salaryStructure,
@@ -113,13 +117,7 @@ class StaffPromotionComponent extends React.Component {
     };
 
     const confirmSubmit = confirm(
-      `You are about updating the promotion year for ${
-        object.staffName
-      } from ${staffdesignation} to ${
-        object.newDesignation
-      } and from a salary scale of ${salaryStructure} to ${
-        object.newSalaryStructure
-      }. Promotion year: ${promotionYear} `
+      `You are about updating the promotion year for ${object.staffName} from ${staffdesignation} to ${object.newDesignation} and from a salary scale of ${salaryStructure} to ${object.newSalaryStructure}. Promotion year: ${promotionYear} `
     );
 
     if (!confirmSubmit) return;
@@ -135,9 +133,7 @@ class StaffPromotionComponent extends React.Component {
     Meteor.call("staffMembers.promoteStaff", object, err => {
       if (!err) {
         Bert.alert(
-          `${object.staffName} elevated to the rank of ${
-            object.newDesignation
-          } with effect from 1-Oct-${object.promotionYear}`,
+          `${object.staffName} elevated to the rank of ${object.newDesignation} with effect from 1-Oct-${object.promotionYear}`,
           "success"
         );
         this.setState({ submitted: !this.state.submitted });
@@ -201,6 +197,7 @@ class StaffPromotionComponent extends React.Component {
                   label="Designation after promotion"
                   placeholder="Search designation......"
                   setValue={this.setSelectedDesignation}
+                  setInputValue={this.setInputValueChange}
                 />
               </div>
             )}
