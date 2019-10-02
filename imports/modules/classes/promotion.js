@@ -1,9 +1,10 @@
-import { _ } from 'meteor/underscore';
+import { _ } from "meteor/underscore";
 import {
   NonTeachingPromotionPlacement,
   TeachingStaffPromotionPlacement,
-} from '../utilitiesComputation';
-import { FindMax, FindMin } from '../utilities';
+  RemoveFirstZero
+} from "../utilitiesComputation";
+import { FindMax, FindMin } from "../utilities";
 
 class Promotion {
   constructor({
@@ -11,7 +12,7 @@ class Promotion {
     staffId,
     lastPromotionDate,
     salaryStructure,
-    designation,
+    designation
   }) {
     this.biodata = biodata;
     this.staffId = staffId;
@@ -23,7 +24,7 @@ class Promotion {
     this.__newSalaryStructure = null;
   }
 
-  getNextRank(rankArray) {
+  getNewSalaryStructure(rankArray) {
     // get the next rank from the rankArray
     for (let i = 0; i < rankArray.length - 1; i += 1) {
       if (this.__newDesignation != null) break;
@@ -44,17 +45,17 @@ class Promotion {
             const scale = cadreRank[j + 1].level;
             const salaryStep = this.salaryStructure.trim();
             // split the salarystep by space
-            const salaryArray = salaryStep && salaryStep.split('/');
+            const salaryArray = salaryStep && salaryStep.split("/");
             // split the first part to extract the type
-            const scaleArray = salaryArray[0].split(' ');
+            const scaleArray = salaryArray[0].split(" ");
             const scaleType = scaleArray[0];
             const step = parseInt(salaryArray[salaryArray.length - 1]);
             let newStep = null;
             let newSalaryStructure = null;
-            if (scaleType.toUpperCase() === 'CONTISS') {
+            if (scaleType.toUpperCase() === "CONTISS") {
               newStep = NonTeachingPromotionPlacement(step);
               newSalaryStructure = `${scaleType} ${scale}/${newStep}`;
-            } else if (scaleType.toUpperCase() === 'CONUASS') {
+            } else if (scaleType.toUpperCase() === "CONUASS") {
               // find conmess salary structure
               newStep = TeachingStaffPromotionPlacement(step);
               newSalaryStructure = `${scaleType} ${scale}/${newStep}`;
@@ -62,7 +63,6 @@ class Promotion {
               // others like conmess
             }
             this.__newStep = newStep;
-            this.__newDesignation = cadreRank[j + 1];
             this.__newSalaryStructure = newSalaryStructure;
             break;
           }
@@ -72,23 +72,22 @@ class Promotion {
     }
     // return the value here
     return {
-      newCadre: this.__newDesignation,
       newStep: this.__newStep,
-      newSalaryScale: this.__newSalaryStructure,
+      newSalaryScale: this.__newSalaryStructure
     };
   }
 
   getSalaryRange(array) {
     const salaryObject = {};
     if (this.__newSalaryStructure == null) {
-      salaryObject.yearlySalary = '#0000.000';
-      salaryObject.yearlySalaryRange = '#0000.00 - 0000.00';
+      salaryObject.yearlySalary = "#0000.000";
+      salaryObject.yearlySalaryRange = "#0000.00 - 0000.00";
       return salaryObject;
     }
     // get the new designation and the salary scale;
     const salaryStep = this.__newSalaryStructure;
     // split the salarystep by space
-    const salaryArray = salaryStep && salaryStep.split('/');
+    const salaryArray = salaryStep && salaryStep.split("/");
     // split the first part to extract the type
     const newSalaryScale = salaryArray[0].trim();
     const salaryScaleRange = array.find(
@@ -108,11 +107,11 @@ class Promotion {
       const scaleArray = salaryScaleRange && salaryScaleRange.scale;
       const maxAnnualScale = FindMax(
         salaryScaleRange && salaryScaleRange.scale,
-        'step'
+        "step"
       );
       const minAnnualScale = FindMin(
         salaryScaleRange && salaryScaleRange.scale,
-        'step'
+        "step"
       );
 
       // get the scale range
@@ -128,8 +127,8 @@ class Promotion {
       salaryObject.yearlySalaryRange = `${scaleStart.amount} - ${scaleEnd.amount}`;
     } else {
       // we have not entered it yet
-      salaryObject.yearlySalary = '#0000.000';
-      salaryObject.yearlySalaryRange = '#0000.00 - 0000.00';
+      salaryObject.yearlySalary = "#0000.000";
+      salaryObject.yearlySalaryRange = "#0000.00 - 0000.00";
     }
     return salaryObject;
   }

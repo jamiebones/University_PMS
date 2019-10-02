@@ -540,16 +540,32 @@ export const SortArrayOfObjects = (array, key) => {
 };
 
 export const ReturnArrayOfDesignation = array => {
-  return function() {
-    let newArray = [];
-    array.map(obj => {
-      newArray = [...obj.cadreRank, ...newArray];
-    });
-    const sortArray = newArray.sort((a, b) => {
-      return a.rank - b.rank;
-    });
-    return sortArray;
-  };
+  let allDesignationArray = [];
+  array.map(obj => {
+    allDesignationArray.push(obj.cadreRank);
+  });
+  return allDesignationArray;
+};
+
+export const findNextRankAndLevel = (rank, designationArray) => {
+  const found = false;
+  for (i = 0; i < designationArray.length; i++) {
+    const cadres = designationArray[i];
+    for (j = 0; j < cadres.length; j++) {
+      const obj = cadres[j];
+      if (rank.toLowerCase() === obj.rank.toLowerCase()) {
+        //we have found the rank here
+        return {
+          nextRank: cadres[j + 1] && cadres[j + 1].rank,
+          nextLevel: cadres[j + 1] && cadres[j + 1].level
+        };
+      }
+    }
+    if (found) {
+      break;
+    }
+  }
+  return null;
 };
 
 export const AddSlashToPhoneNumber = phoneNumber => {
@@ -606,4 +622,13 @@ export const DocumentTypes = () => {
     { value: "all", data: "All Documents" }
   ];
   return documentArray;
+};
+
+export const RemoveFirstZero = scale => {
+  if (scale && scale[0] === "0") {
+    const modifiedScale = scale[1];
+    return modifiedScale;
+  } else {
+    return scale;
+  }
 };

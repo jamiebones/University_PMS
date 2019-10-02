@@ -69,6 +69,7 @@ class AddSalaryStep extends React.Component {
   }
 
   handleStepNumberChange(value) {
+    if (value[0] === "0") return;
     this.setState({ stepNumber: value });
   }
 

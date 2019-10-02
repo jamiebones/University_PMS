@@ -34,6 +34,7 @@ class SalaryStepComponent extends React.Component {
   }
 
   onStepChange(value) {
+    if (value[0] === "0") return;
     this.setState({ step: value }, () => {
       //set the props here
       this.props.setStepAndAmount({

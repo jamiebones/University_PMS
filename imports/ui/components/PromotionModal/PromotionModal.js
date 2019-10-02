@@ -2,9 +2,6 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import autoBind from "react-autobind";
-//import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
-//import NewStaffPromotionComponentNew from "../../components//NewStaffPromotionComponent";
-
 import NewStaffPromotionComponentNew from "../../components/PromotionComponentNew/PromotionComponentNew";
 const PromotionModalStyle = styled.div``;
 

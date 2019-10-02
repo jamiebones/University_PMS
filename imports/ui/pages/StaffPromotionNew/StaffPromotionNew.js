@@ -13,7 +13,11 @@ import { withTracker } from "meteor/react-meteor-data";
 import ShowPromotionTable from "../../components/ShowPromotionTable/ShowPromotionTable";
 import { SalaryScales } from "../../../api/SalaryScale/SalaryScaleClass";
 import { Cadres } from "../../../api/Cadre/CadreClass";
-import { ReturnArrayOfDesignation } from "../../../modules/utilities";
+import { Designations } from "../../../api/Designation/DesignationClass";
+import {
+  ReturnArrayOfDesignation,
+  findNextRankAndLevel
+} from "../../../modules/utilities";
 
 const StaffPromotionNewStyles = styled.div`
   .promoTableDiv {
@@ -183,9 +187,8 @@ class StaffPromotionNew extends React.Component {
       staff,
       staffList
     } = this.state;
-    const staffDesignations = ReturnArrayOfDesignation(
-      this.props.cadres || []
-    )();
+    const staffDesignations = ReturnArrayOfDesignation(this.props.cadres || []);
+    console.log(staffDesignations);
 
     return (
       <StaffPromotionNewStyles>
@@ -240,6 +243,7 @@ class StaffPromotionNew extends React.Component {
               cadres={this.props.cadres}
               staffCadres={staffDesignations}
               salaryScale={this.props.salaryScale}
+              designationsOfStaff={this.props.designationsOfStaff}
             />
           </Col>
         </Row>
@@ -312,6 +316,7 @@ export default StaffProposePostingPageContainer = withTracker(props => {
   return {
     loading: subscription && !subscription.ready(),
     cadres: Cadres.find().fetch(),
-    salaryScale: SalaryScales.find().fetch()
+    salaryScale: SalaryScales.find().fetch(),
+    designationsOfStaff: Designations.find().fetch()
   };
 })(StaffPromotionNew);

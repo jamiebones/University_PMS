@@ -21,6 +21,7 @@ import {
 } from "input-format";
 import DroplistComponent from "../../components/DroplistComponent/DroplistComponent";
 import { Promotion } from "../../../modules/classes/promotion";
+import { findNextRankAndLevel } from "../../../modules/utilities";
 
 const StaffPromotionComponentStyle = styled.div``;
 
@@ -45,7 +46,12 @@ export default function PromotionComponentNew(props) {
 
   useEffect(() => {
     //will run once
+
     if (editing === false) {
+      const nextLevlAndRank = findNextRankAndLevel(
+        props.staffdesignation,
+        props.staffCadres
+      );
       const promotionObject = {
         biodata: props.biodata,
         staffId: props.staffId,
@@ -54,13 +60,16 @@ export default function PromotionComponentNew(props) {
         designation: props.staffdesignation
       };
       const staffPromotion = new Promotion(promotionObject);
-      const nextRank = staffPromotion.getNextRank(props.cadres);
-      const newSalary = staffPromotion.getSalaryRange(props.salaryScale);
-      const { newCadre, newStep, newSalaryScale } = nextRank;
-      setproposedSalaryStructure(newSalaryScale);
-      setDesignation((newCadre && newCadre.rank) || "not defined");
-      setEditing(newCadre && newCadre.rank == null ? true : false);
-      setNewSalary(newSalary);
+      const nextSalaryStructure = staffPromotion.getNewSalaryStructure(
+        props.cadres
+      );
+      if (nextLevlAndRank !== null) {
+        const { nextRank, nextLevel } = nextLevlAndRank;
+        const { newStep, newSalaryScale } = nextSalaryStructure;
+        setproposedSalaryStructure(newSalaryScale);
+        setDesignation(nextRank);
+      }
+
       return () => {
         //component will unmount
       };
@@ -74,11 +83,6 @@ export default function PromotionComponentNew(props) {
   const setSelectedDesignation = designation => {
     setDesignation(designation);
     setEditing(true);
-  };
-
-  const setInputValueChange = value => {
-    setDesignation(value);
-    console.log(value);
   };
 
   const saveChanges = () => {
@@ -174,7 +178,7 @@ export default function PromotionComponentNew(props) {
           {newDesignation == "not defined" && (
             <div>
               <DroplistComponent
-                data={staffCadres}
+                data={props.designationsOfStaff}
                 field="rank"
                 label="Designation after promotion"
                 placeholder="Search designation......"
