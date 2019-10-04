@@ -242,7 +242,7 @@ class StaffPromotionNew extends React.Component {
               selectedDesignation={this.state.selectedDesignation}
               cadres={this.props.cadres}
               staffCadres={staffDesignations}
-              salaryScale={this.props.salaryScale}
+              salaryScales={this.props.salaryScale}
               designationsOfStaff={this.props.designationsOfStaff}
             />
           </Col>

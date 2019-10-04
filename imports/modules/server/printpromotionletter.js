@@ -29,7 +29,23 @@ const __GetStaffDetails = staffId => {
   return undefined;
 };
 
-const __GetReference = staffId => {
+const __GetReference = (staffId, promotionletterRef) => {
+  //this is where i will check if the
+  //letter has been printed before
+
+  const ifReferenceExist = Documents.findOne({
+    "meta.staffId": staffId,
+    "meta.reference": promotionletterRef
+  });
+
+  if (ifReferenceExist) {
+    return promotionletterRef;
+  }
+
+  console.log(`promotion reference: ${promotionletterRef}`);
+
+  //dosen't exist we move on here
+
   const documents = Documents.find({
     "meta.staffId": staffId,
     "meta.serial": { $exists: true, $ne: null }
@@ -41,12 +57,56 @@ const __GetReference = staffId => {
   return `${staffId}/${maxSerial + 1}`;
 };
 
-export default (PrintList = async options => {
-  const { staffId } = options;
+const __WriteDocumentToCollection = (pdf, staffId, promotionletterRef) => {
+  //this is where i will check if the
+  //letter has been printed before
+
+  const ifReferenceExist = Documents.findOne({
+    "meta.staffId": staffId,
+    "meta.reference": promotionletterRef
+  });
+
+  if (ifReferenceExist) {
+    //we already have that document in the collection.
+    return;
+  }
+
+  //dosen't exist we move on here
+  let meta = {};
+  const documents = Documents.find({
+    "meta.staffId": staffId,
+    "meta.serial": { $exists: true, $ne: null }
+  }).fetch();
+  if (_.isEmpty(documents)) {
+    meta.staffId = staffId;
+    meta.serial = 1;
+    meta.reference = `${staffId}/1`;
+  } else {
+    let maxSerial = FindMax(documents, "meta");
+    meta.staffId = staffId;
+    meta.serial = maxSerial + 1;
+    meta.reference = `${staffId}/${maxSerial + 1}`;
+  }
+  return Documents.WriteDocumentToCollection(
+    pdf,
+    meta,
+    "promotion letter",
+    "application/pdf"
+  );
+};
+
+export default PrintList = async options => {
+  const { staffId, promotionletterRef } = options;
   const staff = __GetStaffDetails(staffId);
-  const reference = __GetReference(staffId);
+  const reference = await __GetReference(staffId, promotionletterRef);
+  console.log(reference);
   const html = await __generateHTML({ options, staff, reference });
   const fileName = `promotion_letter.pdf`;
-  const pdf = await GeneratePDF(html, fileName, "portrait", "a4");
-  return pdf;
-});
+  //passing in true to the generatpdf method so that the buffer
+  //i have is not converted into a string
+  const pdf = await GeneratePDF(html, fileName, "portrait", "a4", true);
+  //this is where we safe the letter to the document collection
+  await __WriteDocumentToCollection(pdf, staffId, promotionletterRef);
+  const pdfToSendToClient = await GeneratePDF(html, fileName, "portrait", "a4");
+  return pdfToSendToClient;
+};

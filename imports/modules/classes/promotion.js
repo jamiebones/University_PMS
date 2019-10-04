@@ -99,7 +99,7 @@ class Promotion {
       const step = salaryArray[1].trim();
       // get the salary for that step
       const annualScale = salaryScaleRange.scale.find(
-        salary => salary.step === step
+        salary => salary.step == step
       );
 
       const annualSalary = annualScale && annualScale.amount;
@@ -116,15 +116,14 @@ class Promotion {
 
       // get the scale range
       const scaleStart = scaleArray.find(
-        salary => salary.step === minAnnualScale
+        salary => salary.step == minAnnualScale
       );
 
-      const scaleEnd = scaleArray.find(
-        salary => salary.step === maxAnnualScale
-      );
+      const scaleEnd = scaleArray.find(salary => salary.step == maxAnnualScale);
 
       salaryObject.yearlySalary = annualSalary;
-      salaryObject.yearlySalaryRange = `${scaleStart.amount} - ${scaleEnd.amount}`;
+      salaryObject.yearlySalaryRange = `${scaleStart &&
+        scaleStart.amount} - ${scaleEnd && scaleEnd.amount}`;
     } else {
       // we have not entered it yet
       salaryObject.yearlySalary = "#0000.000";

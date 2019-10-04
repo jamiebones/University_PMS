@@ -843,12 +843,7 @@ html{
           </p>
 
           <p className="pBody">
-            {staff.biodata.title
-              ? staff.biodata.title
-              : staff.sex === "F"
-              ? "Mrs"
-              : "Mr"}
-            .{staff.biodata.firstName}
+            {options.staffTitle}. {staff.biodata.firstName}{" "}
             {staff.biodata.middleName} {staff.biodata.surname}
           </p>
 
@@ -857,13 +852,7 @@ html{
           <p className="pBody">Uyo</p>
           <br />
           <p>
-            Dear{" "}
-            {staff.biodata.title
-              ? staff.biodata.title
-              : staff.sex === "F"
-              ? "Mrs"
-              : "Mr"}
-            . {staff.biodata.surname},
+            Dear {options.staffTitle}. {staff.biodata.surname},
           </p>
 
           <p className="lead">

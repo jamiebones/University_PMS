@@ -34,7 +34,8 @@ class PromotionList extends React.Component {
       selectedStaf: [],
       numSelected: 0,
       registrarName: "",
-      councilDate: ""
+      councilDate: "",
+      staffTitle: ""
     };
     autoBind(this);
   }
@@ -76,12 +77,22 @@ class PromotionList extends React.Component {
       newSalaryStructure,
       oldPromotionDate,
       promotionYear,
-      promotionSalary
+      promotionSalary,
+      promotionletterRef
     }
   ) {
-    debugger;
     let councilDate = "";
     let registrarName = "";
+    let staffTitle = "";
+    if (this.state.staffTitle === "") {
+      //ask them to input the date for the meeting
+      staffTitle = prompt(
+        "please enter the title of the staff: Example Mr, Mrs, Prof, Dr"
+      );
+      if (staffTitle) {
+        this.setState({ staffTitle: staffTitle });
+      }
+    }
     if (this.state.councilDate === "") {
       //ask them to input the date for the meeting
       councilDate = prompt(
@@ -111,12 +122,14 @@ class PromotionList extends React.Component {
       oldPromotionDate,
       promotionYear,
       promotionSalary,
+      promotionletterRef,
       councilDate: this.state.councilDate
         ? this.state.councilDate
         : councilDate,
       registrarName: this.state.registrarName
         ? this.state.registrarName
-        : registrarName
+        : registrarName,
+      staffTitle: this.state.staffTitle ? this.state.staffTitle : staffTitle
     };
     console.log(promotedStaffDetails);
     event.preventDefault();
@@ -262,7 +275,8 @@ class PromotionList extends React.Component {
                               oldPromotionDate,
                               promotionYear,
                               clicked,
-                              promotionSalary
+                              promotionSalary,
+                              promotionletterRef
                             },
                             index
                           ) => {
@@ -292,16 +306,12 @@ class PromotionList extends React.Component {
                                   <p>
                                     <span>
                                       {promotionSalary &&
-                                        `Annual Salary: ${
-                                          promotionSalary.yearlySalary
-                                        }`}
+                                        `Annual Salary: ${promotionSalary.yearlySalary}`}
                                     </span>
                                     <br />
                                     <span>
                                       {promotionSalary &&
-                                        `Salary Range : ${
-                                          promotionSalary.yearlySalaryRange
-                                        }`}
+                                        `Salary Range : ${promotionSalary.yearlySalaryRange}`}
                                     </span>
                                   </p>
                                 </td>
@@ -325,7 +335,8 @@ class PromotionList extends React.Component {
                                           newSalaryStructure,
                                           oldPromotionDate,
                                           promotionYear,
-                                          promotionSalary
+                                          promotionSalary,
+                                          promotionletterRef
                                         })
                                       }
                                     >

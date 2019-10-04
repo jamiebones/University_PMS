@@ -134,5 +134,27 @@ const Documents = new FilesCollection({
   }
 });
 
+Documents.WriteDocumentToCollection = (dataTowrite, meta, fileName, type) =>
+  Documents.write(
+    dataTowrite,
+    //{
+    //  fileName: "sample.png",
+    // fielId: "abc123myId", //optional
+    //  type: "image/png"
+    //},
+    {
+      meta,
+      fileName,
+      type
+    },
+    function(writeError, fileRef) {
+      if (writeError) {
+        throw writeError;
+      } else {
+        console.log("document write successful");
+      }
+    }
+  );
+
 // Export FilesCollection instance, so it can be imported in other files
 export default Documents;

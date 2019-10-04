@@ -1,18 +1,22 @@
 import pdf from "html-pdf";
 import fs from "fs";
 
-const __getBase64String = path => {
+const __getBase64String = (path, notToString) => {
   return new Promise((resolve, reject) => {
     try {
       const file = fs.readFileSync(path);
-      resolve(new Buffer(file).toString("base64"));
+      if (notToString) {
+        resolve(new Buffer(file));
+      } else {
+        resolve(new Buffer(file).toString("base64"));
+      }
     } catch (exception) {
       reject(`[Get Base64 String] || ${exception}`);
     }
   });
 };
 
-const GeneratePDF = (html, fileName, orientation, format) => {
+const GeneratePDF = (html, fileName, orientation, format, notToString) => {
   return new Promise((resolve, reject) => {
     try {
       pdf
@@ -30,7 +34,7 @@ const GeneratePDF = (html, fileName, orientation, format) => {
         .toFile(`./tmp/${fileName}`, (error, response) => {
           if (error) reject(error);
           if (response) {
-            resolve(__getBase64String(response.filename));
+            resolve(__getBase64String(response.filename, notToString));
             fs.unlink(response.filename, () => {});
           }
         });

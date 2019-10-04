@@ -63,11 +63,13 @@ export default function PromotionComponentNew(props) {
       const nextSalaryStructure = staffPromotion.getNewSalaryStructure(
         props.cadres
       );
+      const newStaffSalary = staffPromotion.getSalaryRange(props.salaryScales);
       if (nextLevlAndRank !== null) {
         const { nextRank, nextLevel } = nextLevlAndRank;
         const { newStep, newSalaryScale } = nextSalaryStructure;
         setproposedSalaryStructure(newSalaryScale);
         setDesignation(nextRank);
+        setNewSalary(newStaffSalary);
       }
 
       return () => {
@@ -266,7 +268,7 @@ export default function PromotionComponentNew(props) {
               Manual
             </Button>
 
-            {newDesignation !== "not defined" ? (
+            {newDesignation !== "not defined" && newSalary ? (
               <Button
                 bsSize="small"
                 className="btn btn-danger "

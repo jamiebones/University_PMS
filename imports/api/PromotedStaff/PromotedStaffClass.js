@@ -30,6 +30,10 @@ const PromotedStaff = Class.create({
     oldPromotionDate: String,
     promotionYear: String,
     savedDate: String,
+    promotionletterRef: {
+      type: String,
+      optional: true
+    },
     promotionSalary: {
       type: Object
     }
