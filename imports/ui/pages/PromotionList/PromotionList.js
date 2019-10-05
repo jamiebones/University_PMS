@@ -66,9 +66,33 @@ class PromotionList extends React.Component {
     });
   }
 
+  reprintPromotionLetter(event, { staffId, reference }) {
+    event.preventDefault();
+    const { target } = event;
+    const options = {
+      staffId,
+      reference
+    };
+    target.innerHTML = "<em>Downloading...</em>";
+    target.setAttribute("disabled", "disabled");
+    Meteor.call("promotedstaff.reprintpromotionletter", options, (err, res) => {
+      if (!err) {
+        const blob = base64ToBlob(res);
+        fileSaver.saveAs(blob, "promotion_letter.pdf");
+        target.innerText = "Re-print letter";
+        target.removeAttribute("disabled");
+      } else {
+        target.innerText = "Re-print letter";
+        target.removeAttribute("disabled");
+        console.log(err);
+      }
+    });
+  }
+
   printPromotionLetter(
     event,
     {
+      _id,
       staffId,
       staffName,
       oldDesignation,
@@ -122,6 +146,7 @@ class PromotionList extends React.Component {
       oldPromotionDate,
       promotionYear,
       promotionSalary,
+      promotionId: _id,
       promotionletterRef,
       councilDate: this.state.councilDate
         ? this.state.councilDate
@@ -266,6 +291,7 @@ class PromotionList extends React.Component {
                         {promotedStaff.map(
                           (
                             {
+                              _id,
                               staffId,
                               staffName,
                               oldDesignation,
@@ -322,27 +348,43 @@ class PromotionList extends React.Component {
 
                                 <td>
                                   <p>{promotionYear}</p>
-                                  {promotionSalary && (
-                                    <Button
-                                      bsSize="xsmall"
-                                      onClick={e =>
-                                        this.printPromotionLetter(e, {
-                                          staffId,
-                                          staffName,
-                                          oldDesignation,
-                                          newDesignation,
-                                          oldSalaryStructure,
-                                          newSalaryStructure,
-                                          oldPromotionDate,
-                                          promotionYear,
-                                          promotionSalary,
-                                          promotionletterRef
-                                        })
-                                      }
-                                    >
-                                      Print letter
-                                    </Button>
-                                  )}
+                                  {promotionSalary &&
+                                    /* do we have a reference already*/
+                                    (promotionletterRef ? (
+                                      <Button
+                                        bsSize="xsmall"
+                                        bsStyle="success"
+                                        onClick={e =>
+                                          this.reprintPromotionLetter(e, {
+                                            staffId,
+                                            reference: promotionletterRef
+                                          })
+                                        }
+                                      >
+                                        Re-print letter
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        bsSize="xsmall"
+                                        onClick={e =>
+                                          this.printPromotionLetter(e, {
+                                            _id,
+                                            staffId,
+                                            staffName,
+                                            oldDesignation,
+                                            newDesignation,
+                                            oldSalaryStructure,
+                                            newSalaryStructure,
+                                            oldPromotionDate,
+                                            promotionYear,
+                                            promotionSalary,
+                                            promotionletterRef
+                                          })
+                                        }
+                                      >
+                                        Print letter
+                                      </Button>
+                                    ))}
                                 </td>
 
                                 <td>

@@ -3,6 +3,7 @@ import { check, Match } from "meteor/check";
 import { PromotedStaffs } from "../PromotedStaffClass";
 import PrintPromotedStaffList from "../../../modules/server/printpromotedstafflist";
 import PrintPromotionLetter from "../../../modules/server/printpromotionletter";
+import RePrintPromotionLetter from "../../../modules/server/reprintPromotionLetter";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import moment from "moment";
 
@@ -71,7 +72,8 @@ Meteor.methods({
           oldPromotionDate: "$oldPromotionDate",
           promotionYear: "$promotionYear",
           savedDate: "$savedDate",
-          promotionSalary: "$promotionSalary"
+          promotionSalary: "$promotionSalary",
+          promotionletterRef: "$promotionletterRef"
         }
       },
       {
@@ -99,6 +101,18 @@ Meteor.methods({
   "promotedstaff.printpromotionletter": function PromotedStaffMethod(options) {
     check(options, Object);
     return PrintPromotionLetter(options)
+      .then(pdf => {
+        return pdf;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  },
+  "promotedstaff.reprintpromotionletter": function PromotedStaffMethod(
+    options
+  ) {
+    check(options, Object);
+    return RePrintPromotionLetter(options)
       .then(pdf => {
         return pdf;
       })
