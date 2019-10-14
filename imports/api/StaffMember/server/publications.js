@@ -110,6 +110,13 @@ Meteor.publish(
 );
 
 Meteor.publish(
+  "staffmembers.getAllUniversityDepartmentsAndDesignations",
+  function StaffMembersPublication() {
+    return [UniversityUnits.find(), Designations.find()];
+  }
+);
+
+Meteor.publish(
   "staffposting.getoverstayedStaff",
   function StaffMembersPublication() {
     return StaffMembers.find({ staffType: "2" });

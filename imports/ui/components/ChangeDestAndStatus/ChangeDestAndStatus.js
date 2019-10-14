@@ -8,99 +8,213 @@ import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass
 import { Designations } from "../../../api/Designation/DesignationClass";
 import autoBind from "react-autobind";
 import { _ } from "meteor/underscore";
+import { EmploymentStatus } from "../../../modules/utilities";
+import DroplistComponent from "../../components/DroplistComponent/DroplistComponent";
+import styled from "styled-components";
+
+const ChangeDestStyles = styled.div`
+  .selectedDiv {
+    p {
+      font-size: 14px;
+    }
+    span {
+      font-size: 14px;
+      color: green;
+      font-weight: bold;
+    }
+  }
+`;
 
 class ChangeDestAndStatus extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      designation: "",
-      dept: ""
+      seldesignation: "",
+      seldepartment: "",
+      dept: "",
+      newStatus: ""
     };
     autoBind(this);
   }
 
-  componentDidMount() {
-    this.props.selectedDeptReactiveVar.set("");
+  onChangeStatus(e) {
+    e.preventDefault();
+    if (e.target.value === "0") return;
+    this.setState({ newStatus: e.target.value });
   }
 
   saveChanges() {
-    const staffObject = {
-      sex: this.state.sex,
-      maritalStatus: this.state.maritalStatus,
-      title: this.state.title,
-      staffId: this.state.staffId
-    };
-    Meteor.call("staffMembers.saveChanges", staffObject, err => {
-      if (!err) {
-        Bert.alert("state changed successful", "success");
-      } else {
-        Bert.alert(`There was an error: ${error}`, "danger");
+    const { seldepartment, seldesignation, newStatus } = this.state;
+    let query = {};
+    const {
+      staffId,
+      biodata: { firstName, middleName, surname },
+      currentPosting,
+      designation,
+      officialRemark
+    } = this.props.staff;
+
+    let message = `${firstName}  ${middleName} ${surname}`;
+    if (seldepartment) {
+      query.currentPosting = seldepartment;
+      message += ` you are changing ${currentPosting} to ${seldepartment}`;
+    }
+
+    if (seldesignation) {
+      query.designation = seldesignation;
+      message += ` you are changing ${designation} to ${seldesignation}`;
+    }
+
+    if (newStatus) {
+      query.officialRemark = newStatus;
+      message += ` changing ${officialRemark} to ${newStatus}`;
+    }
+
+    const confirmStatus = confirm(
+      `Are you sure: you are about changing the following : ${message}`
+    );
+
+    if (!confirmStatus) return;
+    
+
+    const logAction = confirm(
+      `This action will be logged against your username. Do you wish to continue`
+    );
+
+    if (!logAction) return;
+
+    Meteor.call(
+      "staffMembers.saveNewDesignatioorStatus",
+      query,
+      staffId,
+      err => {
+        if (!err) {
+          Bert.alert("state changed successful", "success");
+        } else {
+          Bert.alert(`There was an error: ${error}`, "danger");
+        }
       }
-    });
+    );
+  }
+
+  onChange(e) {}
+
+  setDepartment(department) {
+    this.setState({ seldepartment: department });
+  }
+
+  setDesignation(designation) {
+    this.setState({ seldesignation: designation });
   }
 
   render() {
-    const { biodata } = this.props.staff;
+    const {
+      biodata,
+      currentPosting,
+      designation,
+      officialRemark
+    } = this.props.staff;
+    const { departments, designations } = this.props;
+    const { seldepartment, seldesignation, newStatus } = this.state;
     return (
-      <Row>
-        <Col md={12}>
-          <p>
-            Name: {biodata.firstName} {biodata.middleName} {biodata.surname}
-          </p>
+      <ChangeDestStyles>
+        <Row>
+          <Col md={12}>
+            <p>
+              Name: {biodata.firstName} {biodata.middleName} {biodata.surname}
+            </p>
 
-          <p>Department: {currentPosting}</p>
+            <p>Department: {currentPosting}</p>
 
-          <p>Designation: {designation}</p>
+            <p>Designation: {designation}</p>
 
-          <hr />
+            <hr />
 
-          <FormGroup>
-            <ControlLabel>Change dept</ControlLabel>
-            <select
-              className="form-control"
-              name="dept"
-              value={this.state.dept}
-              onChange={this.onChange}
-            >
-              <option value="0">select department</option>
-            </select>
-          </FormGroup>
+            <div className="selectedDiv">
+              {seldepartment && (
+                <p>
+                  New department selected : <span>{seldepartment}</span>
+                </p>
+              )}
 
-          <FormGroup>
-            <ControlLabel>Change designation</ControlLabel>
-            <select
-              className="form-control"
-              name="designation"
-              value={this.state.designation}
-              onChange={this.onChange}
-            >
-              <option value="0">select designation</option>
-            </select>
-          </FormGroup>
+              {seldesignation && (
+                <p>
+                  New designation selected : <span>{seldesignation}</span>
+                </p>
+              )}
 
-          <div className="text-center">
-            <Button bsStyle="success" bsSize="small" onClick={this.saveChanges}>
-              Save Designation
-            </Button>
-          </div>
-        </Col>
-      </Row>
+              {newStatus && (
+                <p>
+                  Status : <span>{newStatus}</span>
+                </p>
+              )}
+            </div>
+            <Row>
+              <Col md={6}>
+                <FormGroup>
+                  <DroplistComponent
+                    data={designations}
+                    field="rank"
+                    label="Change designation"
+                    placeholder="Search designations......"
+                    setValue={this.setDesignation}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <DroplistComponent
+                    data={departments}
+                    field="name"
+                    label="Change department"
+                    placeholder="Search departments......"
+                    setValue={this.setDepartment}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Change employment status</ControlLabel>
+                  <select
+                    className="form-control"
+                    name="newStatus"
+                    value={this.state.newStatus}
+                    onChange={this.onChangeStatus}
+                  >
+                    <option value="0">select status</option>
+                    {Object.values(EmploymentStatus()).map((val, index) => {
+                      return <option key={index}>{val}</option>;
+                    })}
+                  </select>
+                </FormGroup>
+
+                <div className="text-center">
+                  <Button
+                    bsStyle="success"
+                    bsSize="small"
+                    onClick={this.saveChanges}
+                  >
+                    Save Designation
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </ChangeDestStyles>
     );
   }
 }
 
-export default (ChangeDestAndStatus = withTracker(() => {
+export default ChangeDestAndStatus = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
-      "staffmembers.getNominalRollForDepartment",
-      selectedDeptReactiveVar.get()
+      "staffmembers.getAllUniversityDepartmentsAndDesignations"
     );
   }
 
   return {
     loading: subscription && !subscription.ready(),
-    department: UniversityUnits.find().fetch(),
-    designation: Designations.find().fetch()
+    departments: UniversityUnits.find({}, { sort: { name: 1 } }).fetch(),
+    designations: Designations.find().fetch()
   };
-})(ChangeDestAndStatus));
+})(ChangeDestAndStatus);

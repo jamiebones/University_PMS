@@ -16,6 +16,7 @@ import Tabs from "react-responsive-tabs";
 import StaffBio from "../../components/StaffBio/StaffBio";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
 import StaffQualification from "../../components/StaffQualification/StaffQualification";
+import ChangeDesignationAndStatus from "../../components/ChangeDestAndStatus/ChangeDestAndStatus";
 import PostingDate from "../../components/PostingDate/PostingDate";
 if (Meteor.isClient) {
   import "react-responsive-tabs/styles.css";
@@ -34,8 +35,6 @@ class StaffDetailPage extends React.Component {
 
   render() {
     const { staff, loading } = this.props;
-    //loop over the documents;
-
     const StaffData = [
       {
         title: "Staff Bio",
@@ -60,10 +59,15 @@ class StaffDetailPage extends React.Component {
         staff.staffType == "2" && {
           title: "Posting Date",
           key: "posting",
-          getContent: () => <PostingDate staff={staff} />
+          getContent: () => <PostingDate staff={staff && staff} />
         },
+      GetDetailsBasedOnRole("Records", "Personnel") && {
+        title: "Change Designation/Status",
+        key: "designation",
+        getContent: () => <ChangeDesignationAndStatus staff={staff && staff} />
+      },
       {
-        title: "Staff Qualification",
+        title: "Qualification",
         key: "qualification",
         getContent: () => (
           <StaffQualification
@@ -88,7 +92,11 @@ class StaffDetailPage extends React.Component {
         {!loading ? (
           <Row>
             <Col md={12}>
-              <Tabs items={StaffData} showInkBar={true} />
+              {!_.isEmpty(staff) ? (
+                <Tabs items={StaffData} showInkBar={true} />
+              ) : (
+                <p className="text-danger lead">No available details</p>
+              )}
             </Col>
           </Row>
         ) : (
@@ -99,10 +107,11 @@ class StaffDetailPage extends React.Component {
   }
 }
 
-export default (StaffDetailPageContainer = withTracker(({ match }) => {
+export default StaffDetailPageContainer = withTracker(({ match }) => {
   let subscription;
   const { staffId } = match.params;
   const staffIdQuery = staffId && ReplaceSlash(staffId);
+  console.log(staffIdQuery);
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
       "staffmembers.getStaffbyStaffId",
@@ -112,6 +121,7 @@ export default (StaffDetailPageContainer = withTracker(({ match }) => {
 
   return {
     loading: subscription && !subscription.ready(),
-    staff: StaffMembers.findOne({ staffId: staffIdQuery })
+    staff: StaffMembers.findOne({ staffId: staffIdQuery }),
+    n: console.log(StaffMembers.find({ staffId: staffIdQuery }).fetch())
   };
-})(StaffDetailPage));
+})(StaffDetailPage);

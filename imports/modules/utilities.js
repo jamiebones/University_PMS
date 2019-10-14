@@ -632,3 +632,22 @@ export const RemoveFirstZero = scale => {
     return scale;
   }
 };
+
+export const EmploymentStatus = () => {
+  const statusObject = {
+    "1": "active",
+    "2": "retired",
+    "3": "dismissal",
+    "4": "appointment terminated",
+    "5": "contract",
+    "6": "sabbatical",
+    "7": "leave of absence",
+    "8": "visiting scholar",
+    "9": "adjunt",
+    "10": "absconded",
+    "11": "special leave",
+    "12": "on suspension"
+  };
+
+  return statusObject;
+};

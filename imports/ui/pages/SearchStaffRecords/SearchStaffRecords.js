@@ -92,9 +92,9 @@ class SearchStaffRecordsPage extends React.Component {
               >
                 <option value="0">select designation</option>
                 {designations &&
-                  designations.map(({ rank }) => {
+                  designations.map(({ rank }, index) => {
                     return (
-                      <option value={rank} key={rank}>
+                      <option value={rank} key={3444 + index}>
                         {rank}
                       </option>
                     );
@@ -182,7 +182,7 @@ let query = {
   designation: ""
 };
 
-export default (SearchStaffRecordsPageContainer = withTracker(() => {
+export default SearchStaffRecordsPageContainer = withTracker(() => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -214,4 +214,4 @@ export default (SearchStaffRecordsPageContainer = withTracker(() => {
     designationReactive,
     designations: Designations.find({}, { sort: { ranK: 1 } }).fetch() || []
   };
-})(SearchStaffRecordsPage));
+})(SearchStaffRecordsPage);

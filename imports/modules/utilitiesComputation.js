@@ -413,9 +413,10 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
   //loop through
   const staffScheduleToRetire = staffArray.filter(staff => {
     const staffSalary = staff.salaryStructure;
-    const age = moment(staff.dob);
+    const age = moment(staff.dob || todayDate);
     //const diffAge = moment.duration(todayDate.diff(age));
     let staffAge = Math.round(todayDate.diff(age, "days") / 365);
+    console.log(staffAge);
     if (staffSalary && staffSalary.toUpperCase().includes("CONTISS")) {
       const yearsLeft = 65 - parseInt(staffAge);
       if (yearsLeft == years) {
@@ -430,10 +431,21 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
         return staff;
       }
     } else if (staffSalary && staffSalary.toUpperCase().includes("CONUASS")) {
-      const yearsLeft = 70 - parseInt(staffAge);
-      if (yearsLeft == years) {
-        staff.retirementType = "CONUASS";
-        return staff;
+      //check if the person should be in the professorial cadre
+      if (staff.designation.toUpperCase().includes("PROFESSOR")) {
+        const yearsLeft = 70 - parseInt(staffAge);
+        if (yearsLeft == years) {
+          staff.retirementType = "CONUASS";
+          return staff;
+        }
+      } else {
+        //the person is not in the professorial cadre yet
+        //so they retire at 65
+        const yearsLeft = 65 - parseInt(staffAge);
+        if (yearsLeft == years) {
+          staff.retirementType = "CONUASS";
+          return staff;
+        }
       }
     }
   });
@@ -449,28 +461,17 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
     let staffRetirementBday = moment(`${bMonth}/${bday}/${bYear + years}`);
 
     let yearDiff = moment.duration(staffRetirementBday.diff(todayDate));
-
+    console.log(yearDiff);
     const diffBMonth = yearDiff.months();
     const diffBDay = yearDiff.days();
     const diffYear = yearDiff.years();
     const timeLeft = __filterMinus(diffYear, diffBMonth, diffBDay);
-    //console.log(timeLeft);
 
     staff.timeLeft = timeLeft;
-    if (staff.retirementType == "CONTISS") {
-      //academic staff
-      staff.yearsToretirement = 65 - staffAge;
-      computedArray.push(staff);
-    } else if (staff.retirementType == "CONMESS") {
-      //non teaching staff
-      staff.yearsToretirement = 60 - staffAge;
-      computedArray.push(staff);
-    } else if (staff.retirementType == "CONUASS") {
-      staff.yearsToretirement = 70 - staffAge;
-      computedArray.push(staff);
-    }
+    computedArray.push(staff);
+    //return computedArray;
+    continue;
   }
-
   console.timeEnd();
   return computedArray;
 };
