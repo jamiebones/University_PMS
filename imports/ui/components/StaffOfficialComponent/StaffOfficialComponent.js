@@ -46,7 +46,9 @@ class StaffOfficialComponent extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (!state.designations.length) {
-      const staffDesignations = ReturnArrayOfDesignation(props.cadres || [])();
+      //this line below was what was there before i removed the invocation.
+      //const staffDesignations = ReturnArrayOfDesignation(props.cadres || [])();
+      const staffDesignations = ReturnArrayOfDesignation(props.cadres || []);
       return {
         designations: staffDesignations,
         selectedDesignation: props.selectedDesignation,

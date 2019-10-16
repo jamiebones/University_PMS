@@ -28,6 +28,7 @@ Meteor.methods({
       });
     };
     for (let i = 4; i < excelData.length; i++) {
+      debugger;
       const rowArray = excelData[i];
       //loop through row data;
       //lets build the person here
@@ -36,173 +37,211 @@ Meteor.methods({
       };
       let canSave = false;
       if (rowArray[1] == null) {
+        debugger;
         //this role is likely a unit
         const universityFaculty = RemoveNull(rowArray)
           .join(" ")
           .trim();
-        faculty = universityFaculty;
-        const newUnit = new UniversityUnit();
-        newUnit.name = faculty;
-        newUnit.save();
-        numUnitSaved += 1;
+        if (universityFaculty !== "NON-TEACHING STAFF") {
+          faculty = universityFaculty;
+          const newUnit = new UniversityUnit();
+          newUnit.name = faculty;
+          newUnit.save();
+          numUnitSaved += 1;
+        }
+        continue;
       }
       for (let k = 0; k < rowArray.length; k++) {
-        if (rowArray[rowArray.length] !== null) {
-          if (rowArray[k] !== null) {
-            //console.log(rowArray[k]);
-            //here we build the object
-            switch (k) {
-              case 1:
-                canSave = true;
-                staff.staffId = rowArray[k] && rowArray[k].toUpperCase();
-                staff.currentPosting = faculty.toUpperCase();
-                //console.log(faculty);
-                break;
+        debugger;
+        if (rowArray[k] !== null && rowArray[1] !== null) {
+          //console.log(rowArray[k]);
+          //here we build the object
+          debugger;
+          switch (k) {
+            case 1:
+              canSave = true;
+              staff.staffId = rowArray[k] && rowArray[k].toUpperCase();
+              staff.currentPosting = faculty.toUpperCase();
+              //console.log(faculty);
+              break;
 
-              case 2:
-                staff.biodata.surname =
-                  rowArray[k] && rowArray[k].toUpperCase().trim();
-                break;
-              case 3:
-                staff.biodata.firstName = rowArray[k].trim()
-                  ? rowArray[k] && rowArray[k].toUpperCase().trim()
-                  : "No firstname";
-                break;
-              case 4:
-                staff.biodata.middleName =
-                  rowArray[k] && rowArray[k].toUpperCase().trim();
-                break;
-              case 5:
-                staff.sex = rowArray[k] && rowArray[k].trim();
-                break;
-              case 6:
-                staff.maritalStatus = rowArray[k] && rowArray[k].trim();
-                break;
-              case 7:
-                staff.stateOfOrigin = rowArray[k] && rowArray[k].trim();
-                break;
-              case 8:
-                staff.lgaOfOrigin = rowArray[k] && rowArray[k].trim();
-                break;
-              case 9:
-                staff.dob = rowArray[k] ? rowArray[k].trim() : "No date";
-                break;
-              case 10:
-                staff.dateOfFirstAppointment =
-                  rowArray[k] && rowArray[k].trim();
-                break;
-              case 11:
-                staff.dateOfAppointmentInUniversity =
-                  rowArray[k] && rowArray[k].trim();
-                break;
-              case 12:
-                //we have certificate here
-                if (rowArray[k] !== null) {
-                  let certArray = rowArray[k].split(",");
-                  //loop through
-                  let certificateArray = [];
-                  for (let j = 0; j < certArray.length; j++) {
-                    let certObj = certArray[j].trim().split(" ");
-                    let credentials = {
-                      cert: certObj.splice(0, certObj.length - 1).join(" "),
-                      date: certObj[certObj.length - 1]
-                    };
-                    certificateArray.push(credentials);
-                  }
-                  staff.certificate = certificateArray;
+            case 2:
+              staff.biodata.surname =
+                rowArray[k] && rowArray[k].toUpperCase().trim();
+              break;
+            case 3:
+              staff.biodata.firstName = rowArray[k].trim()
+                ? rowArray[k] && rowArray[k].toUpperCase().trim()
+                : "-";
+              break;
+            case 4:
+              staff.biodata.middleName =
+                rowArray[k] && rowArray[k].toUpperCase().trim();
+              break;
+            case 5:
+              staff.sex = rowArray[k] && rowArray[k].trim();
+              break;
+            case 6:
+              staff.maritalStatus = rowArray[k] && rowArray[k].trim();
+              break;
+            case 7:
+              staff.stateOfOrigin = rowArray[k] && rowArray[k].trim();
+              break;
+            case 8:
+              staff.lgaOfOrigin = rowArray[k] && rowArray[k].trim();
+              break;
+            case 9:
+              staff.dob = rowArray[k] ? rowArray[k].trim() : "-";
+              break;
+            case 10:
+              staff.dateOfFirstAppointment = rowArray[k] && rowArray[k].trim();
+              break;
+            case 11:
+              staff.dateOfAppointmentInUniversity =
+                rowArray[k] && rowArray[k].trim();
+              break;
+            case 12:
+              //we have certificate here
+              if (rowArray[k] !== null) {
+                let certArray = rowArray[k].split(",");
+                //loop through
+                let certificateArray = [];
+                for (let j = 0; j < certArray.length; j++) {
+                  let certObj = certArray[j].trim().split(" ");
+                  let credentials = {
+                    cert: certObj.splice(0, certObj.length - 1).join(" "),
+                    date: certObj[certObj.length - 1]
+                  };
+                  certificateArray.push(credentials);
                 }
-                break;
-              case 13:
-                staff.dateOfLastPromotion = rowArray[k]
-                  ? rowArray[k]
-                  : "No Promotion Yet";
-                staff.employmentStatus = "active";
-                break;
-              case 14:
-                staff.designation = rowArray[k] && rowArray[k].trim();
+                staff.certificate = certificateArray;
+              }
+              break;
+            case 13:
+              staff.dateOfLastPromotion = rowArray[k] ? rowArray[k] : "-";
+              staff.employmentStatus = "active";
+              break;
+            case 14:
+              staff.designation = rowArray[k] && rowArray[k].trim();
 
-                break;
-              case 15:
-                const salaryStructure = rowArray[k] && rowArray[k].trim();
-                const GL = rowArray[16] && rowArray[16].trim();
-                const step = rowArray[17] && rowArray[17].trim();
-                staff.salaryStructure = `${salaryStructure} ${GL}/${step}`;
-                if (
-                  salaryStructure &&
-                  salaryStructure.toLowerCase().trim() == "conuass"
-                ) {
-                  //we have an academic staff
-                  staff.staffType = "1";
-                  staff.staffClass = "Senior Staff";
-                } else if (
-                  salaryStructure &&
-                  salaryStructure.toLowerCase().trim() == "conmess"
-                ) {
-                  staff.staffType = "2";
-                  staff.staffClass = "Senior Staff";
-                } else {
-                  staff.staffType = "2";
-                  staff.postingProposed = false;
-                  if (GL && parseInt(GL) < 6) {
-                    //we have a junior non teaching
-                    //build designation here as either junior
-                    //or senior staff
-                    staff.staffClass = "Junior Staff";
-                    //get the designation here
-                    const staffDesignation =
-                      rowArray[14] && rowArray[14].trim();
-                    //check if this is already stored in
-                    //the designation array
-                    const findDesignation = designationArray.find(
-                      des => des.rank == staffDesignation
-                    );
-                    //check if we have something inside
-                    if (_.isEmpty(findDesignation)) {
-                      //we need to add the designation here
-                      const obj = {
-                        rank: staffDesignation,
-                        type: "Junior Staff"
-                      };
-                      //push into the array
-                      designationArray.push(obj);
-                    }
-                  } else {
-                    //we have a senior staff
-                    staff.staffClass = "Senior Staff";
-                    const staffDesignation =
-                      rowArray[14] && rowArray[14].trim();
-                    const findDesignation = designationArray.find(
-                      des => des.rank == staffDesignation
-                    );
-                    //check if we have something inside
-                    if (_.isEmpty(findDesignation)) {
-                      //we need to add the designation here
-                      const obj = {
-                        rank: staffDesignation,
-                        type: "Senior Staff"
-                      };
-                      //push into the array
-                      designationArray.push(obj);
-                    }
-                  }
+              break;
+            case 15:
+              const salaryStructure = rowArray[k] && rowArray[k].trim();
+              const GL = rowArray[16] && rowArray[16].trim();
+              const step = rowArray[17] && rowArray[17].trim();
+              staff.salaryStructure = `${salaryStructure} ${GL}/${step}`;
+              if (
+                salaryStructure &&
+                salaryStructure.toLowerCase().trim() == "conuass"
+              ) {
+                //we have an academic staff
+                staff.staffType = "1";
+              } else if (
+                salaryStructure &&
+                salaryStructure.toLowerCase().trim() == "conmess"
+              ) {
+                staff.staffType = "3";
+              } else {
+                //we have contiss here
+                staff.staffType = "2";
+                staff.postingProposed = false;
+              }
+              if (GL && parseInt(GL) < 6) {
+                //we have a junior non teaching
+                //build designation here as either junior
+                //or senior staff
+                staff.staffClass = "Junior Staff";
+                //get the designation here
+                const staffDesignation = rowArray[14] && rowArray[14].trim();
+                //check if this is already stored in
+                //the designation array
+                const findDesignation = designationArray.find(
+                  des => des.rank == staffDesignation
+                );
+                //check if we have something inside
+                if (_.isEmpty(findDesignation)) {
+                  //we need to add the designation here
+                  const obj = {
+                    rank: staffDesignation,
+                    type: "Junior Staff"
+                  };
+                  //push into the array
+                  designationArray.push(obj);
                 }
-                break;
-              case 18:
-                const remark = rowArray[18];
-                staff.officialRemark = remark;
-                break;
-            }
-          } else {
-            //lets save remark here please
-            //it is null save as official here
-            if (k == 18) {
-              staff.officialRemark = "active";
-            }
+              } else {
+                //we have a senior staff
+                staff.staffClass = "Senior Staff";
+                const staffDesignation = rowArray[14] && rowArray[14].trim();
+                const findDesignation = designationArray.find(
+                  des => des.rank == staffDesignation
+                );
+                //check if we have something inside
+                if (_.isEmpty(findDesignation)) {
+                  //we need to add the designation here
+                  const obj = {
+                    rank: staffDesignation,
+                    type: "Senior Staff"
+                  };
+                  //push into the array
+                  designationArray.push(obj);
+                }
+              }
+              break;
+            case 18:
+              const remark = rowArray[18];
+              staff.officialRemark = remark;
+              break;
+            case 19:
+              const expirationOfContract = rowArray[19];
+              if (expirationOfContract != null) {
+                //we have an expiration contract here
+                //we need to check if the remark has something
+                //written on it.
+                if (rowArray[18] != null) {
+                  //we have either contract sabatical and the rest
+                  staff.expirationDateofContractandTheRest = expirationOfContract;
+                }
+              }
+              break;
+            case 20:
+              //phone number
+              //check for null
+              if (rowArray[20] != null || rowArray[20] != "-") {
+                //split the phone number by comma
+                const phoneNumbers = rowArray[20];
+                const phoneArray = phoneNumbers.split(",");
+                //phoneArray contains an array of phones
+                staff.phone = phoneArray;
+              }
+              break;
+
+            case 21:
+              if (rowArray[21] !== null) {
+                staff.pensionPFA = rowArray[21];
+              }
+              break;
+            case 22:
+              if (rowArray[22] !== null) {
+                staff.pensionPIN = rowArray[22];
+              }
+              break;
+            case 23:
+              //email address
+              //check for null
+              if (rowArray[23] != null || rowArray[23] != "-") {
+                staff.emailAddress = rowArray[23];
+              }
+              break;
           }
         } else {
-          break;
+          //lets save remark here please
+          //it is null save as official here
+          if (k == 18) {
+            staff.officialRemark = "active";
+          }
         }
       }
+      //i should save here abeg
       if (canSave) {
         //we should be good to save
         try {

@@ -186,6 +186,22 @@ const StaffMember = Class.create({
     officialRemark: {
       type: String,
       optional: true
+    },
+    pensionPFA: {
+      type: String,
+      optional: true
+    },
+    pensionPIN: {
+      type: String,
+      optional: true
+    },
+    emailAddress: {
+      type: String,
+      optional: true
+    },
+    expirationDateofContractandTheRest: {
+      type: String,
+      optional: true
     }
   }
 });

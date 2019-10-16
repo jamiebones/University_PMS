@@ -20,7 +20,8 @@ import { NigeriaStates } from "../../../api/NigeriaStates/NigeriaStatesClass";
 import moment from "moment";
 import {
   GetDetailsBasedOnRole,
-  StaffEmploymentType
+  StaffEmploymentType,
+  InsertDashInPhoneNumber
 } from "../../../modules/utilities";
 import autoBind from "react-autobind";
 import StateModal from "../../components/StateModal/StateModal";
@@ -44,7 +45,15 @@ class StaffBio extends React.Component {
       editStaff: false,
       showStateModal: false,
       firstRender: false,
-      title: ""
+      title: "",
+      pensionPFA: "",
+      pensionPIN: "",
+      emailAddress: "",
+      phone: [],
+      expirationDateofContractandTheRest: "",
+      dateOfFirstAppointment: moment(),
+      dateOfAppointmentInUniversity: moment(),
+      designation: ""
     };
     autoBind(this);
   }
@@ -61,12 +70,23 @@ class StaffBio extends React.Component {
         profilePicture: staff && staff.biodata && staff.biodata.profilePicture,
         sex: staff.sex,
         dob: moment(staff.dob),
+        dateOfFirstAppointment: moment(staff.dateOfFirstAppointment),
+        dateOfAppointmentInUniversity: moment(
+          staff.dateOfAppointmentInUniversity
+        ),
         maritalStatus: staff.maritalStatus,
         staffId: staff.staffId,
         stateOfOrigin: staff.stateOfOrigin.trim(),
         lgaOfOrigin: staff.lgaOfOrigin.trim(),
         currentPosting: staff.currentPosting,
-        officialRemark: staff.officialRemark
+        officialRemark: staff.officialRemark,
+        pensionPFA: staff.pensionPFA,
+        pensionPIN: staff.pensionPIN,
+        emailAddress: staff.emailAddress,
+        phone: staff.phone,
+        designation: staff.designation,
+        expirationDateofContractandTheRest:
+          staff.expirationDateofContractandTheRest
       };
     } else {
       return null;
@@ -96,12 +116,17 @@ class StaffBio extends React.Component {
 
   render() {
     const { staff, states, history } = this.props;
-    const { editStaff } = this.state;
+    const {
+      editStaff,
+      phone,
+      expirationDateofContractandTheRest,
+      designation
+    } = this.state;
     return (
       <div className="StaffBio">
         <Row>
-          <Col xs={12} sm={8} md={8} lg={8}>
-            <form ref={form => (this.form = form)}>
+          <form ref={form => (this.form = form)}>
+            <Col xs={12} sm={6} md={6} lg={6}>
               <FormGroup>
                 <ControlLabel>Title</ControlLabel>
                 <select
@@ -160,7 +185,6 @@ class StaffBio extends React.Component {
                 <DatePicker
                   dateFormat="DD/MM/YYYY"
                   selected={this.state.dob}
-                  onChange={this.onChange}
                   disabled
                   className="form-control"
                   placeholderText="date of birth"
@@ -201,6 +225,18 @@ class StaffBio extends React.Component {
               </FormGroup>
 
               <FormGroup>
+                <ControlLabel>LGA</ControlLabel>
+                <input
+                  type="text"
+                  disabled
+                  name="stateOfOrigin"
+                  value={this.state.lgaOfOrigin}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
                 <ControlLabel>State of Origin</ControlLabel>
                 <InputGroup>
                   <input
@@ -229,19 +265,8 @@ class StaffBio extends React.Component {
                   )}
                 </InputGroup>
               </FormGroup>
-
-              <FormGroup>
-                <ControlLabel>LGA</ControlLabel>
-                <input
-                  type="text"
-                  disabled
-                  name="stateOfOrigin"
-                  value={this.state.lgaOfOrigin}
-                  onChange={this.onChange}
-                  className="form-control"
-                />
-              </FormGroup>
-
+            </Col>
+            <Col xs={12} sm={6} md={6} lg={6}>
               <FormGroup>
                 <ControlLabel>Staff ID </ControlLabel>
                 <input
@@ -250,6 +275,17 @@ class StaffBio extends React.Component {
                   disabled
                   value={this.state.staffId}
                   onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Designation </ControlLabel>
+                <input
+                  type="text"
+                  name="designation"
+                  disabled
+                  value={this.state.designation}
                   className="form-control"
                 />
               </FormGroup>
@@ -267,6 +303,76 @@ class StaffBio extends React.Component {
               </FormGroup>
 
               <FormGroup>
+                <ControlLabel>Email</ControlLabel>
+                <input
+                  type="text"
+                  name="emailAddress"
+                  disabled
+                  value={this.state.emailAddress}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Phone</ControlLabel>
+                {phone &&
+                  phone.map((number, index) => {
+                    return (
+                      <p key={index}>
+                        {InsertDashInPhoneNumber(number && number)}
+                      </p>
+                    );
+                  })}
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Pension PFA</ControlLabel>
+                <input
+                  type="text"
+                  name="pensionPFA"
+                  disabled
+                  value={this.state.pensionPFA}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Pension PIN Number</ControlLabel>
+                <input
+                  type="text"
+                  name="pensionPIN"
+                  disabled
+                  value={this.state.pensionPIN}
+                  onChange={this.onChange}
+                  className="form-control"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Date of first employment in Uniuyo</ControlLabel>
+                <DatePicker
+                  dateFormat="DD/MM/YYYY"
+                  selected={this.state.dateOfAppointmentInUniversity}
+                  disabled
+                  className="form-control"
+                  placeholderText="date of first appointment university"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <ControlLabel>Date of first appointment</ControlLabel>
+                <DatePicker
+                  dateFormat="DD/MM/YYYY"
+                  selected={this.state.dateOfFirstAppointment}
+                  disabled
+                  className="form-control"
+                  placeholderText="date of first employment"
+                />
+              </FormGroup>
+
+              <FormGroup>
                 <ControlLabel>Employment Status</ControlLabel>
                 <input
                   type="text"
@@ -279,6 +385,10 @@ class StaffBio extends React.Component {
                   className="form-control"
                 />
               </FormGroup>
+
+              {expirationDateofContractandTheRest ? (
+                <p>{expirationDateofContractandTheRest}</p>
+              ) : null}
 
               {GetDetailsBasedOnRole("Records", "Personnel") && (
                 <ButtonToolbar>
@@ -303,20 +413,8 @@ class StaffBio extends React.Component {
                   </ButtonGroup>
                 </ButtonToolbar>
               )}
-            </form>
-          </Col>
-
-          <Col xs={12} sm={4} md={4} lg={4}>
-            {/*profilePicture ? (
-              <p>
-                <span className="text-center">Profile Picture</span>
-                <img
-                  className="img img-responsive"
-                  src={profilePicture && profilePicture}
-                />
-              </p>
-            ) : null*/}
-          </Col>
+            </Col>
+          </form>
         </Row>
 
         <StateModal

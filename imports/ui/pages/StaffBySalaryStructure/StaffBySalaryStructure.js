@@ -144,15 +144,17 @@ class StaffBySalaryStructure extends React.Component {
                                 <p>
                                   {" "}
                                   <span>
-                                    {capAllFirstLetter(
-                                      SplitFacultDept(currentPosting).faculty
-                                    )}
+                                    {currentPosting &&
+                                      capAllFirstLetter(
+                                        SplitFacultDept(currentPosting).faculty
+                                      )}
                                   </span>
                                   <br />
                                   <span>
-                                    {capAllFirstLetter(
-                                      SplitFacultDept(currentPosting).dept
-                                    )}
+                                    {currentPosting &&
+                                      capAllFirstLetter(
+                                        SplitFacultDept(currentPosting).dept
+                                      )}
                                   </span>
                                 </p>
                               </td>

@@ -540,6 +540,7 @@ export const SortArrayOfObjects = (array, key) => {
 };
 
 export const ReturnArrayOfDesignation = array => {
+  if (array == undefined) return [];
   let allDesignationArray = [];
   array.map(obj => {
     allDesignationArray.push(obj.cadreRank);
@@ -650,4 +651,22 @@ export const EmploymentStatus = () => {
   };
 
   return statusObject;
+};
+
+export const InsertDashInPhoneNumber = number => {
+  if (number) {
+    let modifiedNumber = number.trim();
+    let numArray = modifiedNumber.split("");
+    let returnNum = "";
+    for (let i = 0; i < numArray.length; i++) {
+      if (i == 3) {
+        returnNum += `-${numArray[i]}`;
+      } else if (i == 7) {
+        returnNum += `-${numArray[i]}`;
+      } else {
+        returnNum += numArray[i];
+      }
+    }
+    return returnNum;
+  }
 };
