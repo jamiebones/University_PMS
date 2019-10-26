@@ -3,7 +3,7 @@ import { check, Match } from "meteor/check";
 import { PromotedStaffs } from "../PromotedStaffClass";
 import PrintPromotedStaffList from "../../../modules/server/printpromotedstafflist";
 import PrintPromotionLetter from "../../../modules/server/printpromotionletter";
-import RePrintPromotionLetter from "../../../modules/server/reprintPromotionLetter";
+import RePrintLetter from "../../../modules/server/reprintLetter";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
 import moment from "moment";
 
@@ -112,7 +112,7 @@ Meteor.methods({
     options
   ) {
     check(options, Object);
-    return RePrintPromotionLetter(options)
+    return RePrintLetter(options)
       .then(pdf => {
         return pdf;
       })

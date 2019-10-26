@@ -33,8 +33,6 @@ const __GetStaffDetails = staffId => {
 const __GetReference = (staffId, promotionletterRef) => {
   //this is where i will check if the
   //letter has been printed before
-  debugger;
-
   const ifReferenceExist = Documents.findOne({
     "meta.staffId": staffId,
     "meta.reference": promotionletterRef
@@ -72,7 +70,6 @@ const __GetReference = (staffId, promotionletterRef) => {
 const __WriteDocumentToCollection = (pdf, staffId, promotionletterRef) => {
   //this is where i will check if the
   //letter has been printed before
-  debugger;
   const ifReferenceExist = Documents.findOne({
     "meta.staffId": staffId,
     "meta.reference": promotionletterRef

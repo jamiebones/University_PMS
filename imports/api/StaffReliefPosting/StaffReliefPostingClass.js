@@ -30,7 +30,11 @@ const StaffReliefPosting = Class.create({
     reliefStart: String,
     reliefEnd: String,
     reliefDepartment: String,
-    status: String
+    status: String,
+    letterRef: {
+      type: String,
+      optional: true
+    }
   }
 });
 

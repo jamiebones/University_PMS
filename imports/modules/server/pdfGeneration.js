@@ -34,7 +34,8 @@ const GeneratePDF = (html, fileName, orientation, format, notToString) => {
         .toFile(`./tmp/${fileName}`, (error, response) => {
           if (error) reject(error);
           if (response) {
-            resolve(__getBase64String(response.filename, notToString));
+            const filePath = response.filename;
+            resolve(__getBase64String(filePath, notToString));
             fs.unlink(response.filename, () => {});
           }
         });
@@ -45,4 +46,32 @@ const GeneratePDF = (html, fileName, orientation, format, notToString) => {
   });
 };
 
-export { GeneratePDF };
+const GeneratePDFBuffer = (html, orientation, format) => {
+  return new Promise((resolve, reject) => {
+    try {
+      pdf
+        .create(html, {
+          format: format,
+          border: {
+            top: "0.2in",
+            right: "0.6in",
+            bottom: "0.2in",
+            left: "0.6in"
+          },
+          orientation: orientation,
+          timeout: 60000
+        })
+        .toBuffer((error, buffer) => {
+          if (error) reject(error);
+          if (buffer) {
+            resolve(buffer);
+          }
+        });
+    } catch (exception) {
+      reject(exception);
+      console.log(`Pdf Generation error: ${error}`);
+    }
+  });
+};
+
+export { GeneratePDF, GeneratePDFBuffer };

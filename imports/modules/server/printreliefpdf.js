@@ -19,11 +19,11 @@ const __generateHTML = ({ logo, postings }) => {
   });
 };
 
-export default (PrintPostings = async postings => {
+export default PrintPostings = async postings => {
   const path = "../web.browser/app/image/logo.png";
   const logo = await getBase64String(path);
   const html = await __generateHTML({ logo, postings });
-  const fileName = `recent_postings.pdf`;
+  const fileName = `relief_postings.pdf`;
   const pdfList = await GeneratePDF(html, fileName, "landscape", "legal");
   return pdfList;
-});
+};

@@ -52,11 +52,9 @@ Meteor.methods({
         continue;
       }
       for (let k = 0; k < rowArray.length; k++) {
-        debugger;
         if (rowArray[k] !== null && rowArray[1] !== null) {
           //console.log(rowArray[k]);
           //here we build the object
-          debugger;
           switch (k) {
             case 1:
               canSave = true;
@@ -141,12 +139,19 @@ Meteor.methods({
                 salaryStructure.toLowerCase().trim() == "conmess"
               ) {
                 staff.staffType = "3";
-              } else {
+              } else if (
+                salaryStructure &&
+                salaryStructure.toLowerCase().trim() == "contiss"
+              ) {
                 //we have contiss here
                 staff.staffType = "2";
                 staff.postingProposed = false;
               }
-              if (GL && parseInt(GL) < 6) {
+              if (
+                GL &&
+                parseInt(GL) < 6 &&
+                salaryStructure.toLowerCase().trim() == "contiss"
+              ) {
                 //we have a junior non teaching
                 //build designation here as either junior
                 //or senior staff

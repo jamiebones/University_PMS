@@ -10,7 +10,11 @@ import { withTracker } from "meteor/react-meteor-data";
 import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 import autoBind from "react-autobind";
-import { RemoveSlash, StaffEmploymentType } from "../../../modules/utilities";
+import {
+  RemoveSlash,
+  StaffEmploymentType,
+  SortStaffDataBySalaryStructure
+} from "../../../modules/utilities";
 
 const NominalRowStyles = styled.div`
   .Collapsible__trigger {
@@ -147,6 +151,8 @@ class StaffNominalRoll extends React.Component {
 
   render() {
     const { department, loading, staff } = this.props;
+    const staffMembers = SortStaffDataBySalaryStructure(staff);
+    console.log(staffMembers);
     let total = 0;
     return (
       <NominalRowStyles>
@@ -226,15 +232,15 @@ class StaffNominalRoll extends React.Component {
 
         <Row>
           <Col md={12}>
-            {staff.length != 0 ? (
+            {staffMembers && staffMembers.length != 0 ? (
               <p className="text-right total">
-                <b>Total : {staff && staff.length}</b>
+                <b>Total : {staffMembers && staffMembers.length}</b>
               </p>
             ) : null}
 
             {!loading ? (
-              staff &&
-              staff.map(
+              staffMembers &&
+              staffMembers.map(
                 (
                   {
                     designation,

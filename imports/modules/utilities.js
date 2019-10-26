@@ -670,3 +670,67 @@ export const InsertDashInPhoneNumber = number => {
     return returnNum;
   }
 };
+
+export const SortStaffDataBySalaryStructure = (staffArray = []) => {
+  if (staffArray && staffArray.length) {
+    let modifiedArray = staffArray.map(staff => {
+      if (staff.salaryStructure.includes("CONUASS")) {
+        //lets split the salary structure by space and also by /
+        const salary = staff.salaryStructure;
+        let salaryArray = salary.split(" ");
+        let modified = salaryArray && salaryArray[1].split("/");
+        //check if we have a number
+        if (
+          typeof parseInt(modified[0]) == "number" &&
+          typeof parseInt(modified[1] == "number")
+        ) {
+          //we have a number here
+          staff.rank =
+            3000 + parseInt(modified[0]) * 10 + parseInt(modified[1]);
+        }
+      } else if (staff.salaryStructure.includes("CONMESS")) {
+        //lets split the salary structure by space and also by /
+        const salary = staff.salaryStructure;
+        let salaryArray = salary.split(" ");
+        let modified = salaryArray && salaryArray[1].split("/");
+        //check if we have a number
+        if (
+          typeof parseInt(modified[0]) == "number" &&
+          typeof parseInt(modified[1] == "number")
+        ) {
+          //we have a number here
+          staff.rank =
+            2000 + parseInt(modified[0]) * 10 + parseInt(modified[1]);
+        }
+      } else if (staff.salaryStructure.includes("CONTISS")) {
+        //lets split the salary structure by space and also by /
+        const salary = staff.salaryStructure;
+        let salaryArray = salary.split(" ");
+        let modified = salaryArray && salaryArray[1].split("/");
+        //check if we have a number
+        if (
+          typeof parseInt(modified[0]) == "number" &&
+          typeof parseInt(modified[1] == "number")
+        ) {
+          //we have a number here
+          staff.rank =
+            1000 + parseInt(modified[0]) * 10 + parseInt(modified[1]);
+        }
+      }
+
+      return staff;
+    });
+
+    let sortedArray = modifiedArray.sort(__SortArray);
+    return sortedArray;
+  }
+};
+
+const __SortArray = (a, b) => {
+  if (parseInt(a.rank) > parseInt(b.rank)) {
+    return -1;
+  } else if (parseInt(a.rank) < parseInt(b.rank)) {
+    return 1;
+  }
+  return 0;
+};

@@ -48,6 +48,7 @@ export default function PromotionComponentNew(props) {
     //will run once
 
     if (editing === false) {
+     
       const nextLevlAndRank = findNextRankAndLevel(
         props.staffdesignation,
         props.staffCadres

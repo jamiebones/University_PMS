@@ -26,7 +26,7 @@ class Promotion {
 
   getNewSalaryStructure(rankArray) {
     // get the next rank from the rankArray
-    for (let i = 0; i < rankArray.length - 1; i += 1) {
+    for (let i = 0; i < rankArray.length; i += 1) {
       if (this.__newDesignation != null) break;
       const rankObj = rankArray[i];
       // destructure the rank object
@@ -35,6 +35,7 @@ class Promotion {
       for (let j = 0; j < cadreRank.length - 1; j += 1) {
         const { rank } = cadreRank[j];
         // lets perform our check here
+
         if (this.designation.toUpperCase() === rank.toUpperCase()) {
           // we have found a match the next rank will be the next item
           // check if there is still an item in the array

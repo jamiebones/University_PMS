@@ -6,6 +6,8 @@ import { base64ToBlob } from "../../../modules/base64-to-blob.js";
 import fileSaver from "file-saver";
 import Loading from "../../components/Loading/Loading";
 import moment from "moment";
+import { SplitFacultDept } from "../../../modules/utilities";
+import { Bert } from "meteor/themeteorchef:bert";
 
 const ApprovedReliefPostingStyles = styled.div`
   .formerDept {
@@ -42,7 +44,7 @@ class ApprovedReliefPosting extends React.Component {
   downloadPDF(event, postings) {
     event.preventDefault();
     const { target } = event;
-    target.innerHTML = "<em>Downloading...</em>";
+    target.innerHTML = "<em>downloading...</em>";
     target.setAttribute("disabled", "disabled");
     Meteor.call(
       "staffreliefposting.printpdflist",
@@ -54,9 +56,76 @@ class ApprovedReliefPosting extends React.Component {
           target.innerText = "Print List";
           target.removeAttribute("disabled");
         } else {
-          alert(err);
           target.innerText = "Print List";
           target.removeAttribute("disabled");
+        }
+      }
+    );
+  }
+
+  printReliefPostingLetter(
+    event,
+    {
+      reliever_staffId,
+      _id,
+      reliever_designation,
+      reliever_department,
+      reliever_staffName,
+      staff_relivedDepartment,
+      reliefStart,
+      reliefEnd
+    }
+  ) {
+    event.preventDefault();
+    const { target } = event;
+    target.innerHTML = "<em>downloading...</em>";
+    target.setAttribute("disabled", "disabled");
+    const promtReportTo = prompt(
+      "Who to report to : Example Head, Senate Unit "
+    );
+
+    const getFaculty = SplitFacultDept(reliever_department);
+    const faculty = getFaculty.faculty;
+    const dept = getFaculty.dept;
+
+    const staffTitle = prompt("Staff title:  ");
+
+    const directorName = prompt("Director of Personnel Name:  ");
+
+    if (!promtReportTo) {
+      return;
+    }
+    if (!staffTitle) return;
+    if (!directorName) return;
+
+    const reliefObject = {
+      staffId: reliever_staffId,
+      id: _id,
+      reliever_designation,
+      reliever_department,
+      reliever_staffName,
+      staff_relivedDepartment,
+      reliefStart,
+      reliefEnd,
+      unitHead: promtReportTo,
+      faculty,
+      dept,
+      staffTitle,
+      directorName
+    };
+    Meteor.call(
+      "staffReliefPosting.printReliefPostingLetter",
+      reliefObject,
+      (err, response) => {
+        if (!err) {
+          const blob = base64ToBlob(response);
+          fileSaver.saveAs(blob, "relief_postings_letter.pdf");
+          target.innerText = "print relief posting letter";
+          target.removeAttribute("disabled");
+        } else {
+          target.innerText = "print relief posting letter";
+          target.removeAttribute("disabled");
+          Bert.alert(err, "danger");
         }
       }
     );
@@ -98,7 +167,8 @@ class ApprovedReliefPosting extends React.Component {
                               staff_relivedDepartment,
                               reliefStart,
                               reliefEnd,
-                              _id
+                              _id,
+                              letterRef
                             },
                             index
                           ) => {
@@ -141,6 +211,45 @@ class ApprovedReliefPosting extends React.Component {
                                       {moment(reliefEnd).format("MMMM DD YYYY")}
                                     </span>
                                   </p>
+                                </td>
+
+                                <td>
+                                  <div>
+                                    {letterRef ? (
+                                      <p>
+                                        <Button
+                                          bsSize="xsmall"
+                                          bsStyle="default"
+                                        >
+                                          reprint letter
+                                        </Button>
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        <Button
+                                          bsSize="xsmall"
+                                          onClick={() =>
+                                            this.printReliefPostingLetter(
+                                              event,
+                                              {
+                                                reliever_staffId,
+                                                _id,
+                                                reliever_designation,
+                                                reliever_department,
+                                                reliever_staffName,
+                                                staff_relivedDepartment,
+                                                reliefStart,
+                                                reliefEnd
+                                              }
+                                            )
+                                          }
+                                          bsStyle="success"
+                                        >
+                                          print relief posting letter
+                                        </Button>
+                                      </p>
+                                    )}
+                                  </div>
                                 </td>
                               </tr>
                             );
