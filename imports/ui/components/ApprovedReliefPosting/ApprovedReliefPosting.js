@@ -25,7 +25,8 @@ class ApprovedReliefPosting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      postings: []
+      postings: [],
+      personnelDirector: ""
     };
     autoBind(this);
   }
@@ -80,6 +81,7 @@ class ApprovedReliefPosting extends React.Component {
     const { target } = event;
     target.innerHTML = "<em>downloading...</em>";
     target.setAttribute("disabled", "disabled");
+    const { personnelDirector } = this.state;
     const promtReportTo = prompt(
       "Who to report to : Example Head, Senate Unit "
     );
@@ -90,13 +92,30 @@ class ApprovedReliefPosting extends React.Component {
 
     const staffTitle = prompt("Staff title:  ");
 
-    const directorName = prompt("Director of Personnel Name:  ");
+    let directorName = "";
+    if (personnelDirector == "") {
+      directorName = prompt("Director of Personnel Name:  ");
+    }
 
     if (!promtReportTo) {
       return;
     }
     if (!staffTitle) return;
     if (!directorName) return;
+
+    //lets view what we are sending to create the letter
+
+    const data = `Staff title : ${staffTitle}
+                  Reporting to : ${promtReportTo}
+                  Director of Personnel name: ${directorName}`;
+
+    const confirmData = confirm(data);
+
+    if (!confirmData) {
+      target.innerText = "print relief posting letter";
+      target.removeAttribute("disabled");
+      return;
+    }
 
     const reliefObject = {
       staffId: reliever_staffId,

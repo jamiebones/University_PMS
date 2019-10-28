@@ -31,8 +31,6 @@ const ReliefPostingLetterPrinting = ({
     margin-right: -15px;
     margin-left: -15px;
   }
-
-    
     .container:before,
     .container:after,
     .container-fluid:before,
@@ -226,9 +224,6 @@ const ReliefPostingLetterPrinting = ({
         margin-left: 0;
     }
     
-    
-    
-    
     .identifier{
         font-size: 16px;
     }
@@ -296,12 +291,9 @@ const ReliefPostingLetterPrinting = ({
         color: #843534;
     }
 
-    body {
-        background-repeat:no-repeat;
-        background-position: center center;
-        background-color:#ffffff;
-        overflow: hidden;
-    }
+    .bodySection{
+        margin-top: 120px;
+      }
 
 
     * {
@@ -322,26 +314,37 @@ const ReliefPostingLetterPrinting = ({
     .signature{
         margin-top: 90px;
         span{
-          font-size: 16px;
+          font-size: 19px;
         }
-      }
-  
-      .bodySection{
+    }
+
+    .bodySection{
         margin-top: 120px;
       }
   
-      .referenceP{
+    .referenceP{
         margin-top: 30px;
         margin-bottom: 50px;
-      }
+    }
   
-      .pBody{
+    .pBody{
         line-height: 9px;
       }
+
+    body{
+        font-size: 19px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #000;
+    }
+  
+  .lead{
+      font-size: 21px;
+  }
+  
   
 `}
   >
-    <div className="container-fluid">
+    <div className="container-fluid bodySection">
       <div className="row">
         <div className="col-xs-12">
           <p className="referenceP">
@@ -362,14 +365,19 @@ const ReliefPostingLetterPrinting = ({
           <p className="pBody">University of Uyo</p>
           <p className="pBody">Uyo</p>
           <br />
-          <p className="lead">NOTICE OF POSTING ON RELIEF</p>
+          <p className="lead">
+            <b>NOTICE OF POSTING ON RELIEF</b>
+          </p>
 
           <p>
             This is to inform you that approval has been given for your posting
             from the {dept}, {faculty} to the {staff_relivedDepartment}
           </p>
 
-          <p>This posting takes effect from </p>
+          <p>
+            This posting takes effect from{" "}
+            <b>{moment(reliefStart).format("dddd, MMMM Do YYYY")}</b>
+          </p>
 
           <p>
             You are to report to the {unitHead} for the day-to-day assignment of
@@ -378,6 +386,7 @@ const ReliefPostingLetterPrinting = ({
 
           <p>
             You should return to your office, {dept}, {faculty} on{" "}
+            <b>{moment(reliefEnd).format("dddd, MMMM Do YYYY")}</b>
           </p>
 
           <p className="signature">

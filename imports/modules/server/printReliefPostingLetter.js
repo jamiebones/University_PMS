@@ -32,7 +32,7 @@ export default PrintList = async options => {
 
   const reference = await __GetReference(staffId);
 
-  // __updatePromotedStaffWithReference(id, reference);
+  __updatePromotedStaffWithReference(id, reference);
   options.reference = reference;
   const html = await __generateHTML(options);
   //generatpdf buffer method so that the buffer

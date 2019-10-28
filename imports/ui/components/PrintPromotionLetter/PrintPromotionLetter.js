@@ -785,6 +785,7 @@ const PrintPromotionLetter = ({ staff, options, reference }) => (
 
  body{
   font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
   color: #000;
 
 }
@@ -843,8 +844,10 @@ html{
           </p>
 
           <p className="pBody">
-            {options.staffTitle}. {staff.biodata.firstName}{" "}
-            {staff.biodata.middleName} {staff.biodata.surname}
+            <b>
+              {options.staffTitle}. {staff.biodata.firstName}{" "}
+              {staff.biodata.middleName} {staff.biodata.surname}
+            </b>
           </p>
 
           <p className="pBody">{staff.currentPosting}</p>
