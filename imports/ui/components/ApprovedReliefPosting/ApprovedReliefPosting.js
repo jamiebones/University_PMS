@@ -150,6 +150,29 @@ class ApprovedReliefPosting extends React.Component {
     );
   }
 
+  reprintPostingLetter(event, { staffId, reference }) {
+    event.preventDefault();
+    const { target } = event;
+    const options = {
+      staffId,
+      reference
+    };
+    target.innerHTML = "<em>Downloading...</em>";
+    target.setAttribute("disabled", "disabled");
+    Meteor.call("reliefPosting.reprintpostingletter", options, (err, res) => {
+      if (!err) {
+        const blob = base64ToBlob(res);
+        fileSaver.saveAs(blob, "relief_posting_letter.pdf");
+        target.innerText = "Re-print letter";
+        target.removeAttribute("disabled");
+      } else {
+        target.innerText = "Re-print letter";
+        target.removeAttribute("disabled");
+        console.log(err);
+      }
+    });
+  }
+
   render() {
     const { loading } = this.props;
     const { postings } = this.state;
@@ -239,6 +262,12 @@ class ApprovedReliefPosting extends React.Component {
                                         <Button
                                           bsSize="xsmall"
                                           bsStyle="default"
+                                          onClick={event =>
+                                            this.reprintPostingLetter(event, {
+                                              staffId: reliever_staffId,
+                                              reference: letterRef
+                                            })
+                                          }
                                         >
                                           reprint letter
                                         </Button>

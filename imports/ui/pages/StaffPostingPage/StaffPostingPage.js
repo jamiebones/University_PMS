@@ -129,7 +129,7 @@ let query = {
   postingProposed: { $exists: true, $eq: false }
 };
 
-export default (StaffPostingPageContainer = withTracker(props => {
+export default StaffPostingPageContainer = withTracker(props => {
   let subscription;
   let staffArray = [];
   let staffOnRelief = [];
@@ -181,7 +181,7 @@ export default (StaffPostingPageContainer = withTracker(props => {
     //loop through the staff members array
     //if we have a posting object add it.
     let arrayNumToRemove = [];
-    for (let i = 0; i < staffArray.length - 1; i++) {
+    for (let i = 0; i < staffArray.length; i++) {
       //individual array
       const staffObj = staffArray[i];
       //find if the staff is on relief duty
@@ -216,4 +216,4 @@ export default (StaffPostingPageContainer = withTracker(props => {
     designationReactive,
     designations: designations
   };
-})(StaffPostingPage));
+})(StaffPostingPage);

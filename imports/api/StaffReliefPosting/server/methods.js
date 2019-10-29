@@ -4,6 +4,7 @@ import { StaffReliefPostings } from "../StaffReliefPostingClass";
 import { _ } from "meteor/underscore";
 import PrintPostings from "../../../modules/server/printreliefpdf";
 import PrintReliefPosting from "../../../modules/server/printReliefPostingLetter";
+import RePrintLetter from "../../../modules/server/reprintLetter";
 import moment from "moment";
 
 Meteor.methods({
@@ -37,6 +38,16 @@ Meteor.methods({
       })
       .catch(e => {
         throw new Meteor.Error("There was an error");
+      });
+  },
+  "reliefPosting.reprintpostingletter": function PromotedStaffMethod(options) {
+    check(options, Object);
+    return RePrintLetter(options)
+      .then(pdf => {
+        return pdf;
+      })
+      .catch(e => {
+        console.log(e);
       });
   }
 });
