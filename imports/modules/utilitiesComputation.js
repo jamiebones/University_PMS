@@ -1,4 +1,5 @@
 import moment from "moment";
+import { GetDetailsBasedOnRole } from "./utilities";
 
 export const FindStaffDueForPromotion = staffArray => {
   const careerPeak = [
@@ -495,3 +496,28 @@ function FilterByTimeLeft(timeLeft, timeRange) {
     }
   }
 }
+
+export const GetStaffQueryType = () => {
+  let query = [];
+  if (GetDetailsBasedOnRole("SATS", "Personnel")) {
+    query.push(
+      {
+        staffType: { $in: ["2", "3"] }
+      },
+      { staffClass: "Senior Staff" }
+    );
+  }
+
+  if (GetDetailsBasedOnRole("JSE", "Personnel")) {
+    query.push({ staffClass: "Junior Staff" }, { staffType: "2" });
+  }
+
+  if (GetDetailsBasedOnRole("ASE", "Personnel")) {
+    //query.staffType = "1";
+    query.push({
+      staffType: { $in: ["1", "3"] }
+    });
+  }
+
+  return query;
+};

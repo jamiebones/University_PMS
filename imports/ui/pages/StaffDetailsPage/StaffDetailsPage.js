@@ -111,7 +111,6 @@ export default StaffDetailPageContainer = withTracker(({ match }) => {
   let subscription;
   const { staffId } = match.params;
   const staffIdQuery = staffId && ReplaceSlash(staffId);
-  console.log(staffIdQuery);
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
       "staffmembers.getStaffbyStaffId",
@@ -121,7 +120,6 @@ export default StaffDetailPageContainer = withTracker(({ match }) => {
 
   return {
     loading: subscription && !subscription.ready(),
-    staff: StaffMembers.findOne({ staffId: staffIdQuery }),
-    n: console.log(StaffMembers.find({ staffId: staffIdQuery }).fetch())
+    staff: StaffMembers.findOne({ staffId: staffIdQuery })
   };
 })(StaffDetailPage);

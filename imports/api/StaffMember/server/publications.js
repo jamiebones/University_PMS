@@ -6,6 +6,8 @@ import { Designations } from "../../../api/Designation/DesignationClass";
 import { StaffReliefPostings } from "../../../api/StaffReliefPosting/StaffReliefPostingClass";
 import { UniversityUnits } from "../../../api/UniversityUnit/UniversityUnitClass";
 import { GetDetailsBasedOnRole } from "../../../modules/utilities";
+import { GetStaffQueryType } from "../../../modules/utilitiesComputation";
+import { _ } from "meteor/underscore";
 import Documents from "../../../api/Documents/Documents";
 import moment from "moment";
 
@@ -13,24 +15,13 @@ Meteor.publish(
   "staffmembers.getStaffbyStaffId",
   function StaffMembersPublication(staffId) {
     check(staffId, Match.OneOf(String, null, undefined));
-    let query = {
+    let query = GetStaffQueryType();
+    query.push({
       staffId: staffId.toUpperCase()
-    };
-    if (GetDetailsBasedOnRole("SATS", "Personnel")) {
-      query.staffClass = "Senior Staff";
-      query.staffType = "2";
-    }
-
-    if (GetDetailsBasedOnRole("JSE", "Personnel")) {
-      query.staffClass = "Junior Staff";
-      query.staffType = "2";
-    }
-
-    if (GetDetailsBasedOnRole("ASE", "Personnel")) {
-      query.staffType = "1";
-    }
-
-    return StaffMembers.find(query);
+    });
+    //we are using and query here because sats and ase logins can pull
+    //data of staff on conmess
+    return StaffMembers.find({ $and: query });
   }
 );
 
@@ -166,23 +157,17 @@ Meteor.publish(
   function StaffMembersPublication(designation, staffId) {
     check(designation, Match.OneOf(String, null, undefined));
     check(staffId, Match.OneOf(String, null, undefined));
-
-    let query = {
-      staffId: "",
-      designation: ""
-    };
-
+    let query = GetStaffQueryType();
+    //query is an array of query;
     if (staffId !== "") {
-      query.staffId = staffId.toUpperCase();
-      delete query.designation;
+      query.push({ staffId: staffId.toUpperCase() });
     }
 
     if (designation !== "") {
-      query.designation = designation;
-      delete query.staffId;
+      query.push({ designation: designation });
     }
     return [
-      StaffMembers.find(query),
+      StaffMembers.find({ $and: query }),
       Designations.find({}, { sort: { rank: 1 } })
     ];
   }
