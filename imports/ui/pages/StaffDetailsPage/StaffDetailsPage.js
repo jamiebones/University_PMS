@@ -12,6 +12,7 @@ import {
   GetDetailsBasedOnRole,
   RemoveSlash
 } from "../../../modules/utilities";
+import { ShowPromotionTabOrNot } from "../../../modules/utilitiesComputation";
 import Tabs from "react-responsive-tabs";
 import StaffBio from "../../components/StaffBio/StaffBio";
 import StaffPromotionComponent from "../../components/StaffPromotionComponent/StaffPromotionComponent";
@@ -41,20 +42,25 @@ class StaffDetailPage extends React.Component {
         key: "bio",
         getContent: () => <StaffBio staff={staff} />
       },
-      GetDetailsBasedOnRole("Records", "Personnel") && {
-        title: "Promotion",
-        key: "promotion",
-        getContent: () => (
-          <StaffPromotionComponent
-            staffdesignation={staff && staff.designation}
-            biodata={staff && staff.biodata}
-            staffId={staff && staff.staffId}
-            salaryStructure={staff && staff.salaryStructure}
-            dateOfLastPromotion={staff && staff.dateOfLastPromotion}
-            user={this.props.name}
-          />
-        )
-      },
+      !loading &&
+        GetDetailsBasedOnRole("Records", "Personnel") &&
+        ShowPromotionTabOrNot(staff && staff.salaryStructure) === true && {
+          title: "Promotion",
+          key: "promotion",
+          getContent: () => (
+            //if the person is on conuauss 7 and contiss 15
+            //don't show promotion tabs
+
+            <StaffPromotionComponent
+              staffdesignation={staff && staff.designation}
+              biodata={staff && staff.biodata}
+              staffId={staff && staff.staffId}
+              salaryStructure={staff && staff.salaryStructure}
+              dateOfLastPromotion={staff && staff.dateOfLastPromotion}
+              user={this.props.name}
+            />
+          )
+        },
       staff &&
         staff.staffType == "2" && {
           title: "Posting Date",

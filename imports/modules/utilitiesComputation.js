@@ -521,3 +521,29 @@ export const GetStaffQueryType = () => {
 
   return query;
 };
+
+export const ShowPromotionTabOrNot = salary => {
+  if (salary == undefined || salary == "undefined") return;
+  if (salary && salary.toUpperCase().includes("CONSOLIDATED")) {
+    return false;
+  }
+  //let's split the salary
+  let salarySplitArray = salary && salary.split(" ");
+  let salaryLevel = salarySplitArray[1].split("/")[0];
+  if (salarySplitArray[0].toUpperCase() === "CONTISS") {
+    if (salaryLevel === "15") {
+      return false;
+    }
+  }
+  if (salarySplitArray[0].toUpperCase() === "CONUASS") {
+    if (salaryLevel === "7") {
+      return false;
+    }
+  }
+  if (salarySplitArray[0].toUpperCase() === "CONMESS") {
+    if (salaryLevel === "15") {
+      return false;
+    }
+  }
+  return true;
+};

@@ -166,6 +166,9 @@ Meteor.publish(
     if (designation !== "") {
       query.push({ designation: designation });
     }
+    if (_.isEmpty(query)) {
+      return Designations.find({}, { sort: { rank: 1 } });
+    }
     return [
       StaffMembers.find({ $and: query }),
       Designations.find({}, { sort: { rank: 1 } })

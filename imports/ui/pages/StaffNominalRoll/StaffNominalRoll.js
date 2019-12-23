@@ -131,6 +131,16 @@ const NominalRowStyles = styled.div`
   .form-control {
     height: 50px;
   }
+  .staffDetails {
+    margin-bottom: 15px;
+    background: #fff;
+    padding: 10px;
+  }
+  .title {
+    font-size: 20px;
+    letter-spacing: 6px;
+    color: #44a3cc;
+  }
 `;
 
 class StaffNominalRoll extends React.Component {
@@ -152,8 +162,6 @@ class StaffNominalRoll extends React.Component {
   render() {
     const { department, loading, staff } = this.props;
     const staffMembers = SortStaffDataBySalaryStructure(staff);
-    console.log(staffMembers);
-    let total = 0;
     return (
       <NominalRowStyles>
         <Row>
@@ -233,9 +241,16 @@ class StaffNominalRoll extends React.Component {
         <Row>
           <Col md={12}>
             {staffMembers && staffMembers.length != 0 ? (
-              <p className="text-right total">
-                <b>Total : {staffMembers && staffMembers.length}</b>
-              </p>
+              <div>
+                <p className="text-center title">
+                  {this.props.selectedDeptReactiveVar.get() == ""
+                    ? "No Department"
+                    : this.props.selectedDeptReactiveVar.get()}
+                </p>
+                <p className="text-right total">
+                  <b>Total : {staffMembers && staffMembers.length}</b>
+                </p>
+              </div>
             ) : null}
 
             {!loading ? (
@@ -255,14 +270,13 @@ class StaffNominalRoll extends React.Component {
                     <Col md={4} key={index}>
                       <div className="staffDetails">
                         <p
-                          className="staffName"
+                          className="staffName text-center"
                           onClick={() =>
                             this.props.history.push(
                               `/auth/record/${staffId && RemoveSlash(staffId)}`
                             )
                           }
                         >
-                          Name :{" "}
                           <span>
                             {biodata.firstName} {biodata.middleName}{" "}
                             {biodata.surname}

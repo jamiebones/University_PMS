@@ -20,7 +20,7 @@ import {
 const MyPdfViewerStyles = styled.div`
   .noDoc {
     background: #c0c0c0;
-    color: red;
+    color: #fff;
     font-size: 18px;
     padding: 20px;
   }
