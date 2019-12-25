@@ -21,7 +21,7 @@ Meteor.methods({
     }
     //loop through the salaryArray and create a scale obj
     let salaryScaleArray = [];
-    for (let i = 0; i < salaryArray.length - 1; i++) {
+    for (let i = 0; i < salaryArray.length; i++) {
       const salary = salaryArray[i];
       const newStep = new Scale({
         step: salary.step,

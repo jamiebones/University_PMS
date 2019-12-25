@@ -162,8 +162,7 @@ export default class DroplistComponent extends React.Component {
                         placeholder: placeholder
                       })}
                       value={prevSelectedData}
-                      className="form-control"
-                      id="deptInput"
+                      className="form-control deptInput"
                     />
 
                     {isOpen ? (

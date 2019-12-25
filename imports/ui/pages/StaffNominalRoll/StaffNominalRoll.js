@@ -192,8 +192,7 @@ class StaffNominalRoll extends React.Component {
                       {...getInputProps({
                         placeholder: "Search department..."
                       })}
-                      className="form-control"
-                      id="deptInput"
+                      className="form-control deptInput"
                     />
 
                     {isOpen ? (

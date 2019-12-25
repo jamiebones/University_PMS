@@ -166,8 +166,8 @@ export default class DroplistComponent extends React.Component {
                       {...getInputProps({
                         placeholder: placeholder
                       })}
-                      className="form-control"
-                      id="deptInput"
+                      className="form-control deptInput"
+              
                     />
 
                     {isOpen ? (

@@ -73,7 +73,7 @@ const StaffProposePostingStyle = styled.div`
   button {
     margin-top: 20px;
   }
-  #deptInput {
+  .deptInput {
     width: 60%;
   }
   .react-datepicker {
@@ -112,9 +112,7 @@ class StaffProposePostingPage extends React.Component {
     } = this.props.location.state;
     const newDept = this.state.selectedDept;
     let currentDept = currentPosting;
-    const staffName = `${biodata.firstName} ${biodata.middleName} ${
-      biodata.surname
-    }`;
+    const staffName = `${biodata.firstName} ${biodata.middleName} ${biodata.surname}`;
     const previousPostings = postings || [];
     //if currentDept === "" or null
     if (newDept === "") {
@@ -279,8 +277,7 @@ class StaffProposePostingPage extends React.Component {
                         {...getInputProps({
                           placeholder: "Search department..."
                         })}
-                        className="form-control"
-                        id="deptInput"
+                        className="form-control deptInput"
                       />
 
                       {isOpen ? (
@@ -326,7 +323,7 @@ class StaffProposePostingPage extends React.Component {
               <FormGroup>
                 <p>Resumption Date:</p>
                 <DatePicker
-                   dateFormat="DD/MM/YYYY"
+                  dateFormat="DD/MM/YYYY"
                   selected={this.state.startDate}
                   onChange={this.handleChange}
                   minDate={new Date()}
@@ -409,7 +406,7 @@ class StaffProposePostingPage extends React.Component {
 
 let selectedDeptReactiveVar = new ReactiveVar("");
 
-export default (StaffProposePostingPageContainer = withTracker(props => {
+export default StaffProposePostingPageContainer = withTracker(props => {
   let subscription;
   if (Meteor.isClient) {
     subscription = Meteor.subscribe(
@@ -430,4 +427,4 @@ export default (StaffProposePostingPageContainer = withTracker(props => {
     department: UniversityUnits.find().fetch(),
     selectedDeptReactiveVar
   };
-})(StaffProposePostingPage));
+})(StaffProposePostingPage);
