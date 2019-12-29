@@ -27,8 +27,14 @@ const SearchStaffRecordsStyle = styled.div`
   }
   .divSearchArea {
     border: 2px solid;
-    background: #337547;
+    border-radius: 30px;
+    background: #0d1d50;
     padding: 30px;
+    .form-control {
+      height: 44px;
+      padding: 7px 14px;
+      font-size: 15px;
+    }
   }
   .lead {
     color: #af2222;
@@ -56,12 +62,12 @@ class SearchStaffRecordsPage extends React.Component {
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
     if (e.target.name === "surname") {
-      this.setState({ staffId: "" });
+      this.setState({ staffId: "", designation: "0" });
       this.props.staffSurnameReactive.set(e.target.value);
       this.props.designationReactive.set("");
       this.props.staffIdReactive.set("");
     } else if (e.target.name === "staffId") {
-      this.setState({ surname: "" });
+      this.setState({ surname: "", designation: "0" });
       this.props.staffIdReactive.set(e.target.value);
       this.props.staffSurnameReactive.set("");
       this.props.designationReactive.set("");
@@ -89,10 +95,12 @@ class SearchStaffRecordsPage extends React.Component {
   }
 
   onSelectChange(e) {
+    if (e.target.value === "0") return;
     this.setState({ designation: e.target.value });
-    this.props.designationReactive.set(e.target.value);
     this.props.staffIdReactive.set("");
     this.props.staffSurnameReactive.set("");
+    this.setState({ staffId: "", surname: "" });
+    this.props.designationReactive.set(e.target.value);
   }
 
   render() {
@@ -100,7 +108,7 @@ class SearchStaffRecordsPage extends React.Component {
     return (
       <SearchStaffRecordsStyle>
         <Row>
-          <Col md={6} mdOffset={2}>
+          <Col md={6}>
             <div className="divSearchArea">
               <TextField
                 name="staffId"
@@ -238,11 +246,10 @@ export default SearchStaffRecordsPageContainer = withTracker(() => {
       .toUpperCase();
   }
 
-  if (designationReactive.get() !== "") {
-    delete query.staffId;
-    delete query.surname;
-    delete query.biodata;
-    query.designation = designationReactive.get();
+  if (designationReactive.get() !== "0") {
+    query = {
+      designation: designationReactive.get()
+    };
   }
 
   if (staffSurnameReactive.get() !== "") {

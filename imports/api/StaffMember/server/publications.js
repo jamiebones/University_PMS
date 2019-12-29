@@ -171,7 +171,7 @@ Meteor.publish(
     if (designation !== "") {
       query.push({ designation: designation });
     }
-    console.log(query);
+   
     if (_.isEmpty(query)) {
       return Designations.find({}, { sort: { rank: 1 } });
     }
