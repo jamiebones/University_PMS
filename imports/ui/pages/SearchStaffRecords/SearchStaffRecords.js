@@ -40,6 +40,7 @@ class SearchStaffRecordsPage extends React.Component {
     super(props);
     this.state = {
       staffId: "",
+      surname: "",
       submitted: false,
       designation: "0"
     };
@@ -48,18 +49,41 @@ class SearchStaffRecordsPage extends React.Component {
 
   componentDidMount() {
     this.props.staffIdReactive.set("");
+    this.props.staffSurnameReactive.set("");
     this.props.designationReactive.set("");
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
-    this.props.staffIdReactive.set(e.target.value);
-    this.props.designationReactive.set("");
+    if (e.target.name === "surname") {
+      this.setState({ staffId: "" });
+      this.props.staffSurnameReactive.set(e.target.value);
+      this.props.designationReactive.set("");
+      this.props.staffIdReactive.set("");
+    } else if (e.target.name === "staffId") {
+      this.setState({ surname: "" });
+      this.props.staffIdReactive.set(e.target.value);
+      this.props.staffSurnameReactive.set("");
+      this.props.designationReactive.set("");
+    }
   }
 
   onSubmit(e) {
-    if (this.state.staffId !== "" && e.keyCode == 13) {
+    if (
+      this.state.staffId !== "" &&
+      e.target.name === "staffId" &&
+      e.keyCode == 13
+    ) {
       this.props.staffIdReactive.set(e.target.value);
+      this.props.staffSurnameReactive.set("");
+      this.props.designationReactive.set("");
+    } else if (
+      this.state.staffId !== "" &&
+      e.target.name === "surname" &&
+      e.keyCode == 13
+    ) {
+      this.props.staffSurnameReactive.set(e.target.value);
+      this.props.staffIdReactive.set("");
       this.props.designationReactive.set("");
     }
   }
@@ -68,6 +92,7 @@ class SearchStaffRecordsPage extends React.Component {
     this.setState({ designation: e.target.value });
     this.props.designationReactive.set(e.target.value);
     this.props.staffIdReactive.set("");
+    this.props.staffSurnameReactive.set("");
   }
 
   render() {
@@ -81,6 +106,14 @@ class SearchStaffRecordsPage extends React.Component {
                 name="staffId"
                 placeholder="search by staffId"
                 value={this.state.staffId}
+                onChange={this.onChange}
+                onKeyDown={this.onSubmit}
+              />
+
+              <TextField
+                name="surname"
+                placeholder="search by staff surname"
+                value={this.state.surname}
                 onChange={this.onChange}
                 onKeyDown={this.onSubmit}
               />
@@ -176,10 +209,12 @@ class SearchStaffRecordsPage extends React.Component {
 
 let staffIdReactive = new ReactiveVar("");
 let designationReactive = new ReactiveVar("");
+let staffSurnameReactive = new ReactiveVar("");
 
 let query = {
   staffId: "",
-  designation: ""
+  designation: "",
+  surname: ""
 };
 
 export default SearchStaffRecordsPageContainer = withTracker(() => {
@@ -188,23 +223,40 @@ export default SearchStaffRecordsPageContainer = withTracker(() => {
     subscription = Meteor.subscribe(
       "staffmembers.getAllStaffbyDesignationAndStaffId",
       designationReactive.get(),
-      staffIdReactive.get()
+      staffIdReactive.get(),
+      staffSurnameReactive.get()
     );
   }
 
   if (staffIdReactive.get() !== "") {
+    delete query.designation;
+    delete query.surname;
+    delete query.biodata;
     query.staffId = staffIdReactive
       .get()
       .trim()
       .toUpperCase();
-    delete query.designation;
   }
 
   if (designationReactive.get() !== "") {
-    query.designation = designationReactive.get();
-
     delete query.staffId;
+    delete query.surname;
+    delete query.biodata;
+    query.designation = designationReactive.get();
   }
+
+  if (staffSurnameReactive.get() !== "") {
+    delete query.staffId;
+    delete query.designation;
+    query = {
+      "biodata.surname": staffSurnameReactive
+        .get()
+        .trim()
+        .toUpperCase()
+    };
+  }
+
+  console.log(query);
 
   return {
     loading: subscription && !subscription.ready(),
@@ -212,6 +264,7 @@ export default SearchStaffRecordsPageContainer = withTracker(() => {
     staff: StaffMembers.find(query).fetch(),
     staffIdReactive,
     designationReactive,
+    staffSurnameReactive,
     designations: Designations.find({}, { sort: { ranK: 1 } }).fetch() || []
   };
 })(SearchStaffRecordsPage);

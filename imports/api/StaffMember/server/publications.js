@@ -154,18 +154,24 @@ Meteor.publish(
 
 Meteor.publish(
   "staffmembers.getAllStaffbyDesignationAndStaffId",
-  function StaffMembersPublication(designation, staffId) {
+  function StaffMembersPublication(designation, staffId, surname) {
     check(designation, Match.OneOf(String, null, undefined));
     check(staffId, Match.OneOf(String, null, undefined));
+    check(surname, Match.OneOf(String, null, undefined));
     let query = GetStaffQueryType();
     //query is an array of query;
     if (staffId !== "") {
       query.push({ staffId: staffId.toUpperCase() });
     }
 
+    if (surname !== "") {
+      query.push({ "biodata.surname": surname.toUpperCase() });
+    }
+
     if (designation !== "") {
       query.push({ designation: designation });
     }
+    console.log(query);
     if (_.isEmpty(query)) {
       return Designations.find({}, { sort: { rank: 1 } });
     }
