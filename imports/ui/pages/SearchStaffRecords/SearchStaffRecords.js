@@ -57,6 +57,18 @@ class SearchStaffRecordsPage extends React.Component {
     this.props.staffIdReactive.set("");
     this.props.staffSurnameReactive.set("");
     this.props.designationReactive.set("");
+
+    //lets try here i will remove later
+    // Meteor.call(
+    //   "staffmembers.getstaffcountbytype",
+    //   (err, result) => {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       console.log(result);
+    //     }
+    //   }
+    // );
   }
 
   onChange(e) {

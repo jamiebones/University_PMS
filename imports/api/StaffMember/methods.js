@@ -83,10 +83,12 @@ Meteor.methods({
               staff.maritalStatus = rowArray[k] && rowArray[k].trim();
               break;
             case 7:
-              staff.stateOfOrigin = rowArray[k] && rowArray[k].trim();
+              staff.stateOfOrigin =
+                rowArray[k] && rowArray[k].toUpperCase().trim();
               break;
             case 8:
-              staff.lgaOfOrigin = rowArray[k] && rowArray[k].trim();
+              staff.lgaOfOrigin =
+                rowArray[k] && rowArray[k].toUpperCase().trim();
               break;
             case 9:
               staff.dob = rowArray[k] ? rowArray[k].trim() : "-";
@@ -176,7 +178,8 @@ Meteor.methods({
               } else {
                 //we have a senior staff
                 staff.staffClass = "Senior Staff";
-                const staffDesignation = rowArray[14] && rowArray[14].trim();
+                const staffDesignation =
+                  rowArray[14] && rowArray[14].toUpperCase().trim();
                 const findDesignation = designationArray.find(
                   des => des.rank == staffDesignation
                 );

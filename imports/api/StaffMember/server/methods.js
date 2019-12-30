@@ -499,5 +499,79 @@ Meteor.methods({
       { sort: { designation: 1 } }
     ).fetch();
     return staff;
+  },
+  "staffmembers.getstaffcountbydesignation": function StaffMembersFuctionDesignationCount(
+    staffType
+  ) {
+    check(staffType, String);
+    const pipeline = [
+      { $match: { staffType: staffType } },
+      {
+        $group: {
+          _id: "$designation",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+  "staffmembers.getstaffcountbystateoforigin": function StaffMembersFuctionDesignationCount() {
+    const pipeline = [
+      {
+        $group: {
+          _id: "$stateOfOrigin",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+  "staffmembers.getstaffcountbysex": function StaffMembersFuctionDesignationCount() {
+    const pipeline = [
+      {
+        $group: {
+          _id: "$sex",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+  "staffmembers.getstaffcountbysexandstafftype": function StaffMembersFuctionDesignationCount(
+    staffType
+  ) {
+    check(staffType, String);
+
+    const pipeline = [
+      { $match: { staffType: staffType } },
+      {
+        $group: {
+          _id: "$sex",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+  "staffmembers.getstaffcountbytype": function StaffMembersFuctionDesignationCount() {
+    const pipeline = [
+      {
+        $group: {
+          _id: "$staffClass",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
   }
 });
