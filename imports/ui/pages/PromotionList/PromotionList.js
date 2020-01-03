@@ -6,6 +6,7 @@ import Loading from "../../components/Loading/Loading";
 import { _ } from "meteor/underscore";
 import { Meteor } from "meteor/meteor";
 import { base64ToBlob } from "../../../modules/base64-to-blob.js";
+import PromotionShowModal from "../../components/PromotionShowModal/PromotionShowModal";
 import fileSaver from "file-saver";
 if (Meteor.isClient) {
   import "react-virtualized/styles.css";
@@ -35,10 +36,15 @@ class PromotionList extends React.Component {
       numSelected: 0,
       registrarName: "",
       councilDate: "",
-      staffTitle: ""
+      staffTitle: "",
+      promotionObject: "",
+      show: false,
+      selectedYear: ""
     };
     autoBind(this);
   }
+
+  loadData() {}
 
   componentDidMount() {
     Meteor.call("promotedStaff.getPromotionListByYear", (err, res) => {
@@ -48,10 +54,14 @@ class PromotionList extends React.Component {
     });
   }
 
+  resetModal() {
+    this.setState({ promotionObject: "" });
+  }
+
   handleSelectChange(e) {
     const year = e.target.value;
     if (year == "0") return;
-    this.setState({ loading: true });
+    this.setState({ loading: true, selectedYear: year });
     Meteor.call("promotedStaff.getPromotionByYear", year, (err, res) => {
       if (!err) {
         const staffs = res;
@@ -108,6 +118,7 @@ class PromotionList extends React.Component {
     let councilDate = "";
     let registrarName = "";
     let staffTitle = "";
+    debugger;
     if (this.state.staffTitle === "") {
       //ask them to input the date for the meeting
       staffTitle = prompt(
@@ -136,6 +147,15 @@ class PromotionList extends React.Component {
         this.setState({ registrarName: registrarName });
       }
     }
+
+    if (
+      this.state.councilDate == "" ||
+      this.state.registrarName == "" ||
+      this.state.staffTitle == ""
+    ) {
+      //we didn't fill the details we need so we return back
+      alert("hello fill me up");
+    }
     const promotedStaffDetails = {
       staffId,
       staffName,
@@ -156,27 +176,15 @@ class PromotionList extends React.Component {
         : registrarName,
       staffTitle: this.state.staffTitle ? this.state.staffTitle : staffTitle
     };
-    console.log(promotedStaffDetails);
-    event.preventDefault();
-    const { target } = event;
-    target.innerHTML = "<em>Downloading...</em>";
-    target.setAttribute("disabled", "disabled");
-    Meteor.call(
-      "promotedstaff.printpromotionletter",
-      promotedStaffDetails,
-      (err, res) => {
-        if (!err) {
-          const blob = base64ToBlob(res);
-          fileSaver.saveAs(blob, "promotion_letter.pdf");
-          target.innerText = "Print letter";
-          target.removeAttribute("disabled");
-        } else {
-          target.innerText = "Print letter";
-          target.removeAttribute("disabled");
-          console.log(err);
-        }
-      }
-    );
+
+    //let's show the modal here with all the goodies
+    promotedStaffDetails.resetModal = this.resetModal;
+    promotedStaffDetails.year = this.state.selectedYear;
+    this.setState({
+      show: true,
+      promotionObject: promotedStaffDetails,
+      staffTitle: ""
+    });
   }
 
   clickCheck(e, index) {
@@ -428,6 +436,11 @@ class PromotionList extends React.Component {
             ) : (
               <Loading />
             )}
+            {this.state.promotionObject !== "" ? (
+              <PromotionShowModal
+                promotionDetails={this.state.promotionObject}
+              />
+            ) : null}
           </Col>
         </Row>
       </PromotionListStyles>

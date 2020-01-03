@@ -40,6 +40,8 @@ export default function PromotionComponentNew(props) {
     staffCadres
   } = props;
 
+  console.log(props);
+
   const TEMPLATE2 = "xxxx";
   const parse2 = templateParser(TEMPLATE2, parseDigit);
   const format2 = templateFormatter(TEMPLATE2);
@@ -48,7 +50,6 @@ export default function PromotionComponentNew(props) {
     //will run once
 
     if (editing === false) {
-     
       const nextLevlAndRank = findNextRankAndLevel(
         props.staffdesignation,
         props.staffCadres

@@ -37,6 +37,7 @@ import AddNewStaff from "../../pages/AddNewStaffData/AddNewStaffData";
 import AddPersonnelDocuments from "../../pages/AddPersonnelDocuments/AddPersonnelDocuments";
 import ViewPersonnelDocuments from "../../pages/ViewPersonnelDocuments/ViewPersonnelDocuments";
 import NotificationPage from "../../components/Notification/Notification";
+import DataVisualization from "../../pages/DataVisualization/DataVisualization";
 
 const AuthorizedLayout = ({ match, userId, ...rest }) => (
   <div className="loginLayout">
@@ -354,6 +355,17 @@ const AuthorizedLayout = ({ match, userId, ...rest }) => (
               path={`${match.path}/add_staff_documents`}
               pathAfterFailure="/logout"
               component={AddStaffDocuments}
+              {...rest}
+            />
+
+            <Authorized
+              allowedRoles={["SATS", "Records", "Registrar", "Director", "JSE"]}
+              group="Personnel"
+              userId={userId}
+              exact
+              path={`${match.path}/data_viz`}
+              component={DataVisualization}
+              pathAfterFailure="/logout"
               {...rest}
             />
 
