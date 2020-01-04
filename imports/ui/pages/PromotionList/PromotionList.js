@@ -99,6 +99,14 @@ class PromotionList extends React.Component {
     });
   }
 
+  onHide() {
+    this.setState({ show: !this.state.show });
+  }
+
+  showModal(modalState) {
+    this.setState({ show: modalState });
+  }
+
   printPromotionLetter(
     event,
     {
@@ -126,6 +134,8 @@ class PromotionList extends React.Component {
       );
       if (staffTitle) {
         this.setState({ staffTitle: staffTitle });
+      } else {
+        return;
       }
     }
     if (this.state.councilDate === "") {
@@ -135,6 +145,8 @@ class PromotionList extends React.Component {
       );
       if (councilDate) {
         this.setState({ councilDate: councilDate });
+      } else {
+        return;
       }
     }
 
@@ -145,17 +157,11 @@ class PromotionList extends React.Component {
       );
       if (registrarName) {
         this.setState({ registrarName: registrarName });
+      } else {
+        return;
       }
     }
 
-    if (
-      this.state.councilDate == "" ||
-      this.state.registrarName == "" ||
-      this.state.staffTitle == ""
-    ) {
-      //we didn't fill the details we need so we return back
-      alert("hello fill me up");
-    }
     const promotedStaffDetails = {
       staffId,
       staffName,
@@ -438,6 +444,9 @@ class PromotionList extends React.Component {
             )}
             {this.state.promotionObject !== "" ? (
               <PromotionShowModal
+                show={this.state.show}
+                onHide={this.onHide}
+                showModal={this.showModal}
                 promotionDetails={this.state.promotionObject}
               />
             ) : null}

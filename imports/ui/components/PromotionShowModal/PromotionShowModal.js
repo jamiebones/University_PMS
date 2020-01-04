@@ -12,7 +12,7 @@ const PromotionModalStyles = styled.div``;
 
 export default PromotionModalShow = props => {
   const [staff, setStaff] = useState("");
-  const [show, setShow] = useState(false);
+  const { show, onHide } = props;
   const {
     staffId,
     oldDesignation,
@@ -24,10 +24,6 @@ export default PromotionModalShow = props => {
     registrarName,
     staffTitle
   } = props.promotionDetails;
-
-  const onHide = () => {
-    setShow(!show);
-  };
 
   const continuePrintingLetter = () => {
     //we continue printing the promotion letter here
@@ -45,12 +41,12 @@ export default PromotionModalShow = props => {
           fileSaver.saveAs(blob, "promotion_letter.pdf");
           target.innerText = "Print Promotion letter";
           target.removeAttribute("disabled");
-          setShow(!show);
+          props.showModal(false);
           props.promotionDetails.resetModal();
           //reload the list here again from the server
           props.promotionDetails.reloadList(promotedStaffDetails.year);
         } else {
-          setShow(!show);
+          props.showModal(false);
           target.innerText = "Print Promotion letter";
           target.removeAttribute("disabled");
           console.log(err);
@@ -64,7 +60,7 @@ export default PromotionModalShow = props => {
     Meteor.call("staffmembers.getStaffById", staffId, (err, staff) => {
       if (!err) {
         setStaff(staff);
-        setShow(true);
+        props.showModal(true);
       } else {
         console.log(err);
       }
@@ -161,7 +157,7 @@ export default PromotionModalShow = props => {
             </Modal.Body>
             <Modal.Footer>
               <ButtonToolbar>
-                <Button bsStyle="danger" onClick={() => setShow(!show)}>
+                <Button bsStyle="danger" onClick={() => props.showModal(false)}>
                   Cancel
                 </Button>
                 <Button
