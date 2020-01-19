@@ -126,7 +126,6 @@ class PromotionList extends React.Component {
     let councilDate = "";
     let registrarName = "";
     let staffTitle = "";
-    debugger;
     if (this.state.staffTitle === "") {
       //ask them to input the date for the meeting
       staffTitle = prompt(

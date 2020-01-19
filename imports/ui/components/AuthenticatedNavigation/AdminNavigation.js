@@ -56,6 +56,16 @@ const AdminNavigation = ({ history }) => (
 
       <Nav>
         <LinkContainer
+          to="/auth/data_viz"
+          exact
+          onClick={() => history.push("/auth/data_viz")}
+        >
+          <MenuItem eventKey="6">Data Viz</MenuItem>
+        </LinkContainer>
+      </Nav>
+
+      <Nav>
+        <LinkContainer
           to="/auth/logs"
           exact
           onClick={() => history.push("/auth/logs")}

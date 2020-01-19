@@ -91,6 +91,16 @@ const RecordsNavigation = ({ history }) => (
         </React.Fragment>
       </NavDropdown>
     </Nav>
+
+    <Nav>
+      <LinkContainer
+        to="/auth/data_viz"
+        exact
+        onClick={() => history.push("/auth/data_viz")}
+      >
+        <MenuItem eventKey="6">Data Viz</MenuItem>
+      </LinkContainer>
+    </Nav>
   </div>
 );
 
