@@ -20,6 +20,29 @@ export const CleanUpDataStaffByOrigin = data => {
   };
 };
 
+export const CleanUpDataByLgaOrigin = data => {
+  const dataMap = data.map(({ _id, count }) => {
+    const newObj = {
+      lga: _id,
+      count: +count
+    };
+    return newObj;
+  });
+
+  const xValue = d => d.count;
+  const yValue = d => d.lga;
+
+  return {
+    data: dataMap,
+    xValue,
+    yValue,
+    chartTitle: "Statistics of Workers By LGA",
+    xAxisTitle: "numbers",
+    left: 200,
+    svgHeight: 7000
+  };
+};
+
 export const CleanUpDataStaffType = (data, type) => {
   const dataMap = data.map(({ _id, count }) => {
     const newObj = {
@@ -62,6 +85,7 @@ export const CleanUpDataSexDistribution = data => {
     yValue,
     chartTitle: `staff statistics distribution by sex`,
     xAxisTitle: "numbers",
+    svgHeight: 500,
     left: 80
   };
 };

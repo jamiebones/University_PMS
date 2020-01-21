@@ -10,11 +10,11 @@
 }
 .navbar-default {
   font-size: 13px;
-  background-color: rgba(90, 142, 209, 1);
+  background-color: #e7e7e7;
 }
 .navbar-default .navbar-nav > li > a {
   color: rgba(232, 232, 232, 1);
-  background-color: rgba(90, 142, 209, 1);
+  background-color: #e7e7e7;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
@@ -48,32 +48,6 @@
   border-top-right-radius: 0;
   // width: 100%;
 }
-
-/*
-a.navbar-brand.navbar-link { height: 100%; }
-a.navbar-brand {
-  padding:5px;
-}
-*/
-
-/* EXAMPLE 3
-
-line height is 20px by default so add 30px top and bottom to equal the new .navbar-brand 80px height  */
-
-/*
-
-.navbar-brand {
-  height: 80px;
-}
-.appNav .nav >li >a {
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-.navbar-toggle {
-  padding: 10px;
-  margin: 25px 15px 25px 0;
-}
-*/
 
 /* CSS Transform Align Navbar Brand Text ... This could also be achieved with table / table-cells */
 .navbar-alignit .navbar-header {

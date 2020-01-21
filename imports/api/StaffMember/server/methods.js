@@ -530,6 +530,20 @@ Meteor.methods({
     const result = StaffMembers.aggregate(pipeline);
     return result;
   },
+  "staffmembers.getstaffcountbylgaoforigin": function StaffMembersFuctionDesignationCount() {
+    const pipeline = [
+      {
+        $group: {
+          _id: "$lgaOfOrigin",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } }
+    ];
+    const result = StaffMembers.aggregate(pipeline);
+    return result;
+  },
+
   "staffmembers.getstaffcountbysex": function StaffMembersFuctionDesignationCount() {
     const pipeline = [
       {

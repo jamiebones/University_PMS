@@ -5,6 +5,7 @@ import autoBind from "react-autobind";
 import { pdfjs } from "react-pdf";
 import styled from "styled-components";
 if (Meteor.isClient) {
+  console.log(pdfjs);
   pdfjs.GlobalWorkerOptions.workerSrc =
     "/packages/geekho_pdfjs/build/pdf.worker.js";
   import "react-pdf/dist/Page/AnnotationLayer.css";

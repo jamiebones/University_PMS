@@ -19,15 +19,15 @@ const NavigationStyles = styled.div`
   }
 
   .navbar-default .navbar-brand {
-    color: rgba(232, 232, 232, 1);
+    color: rgba(0, 0, 0, 1);
   }
   .navbar-default {
     font-size: 13px;
-    background-color: rgba(90, 142, 209, 1);
+    background-color: #e22525;
   }
   .navbar-default .navbar-nav > li > a {
-    color: rgba(232, 232, 232, 1);
-    background-color: rgba(90, 142, 209, 1);
+    color: #f2f1f0;
+    background-color: #e22525;
   }
   .navbar-default .navbar-nav > li > a:hover,
   .navbar-default .navbar-nav > li > a:focus {
@@ -41,18 +41,18 @@ const NavigationStyles = styled.div`
     background-color: #f2fbfb;
   }
   .navbar-default .navbar-toggle {
-    border-color: #9bdede;
+    border-color: #ecd7d7;
   }
   .navbar-default .navbar-toggle:hover,
   .navbar-default .navbar-toggle:focus {
-    background-color: #9bdede;
+    background-color: #050213;
   }
   .navbar-default .navbar-toggle .icon-bar {
-    background-color: #9bdede;
+    background-color: #000;
   }
   .navbar-default .navbar-toggle:hover .icon-bar,
   .navbar-default .navbar-toggle:focus .icon-bar {
-    background-color: #5a8ed1;
+    background-color: #ecd7d7;
   }
 
   .navbar-nav > li > .dropdown-menu {

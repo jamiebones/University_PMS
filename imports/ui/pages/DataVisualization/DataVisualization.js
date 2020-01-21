@@ -7,7 +7,8 @@ import { Col, Row } from "react-bootstrap";
 import {
   CleanUpDataStaffByOrigin,
   CleanUpDataStaffType,
-  CleanUpDataSexDistribution
+  CleanUpDataSexDistribution,
+  CleanUpDataByLgaOrigin
 } from "../../../modules/chartUtilities";
 const DataVizStyles = styled.div`
   text {
@@ -114,6 +115,12 @@ export default class DataVisualization extends Component {
         "staffmembers.getstaffcountbysex"
       );
       const chartData = CleanUpDataSexDistribution(result);
+      this.drawBarChart(chartData);
+    } else if (value == "5") {
+      const result = await this.makeRemoteDataCall(
+        "staffmembers.getstaffcountbylgaoforigin"
+      );
+      const chartData = CleanUpDataByLgaOrigin(result);
       this.drawBarChart(chartData);
     }
   }
@@ -225,6 +232,7 @@ export default class DataVisualization extends Component {
               <option value="2">academic staff data </option>
               <option value="3">non academic staff data </option>
               <option value="4">sex distribution </option>
+              <option value="5">staff data visualization by LGA</option>
             </select>
           </Col>
         </Row>

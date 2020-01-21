@@ -46,16 +46,6 @@ injectGlobal`
     --gray: #555;
     --gray-light: #777;
     --gray-lighter: #eee;
-
-    --facebook: #3b5998;
-    --google: #ea4335;
-    --github: var(--gray-dark);
-
-    --cb-blue: #4285F4;
-    --cb-green: #00D490;
-    --cb-yellow: #FFCF50;
-    --cb-red: #DA5847;
-   
   }
 
 
