@@ -145,6 +145,7 @@ Meteor.methods({
 
   "staffmembers.getstaffRetirement": function StaffMemberMethod(year) {
     check(year, Number);
+    console.log(year);
     const searchYear = 58 - year;
     const pipeline = [
       // { $match: { officialRemark: "active" } },

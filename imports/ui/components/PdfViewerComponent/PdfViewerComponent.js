@@ -4,6 +4,7 @@ import { Document, Page } from "react-pdf";
 import autoBind from "react-autobind";
 import { pdfjs } from "react-pdf";
 import styled from "styled-components";
+import { _ } from "meteor/underscore";
 if (Meteor.isClient) {
   console.log(pdfjs);
   pdfjs.GlobalWorkerOptions.workerSrc =
@@ -66,7 +67,9 @@ class PdfViewerComponent extends React.Component {
       documentNum: 0,
       numPages: null,
       pageNumber: 1,
-      scale: 1
+      scale: 1,
+      documents: this.props.documents,
+      missingDocuments: []
     };
     autoBind(this);
   }
@@ -119,11 +122,53 @@ class PdfViewerComponent extends React.Component {
     this.setState({ pageNumber: this.state.pageNumber + 1 });
   }
 
+  handlePdfLoadError(e) {
+    //we try and handle the error here
+    //if the pdf error is of the type of not found.
+    //we remove it from the array and load the ones that are available
+    if (e.name === "MissingPDFException") {
+      //we have a pdf that shows 404
+      //lets remove it from the pdf documents and reload
+      const { documentNum } = this.state;
+      const { documents } = this.props;
+      const missingDoc = documents[documentNum];
+      const filterDocuments = documents.filter(document => {
+        return document !== documents[documentNum];
+      });
+      //lets reset the state of documents
+      //lets show the document is missing
+      //set the missing documents state and make sure its unique
+      this.setState({
+        documents: filterDocuments,
+        missingDocuments: _.uniq([...this.state.missingDocuments, missingDoc])
+      });
+    }
+  }
+
   render() {
-    const { documents } = this.props;
-    const { documentNum, pageNumber, numPages, scale } = this.state;
+    //const { documents } = this.props;
+    const {
+      documents,
+      documentNum,
+      pageNumber,
+      numPages,
+      scale,
+      missingDocuments
+    } = this.state;
     return (
       <div>
+        {missingDocuments.length > 0 && (
+          <div>
+            <p>Deleted Files:</p>
+            {missingDocuments.map((doc, index) => {
+              return (
+                <p className="text-danger text-lead" key={index}>
+                  {doc}
+                </p>
+              );
+            })}
+          </div>
+        )}
         <PdfViewerComponentStyles>
           <Row className="divViewer">
             <Col md={10} mdOffset={1}>
@@ -164,6 +209,7 @@ class PdfViewerComponent extends React.Component {
                   <Document
                     file={documents[documentNum]}
                     onLoadSuccess={this.onDocumentLoadSuccess}
+                    onLoadError={this.handlePdfLoadError}
                   >
                     <Page pageNumber={pageNumber} width={1000} scale={scale} />
                   </Document>

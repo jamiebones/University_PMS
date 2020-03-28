@@ -8,7 +8,7 @@ import { StaffMembers } from "../../../api/StaffMember/StaffMemberClass";
 import TextField from "../../components/Common/TextFieldGroup";
 import styled from "styled-components";
 import { _ } from "meteor/underscore";
-import { StaffType } from "../../../modules/utilities";
+import { StaffType, StaffDocumentsTypes } from "../../../modules/utilities";
 import autoBind from "react-autobind";
 import AddDocument from "../../components/AddDocument/AddDocument";
 
@@ -25,6 +25,9 @@ const StyledAddDocuments = styled.div`
       }
     }
   }
+  .documentDiv {
+    margin-top: 40px;
+  }
 `;
 
 class AddStaffDocuments extends React.Component {
@@ -33,7 +36,8 @@ class AddStaffDocuments extends React.Component {
     this.state = {
       staffId: "",
       staff: {},
-      meta: {}
+      meta: {},
+      documentType: ""
     };
     autoBind(this);
   }
@@ -59,6 +63,12 @@ class AddStaffDocuments extends React.Component {
     }
     const staffId = this.state.staffId;
     this.props.staffIdReactive.set(staffId);
+  }
+
+  handleChange(e) {
+    const value = e.target.value;
+    if (value == "select") return;
+    this.setState({ documentType: value });
   }
 
   render() {
@@ -87,44 +97,66 @@ class AddStaffDocuments extends React.Component {
         </Row>
 
         <Row>
-          <Col mdOffset={4} md={4}>
-            {!_.isEmpty(staff) && staffId ? (
-              <div className="alertDiv">
-                <Alert bsStyle="info">
-                  <p>
-                    Name:{" "}
-                    <span>
-                      {staff.biodata.firstName} {staff.biodata.middleName}{" "}
-                      &nbsp;
-                      {staff.biodata.surname}
-                    </span>
-                  </p>
+          <Col md={12}>
+            <Col mdOffset={4} md={4}>
+              {!_.isEmpty(staff) && staffId ? (
+                <div className="alertDiv">
+                  <Alert bsStyle="info">
+                    <p>
+                      Name:{" "}
+                      <span>
+                        {staff.biodata.firstName} {staff.biodata.middleName}{" "}
+                        &nbsp;
+                        {staff.biodata.surname}
+                      </span>
+                    </p>
 
-                  <p>
-                    Designation: <span>{staff && staff.designation}</span>
-                  </p>
-                  <p>
-                    Salary Scale: <span>{staff && staff.salaryStructure}</span>
-                  </p>
-                  <p>
-                    Staff Type:{" "}
-                    <span>{staff && StaffType(staff.staffType)}</span>
-                  </p>
-                </Alert>
+                    <p>
+                      Designation: <span>{staff && staff.designation}</span>
+                    </p>
+                    <p>
+                      Salary Scale:{" "}
+                      <span>{staff && staff.salaryStructure}</span>
+                    </p>
+                    <p>
+                      Staff Type:{" "}
+                      <span>{staff && StaffType(staff.staffType)}</span>
+                    </p>
+                  </Alert>
 
-                <AddDocument
-                  meta={{
-                    staffId: staffId,
-                    type: "1",
-                    userId: Meteor.userId()
-                  }}
-                />
-              </div>
-            ) : (
-              <div>
-                <p>No details</p>
-              </div>
-            )}
+                  <select className="form-control" onChange={this.handleChange}>
+                    <option value="select">select document type</option>
+                    {StaffDocumentsTypes().map(({ text, value }, index) => {
+                      return (
+                        <option key={index} value={value}>
+                          {text}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {this.state.documentType && (
+                    <div className="documentDiv">
+                      <p className="text-lead">
+                        selected document type:{" "}
+                        {this.state.documentType.toUpperCase()}
+                      </p>
+                      <AddDocument
+                        meta={{
+                          staffId: staffId,
+                          type: "1",
+                          userId: Meteor.userId(),
+                          documentType: this.state.documentType
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <p>No details</p>
+                </div>
+              )}
+            </Col>
           </Col>
         </Row>
       </StyledAddDocuments>

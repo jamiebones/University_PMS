@@ -75,7 +75,6 @@ class MyPdfViewer extends React.Component {
 
   render() {
     const { documents, loading } = this.state;
-
     return (
       <div>
         {!loading ? (

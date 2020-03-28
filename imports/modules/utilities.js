@@ -108,7 +108,6 @@ export const SortPostingDuration = pArray => {
 };
 
 export const FindTimeDifference = (startTime, endTime) => {
-  debugger;
   let start = moment(endTime);
   let end = moment(startTime);
   //Difference in number of days
@@ -425,8 +424,11 @@ export const TeachingStaff = () => {
 };
 
 export const SplitFacultyAndDept = faculty => {
-  const facArray = faculty.split("/");
-  return facArray.length == 2 ? facArray[1] : facArray[0];
+  if (faculty) {
+    const facArray = faculty.split("/");
+    return facArray.length == 2 ? facArray[1] : facArray[0];
+  }
+  return;
 };
 
 export const StripRolesFromGroup = roles => {
@@ -733,4 +735,14 @@ const __SortArray = (a, b) => {
     return 1;
   }
   return 0;
+};
+
+export const StaffDocumentsTypes = () => {
+  return [
+    { text: "Query letter", value: "query" },
+    { text: "Warning letters", value: "warning" },
+    { text: "Promotion letters", value: "promotion" },
+    { text: "Bulk Upload", value: "bulk" },
+    { text: "Leaves letters", value: "leave" }
+  ];
 };

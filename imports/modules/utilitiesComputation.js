@@ -85,7 +85,7 @@ export const FindTimeDifference = staffArray => {
     return a.yearsToretirement - b.yearsToretirement;
   });
   console.timeEnd();
-  console.log(sortArray);
+  //console.log(sortArray);
   return sortArray;
 };
 
@@ -417,7 +417,7 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
     const age = moment(staff.dob || todayDate);
     //const diffAge = moment.duration(todayDate.diff(age));
     let staffAge = Math.round(todayDate.diff(age, "days") / 365);
-    console.log(staffAge);
+    //console.log(staffAge);
     if (staffSalary && staffSalary.toUpperCase().includes("CONTISS")) {
       const yearsLeft = 65 - parseInt(staffAge);
       if (yearsLeft == years) {
@@ -433,7 +433,10 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
       }
     } else if (staffSalary && staffSalary.toUpperCase().includes("CONUASS")) {
       //check if the person should be in the professorial cadre
-      if (staff.designation.toUpperCase().includes("PROFESSOR")) {
+      if (
+        staff.designation.toUpperCase().includes("PROFESSOR") ||
+        staff.designation.toUpperCase().includes("VICE CHANCELLOR")
+      ) {
         const yearsLeft = 70 - parseInt(staffAge);
         if (yearsLeft == years) {
           staff.retirementType = "CONUASS";
@@ -462,7 +465,7 @@ export const CalculateStaffDueForRetirementNew = (staffArray, years) => {
     let staffRetirementBday = moment(`${bMonth}/${bday}/${bYear + years}`);
 
     let yearDiff = moment.duration(staffRetirementBday.diff(todayDate));
-    console.log(yearDiff);
+    //console.log(yearDiff);
     const diffBMonth = yearDiff.months();
     const diffBDay = yearDiff.days();
     const diffYear = yearDiff.years();

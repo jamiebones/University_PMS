@@ -4,23 +4,8 @@ import { ActivityLog } from "../../api/ActivityLog/ActivityLogClass";
 if (Meteor.isServer) {
   import WriteToDocument from "../../modules/server/writeToDocument";
 }
-//import { RefTable } from "../RefTable/RefTableClass";
+
 import { _ } from "meteor/underscore";
-
-const FindMax = (arr, key) => {
-  if (arr.length) {
-    let highest = 0;
-    for (let i = 0; i < arr.length; i++) {
-      let currentItem = arr[i][key].serial;
-      if (currentItem > highest) {
-        highest = currentItem;
-      }
-    }
-    return highest;
-  }
-  return 0;
-};
-
 const Documents = new FilesCollection({
   storagePath: "/home/jamiebones/PMS_DATA",
   downloadRoute: "/files/documents",
@@ -48,14 +33,16 @@ const Documents = new FilesCollection({
       // check real mimetype
       const { Magic, MAGIC_MIME_TYPE } = require("mmmagic");
       const magic = new Magic(MAGIC_MIME_TYPE);
+      import { DocumentsInUnit, StaffDocuments } from "./server/utility";
       magic.detectFile(
         file.path,
         Meteor.bindEnvironment((err, mimeType) => {
           if (err || !~mimeType.indexOf("pdf")) {
-            // is not a real image --> delete
-            console.log("onAfterUpload, not an image: ", file.path);
-            console.log("deleted", file.path);
+            // is not a real pdf --> delete
+            console.log("onAfterUpload, not a pdf file: ", file.path);
+            console.log("file deleted", file.path);
             this.remove(file._id);
+            throw new Error("oops", "Please upload only a pdf file");
           }
 
           //check here if we have personal document upload
@@ -63,54 +50,16 @@ const Documents = new FilesCollection({
           const userId = file.meta.userId;
           delete file.meta.userId;
           if (file.meta.type === "1") {
-            console.log(file.meta);
-            const staffId = file.meta.staffId.toUpperCase();
-            //find the max serial here
-            const documents = this.find({
-              "meta.staffId": staffId,
-              "meta.serial": { $exists: true, $ne: null }
-            }).fetch();
-            let reference = "";
-            if (_.isEmpty(documents)) {
-              //new serial
-              file.meta.serial = 1;
-              file.meta.staffId = staffId;
-              reference = `${staffId}/1`;
-              file.meta.reference = reference;
-            } else {
-              //find the max serial here
-              let maxSerial = FindMax(documents, "meta");
-              file.meta.serial = maxSerial + 1;
-              file.meta.staffId = staffId;
-              reference = `${staffId}/${maxSerial + 1}`;
-              file.meta.reference = reference;
-            }
+            StaffDocuments(file);
           } else if (file.meta.type === "2") {
             //we have personnel documents uploaded here
             //we should have the type of document here been
             //uploaded if it is a personnel document
-            const documents = this.find({
-              "meta.unit": file.meta.unit,
-              "meta.serial": { $exists: true, $ne: null },
-              "meta.documentType": file.meta.documentType
-            }).fetch();
-            let reference = "";
-            console.log(documents);
-            const docType = file.meta.documentType;
-            if (_.isEmpty(documents)) {
-              //new serial
-
-              file.meta.serial = 1;
-              reference = `${file.meta.reference}/${docType}/1`;
-              file.meta.reference = reference;
-            } else {
-              //find the max serial here
-              let maxSerial = FindMax(documents, "meta");
-              file.meta.serial = maxSerial + 1;
-              reference = `${file.meta.reference}/${docType}/${maxSerial + 1}`;
-              file.meta.reference = reference;
-            }
+            DocumentsInUnit(file);
           }
+          //we should add another if block here to cover the case
+          //of uploading files after the initial block file upload
+
           //console.dir(file);
           WriteToDocument(file)
             .then(pdf => {

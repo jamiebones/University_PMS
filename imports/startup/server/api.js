@@ -29,6 +29,7 @@ import "../../api/ActivityLog/server/methods";
 import "../../api/Documents/server/publications";
 import "../../api/Documents/methods";
 import "../../api/Documents/server/methods";
+import "../../api/Documents/server/utility";
 
 import "../../api/SalaryYear/server/publications";
 import "../../api/SalaryYear/methods";

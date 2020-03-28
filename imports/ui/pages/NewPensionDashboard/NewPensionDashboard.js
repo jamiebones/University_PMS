@@ -94,6 +94,12 @@ class NewPensionDashboard extends React.Component {
     });
   }
 
+  submitDetail(e) {
+    if (e.keyCode == 13) {
+      this.getStaffRetiring();
+    }
+  }
+
   render() {
     const TEMPLATE = "xx";
     const parse = templateParser(TEMPLATE, parseDigit);
@@ -115,6 +121,7 @@ class NewPensionDashboard extends React.Component {
                     parse={parse}
                     format={format}
                     placeholder="00"
+                    onKeyDown={this.submitDetail}
                   />
                 </FormGroup>
               </Col>
@@ -199,15 +206,17 @@ class NewPensionDashboard extends React.Component {
                                   <p>
                                     {" "}
                                     <span>
-                                      {capAllFirstLetter(
-                                        splitFac(currentPosting).faculty
-                                      )}
+                                      {currentPosting &&
+                                        capAllFirstLetter(
+                                          splitFac(currentPosting).faculty
+                                        )}
                                     </span>
                                     <br />
                                     <span>
-                                      {capAllFirstLetter(
-                                        splitFac(currentPosting).dept
-                                      )}
+                                      {currentPosting &&
+                                        capAllFirstLetter(
+                                          splitFac(currentPosting).dept
+                                        )}
                                     </span>
                                   </p>
                                 </td>
