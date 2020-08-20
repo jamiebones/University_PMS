@@ -14,7 +14,7 @@
     "accounting-js": "^1.1.1",
     "animate.css": "^3.5.2",
     "aws-sdk": "^2.186.0",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "classnames": "^2.2.6",
     "clsx": "^1.0.4",
     "crypto-js": "^3.1.9-1",
