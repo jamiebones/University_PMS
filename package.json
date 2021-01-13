@@ -32,7 +32,7 @@
     "input-format": "^0.2.0",
     "jimp": "^0.6.0",
     "jquery": "2.2.4",
-    "jquery-validation": "^1.17.0",
+    "jquery-validation": "^1.19.3",
     "juice": "^4.2.2",
     "meteor-node-stubs": "^0.4.1",
     "mmmagic": "^0.5.3",
